@@ -3,5 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:shownIn="activity_main">
 
-    <item android:title="Item" />
+    <item
+        android:id="@+id/homeFragment"
+        android:title="@string/menu_to_home_fragment" />
 </menu>

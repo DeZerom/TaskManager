@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Task Manager</string>
+    <string name="messages_header">Сообщения</string>
+    <string name="sync_header">Синхронизация</string>
+    <string name="menu_to_home_fragment">Домашнаяя страница</string>
+    <string name="menu_to_settings_fragment">Настройки</string>
 </resources>
