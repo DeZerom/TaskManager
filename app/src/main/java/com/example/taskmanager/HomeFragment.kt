@@ -1,15 +1,20 @@
 package com.example.taskmanager
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
+
 
 /**
  * A simple [Fragment] subclass.
@@ -34,7 +39,17 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.home_fragment, container, false)
+        val thisView = inflater.inflate(R.layout.home_fragment, container, false)
+
+        val button: Button = thisView.findViewById(R.id.homeFragment_button)
+        val textEdit: EditText = thisView.findViewById(R.id.homeFragment_editText)
+        //adding listener to a button
+        button.setOnClickListener {
+            val txt = textEdit.text.toString()
+            Toast.makeText(context, txt, Toast.LENGTH_SHORT).show()
+        }
+
+        return thisView
     }
 
     companion object {
