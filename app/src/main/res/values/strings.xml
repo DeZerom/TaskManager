@@ -16,9 +16,7 @@
     <string name="attachment_summary_off" translatable="false">Only download attachments when manually requested</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment" translatable="false">Home Fragment here</string>
-    <string name="menu_to_home_fragment">Home</string>
-    <string name="menu_to_settings_fragment">Settings</string>
     <string name="adding_new_project_its_name">Name of project</string>
-    <string name="nav_graph_home_fragment_label">Home</string>
-    <string name="nav_graph_settings_fragment_label">Settings</string>
+    <string name="home_fragment_label">Home</string>
+    <string name="settings_fragment_label">Settings</string>
 </resources>

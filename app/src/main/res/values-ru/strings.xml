@@ -3,9 +3,7 @@
     <string name="app_name">Task Manager</string>
     <string name="messages_header">Сообщения</string>
     <string name="sync_header">Синхронизация</string>
-    <string name="menu_to_home_fragment">Домашнаяя страница</string>
-    <string name="menu_to_settings_fragment">Настройки</string>
     <string name="adding_new_project_its_name">Имя проекта</string>
-    <string name="nav_graph_home_fragment_label">Домашняя страница</string>
-    <string name="nav_graph_settings_fragment_label">Настройки</string>
+    <string name="home_fragment_label">Домашняя страница</string>
+    <string name="settings_fragment_label">Настройки</string>
 </resources>
