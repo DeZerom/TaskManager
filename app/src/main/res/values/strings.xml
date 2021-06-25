@@ -19,4 +19,5 @@
     <string name="adding_new_project_its_name">Name of project</string>
     <string name="home_fragment_label">Home</string>
     <string name="settings_fragment_label">Settings</string>
+    <string name="project_fragment_label">Project</string>
 </resources>

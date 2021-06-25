@@ -8,10 +8,12 @@
         android:id="@+id/homeFragment"
         android:title="@string/home_fragment_label"
         android:icon="@drawable/ic_baseline_home_24"/>
-
     <item
         android:id="@+id/settingsFragment"
         android:title="@string/settings_fragment_label"
         android:icon="@drawable/ic_baseline_settings_24"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/projectFragment"
+        android:title="@string/project_fragment_label" />
 </menu>

@@ -6,4 +6,5 @@
     <string name="adding_new_project_its_name">Имя проекта</string>
     <string name="home_fragment_label">Домашняя страница</string>
     <string name="settings_fragment_label">Настройки</string>
+    <string name="project_fragment_label">Проект</string>
 </resources>

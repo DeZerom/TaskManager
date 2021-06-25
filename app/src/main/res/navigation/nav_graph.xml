@@ -14,6 +14,11 @@
         android:id="@+id/settingsFragment"
         android:name="com.example.taskmanager.SettingsFragment"
         android:label="@string/settings_fragment_label" />
+    <fragment
+        android:id="@+id/projectFragment"
+        android:name="com.example.taskmanager.ProjectFragment"
+        android:label="@string/project_fragment_label"
+        tools:layout="@layout/fragment_project" />
 
     <action
         android:id="@+id/open_settings_action"
