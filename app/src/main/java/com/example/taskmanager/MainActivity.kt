@@ -25,8 +25,6 @@ class MainActivity : AppCompatActivity() {
         val tb = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(tb)
 
-        tb.title = getString(R.string.app_name)
-
         val drawerLayout = findViewById<DrawerLayout>(R.id.main_drawerLayout)
         val navView: NavigationView = findViewById(R.id.nav_view)
         val navContr = findNavController(R.id.nav_host_fragment)
@@ -50,12 +48,22 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         Log.i(LOG_TAG, "onOptionsItemSelected $item")
-        if (item.itemId == R.id.settingsFragment) {
-            val navController = findNavController(R.id.nav_host_fragment)
-            navController.navigate(R.id.settingsFragment)
-            return true
+        val navController = findNavController(R.id.nav_host_fragment)
+        when(item.itemId) {
+            R.id.homeFragment -> {
+                navController.navigate(R.id.homeFragment)
+                return true
+            }
+            R.id.projectFragment -> {
+                navController.navigate(R.id.projectFragment)
+                return true
+            }
+            R.id.settingsFragment -> {
+                navController.navigate(R.id.settingsFragment)
+                return true
+            }
         }
 
-        return super.onOptionsItemSelected(item)
+        return false
     }
 }
