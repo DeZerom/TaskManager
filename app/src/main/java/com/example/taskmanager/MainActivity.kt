@@ -5,6 +5,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
@@ -12,11 +15,13 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.room.Room
 import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private val LOG_TAG = "1234"
+    private lateinit var db: TestDB
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +37,23 @@ class MainActivity : AppCompatActivity() {
             R.id.projectFragment), drawerLayout)
         setupActionBarWithNavController(navContr, appBarConfiguration)
         navView.setupWithNavController(navContr)
+
+        db = Room.databaseBuilder(applicationContext, TestDB::class.java, "TestDB").build()
+        val homeFragmentButton = findViewById<Button>(R.id.homeFragment_button)
+        val homeFragmentTextView = findViewById<TextView>(R.id.homeFragment_editText_db)
+        val homeFragmentEditText = findViewById<EditText>(R.id.homeFragment_editText)
+
+        homeFragmentButton.setOnClickListener {
+            val txt = homeFragmentEditText.text.toString()
+
+            val obj = TestDbObject(0, txt, txt.hashCode().toString())
+
+            val dao = db.testDbObjectDao()
+
+            dao.insert(obj)
+            val objFromDb = dao.getByInfo1(txt)
+            homeFragmentTextView.text = objFromDb.toString()
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
