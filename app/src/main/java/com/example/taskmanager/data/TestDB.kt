@@ -1,11 +1,9 @@
-package com.example.taskmanager
+package com.example.taskmanager.data
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.internal.synchronized
 
 @Database(entities = [TestDbObject::class], version = 1)
 abstract class TestDB : RoomDatabase() {
@@ -15,13 +13,15 @@ abstract class TestDB : RoomDatabase() {
         @Volatile
         private var instance: TestDB? = null
 
-        fun getDb(context: Context): TestDB? {
-            return if (instance != null) instance
+        fun getDb(context: Context): TestDB {
+            var tmp = instance
+            return if (tmp != null) tmp
             else {
-                instance = Room.databaseBuilder(
+                tmp = Room.databaseBuilder(
                     context.applicationContext,
                     TestDB::class.java, "test_db").build()
-                instance
+                instance = tmp
+                tmp
             }
         }
     }

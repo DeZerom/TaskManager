@@ -1,4 +1,4 @@
-package com.example.taskmanager
+package com.example.taskmanager.data
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -12,7 +12,6 @@ data class TestDbObject(
 )
 {
     override fun toString(): String {
-        return if (info1 == null) ""
-        else info1
+        return info1 ?: ""
     }
 }

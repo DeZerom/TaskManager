@@ -1,12 +1,13 @@
 package com.example.taskmanager
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.home_fragment.*
+import androidx.lifecycle.ViewModelProvider
+import com.example.taskmanager.data.TestDbObject
+import com.example.taskmanager.data.TestDbViewModel
 import kotlinx.android.synthetic.main.home_fragment.view.*
 
 
@@ -26,6 +27,7 @@ class HomeFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private lateinit var mDbModel: TestDbViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,17 +44,28 @@ class HomeFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.home_fragment, container, false)
 
-        val dao = TestDB.getDb(requireContext())?.testDbObjectDao()
-        if (dao == null) Log.e(LOG_TAG, "dao is null")
+        mDbModel = ViewModelProvider(this).get(TestDbViewModel::class.java)
+        val data = mDbModel.data
 
         val btn = view.homeFragment_button
         val editText = view.homeFragment_editText
+        val dbShower = view.homeFragment_editText_db
         btn.setOnClickListener {
             val txt = editText.text.toString()
 
             val obj = TestDbObject(0, txt, txt.hashCode().toString())
-            dao?.insert(obj)
+            mDbModel.addTestDbObj(obj)
+            editText.text.clear()
         }
+
+        data.observe(viewLifecycleOwner, {
+            if (it.isEmpty()) return@observe
+
+            val obj = it[it.lastIndex]
+            val txt = "${obj.id} ${obj.info1} ${obj.info2}"
+
+            dbShower.text = txt
+        })
 
         return view
     }

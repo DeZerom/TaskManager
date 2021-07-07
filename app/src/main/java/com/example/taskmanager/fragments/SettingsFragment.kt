@@ -1,12 +1,8 @@
-package com.example.taskmanager
+package com.example.taskmanager.fragments
 
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Toolbar
 import androidx.preference.PreferenceFragmentCompat
+import com.example.taskmanager.R
 
 class SettingsFragment : PreferenceFragmentCompat() {
     private val LOG_TAG = "1234"
