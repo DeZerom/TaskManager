@@ -1,10 +1,13 @@
 package com.example.taskmanager
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import kotlinx.android.synthetic.main.home_fragment.*
+import kotlinx.android.synthetic.main.home_fragment.view.*
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -37,7 +40,21 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.home_fragment, container, false)
+        val view = inflater.inflate(R.layout.home_fragment, container, false)
+
+        val dao = TestDB.getDb(requireContext())?.testDbObjectDao()
+        if (dao == null) Log.e(LOG_TAG, "dao is null")
+
+        val btn = view.homeFragment_button
+        val editText = view.homeFragment_editText
+        btn.setOnClickListener {
+            val txt = editText.text.toString()
+
+            val obj = TestDbObject(0, txt, txt.hashCode().toString())
+            dao?.insert(obj)
+        }
+
+        return view
     }
 
     companion object {

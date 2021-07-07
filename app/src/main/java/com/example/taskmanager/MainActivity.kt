@@ -37,23 +37,6 @@ class MainActivity : AppCompatActivity() {
             R.id.projectFragment), drawerLayout)
         setupActionBarWithNavController(navContr, appBarConfiguration)
         navView.setupWithNavController(navContr)
-
-        db = Room.databaseBuilder(applicationContext, TestDB::class.java, "TestDB").build()
-        val homeFragmentButton = findViewById<Button>(R.id.homeFragment_button)
-        val homeFragmentTextView = findViewById<TextView>(R.id.homeFragment_editText_db)
-        val homeFragmentEditText = findViewById<EditText>(R.id.homeFragment_editText)
-
-        homeFragmentButton.setOnClickListener {
-            val txt = homeFragmentEditText.text.toString()
-
-            val obj = TestDbObject(0, txt, txt.hashCode().toString())
-
-            val dao = db.testDbObjectDao()
-
-            dao.insert(obj)
-            val objFromDb = dao.getByInfo1(txt)
-            homeFragmentTextView.text = objFromDb.toString()
-        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -69,7 +52,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        Log.i(LOG_TAG, "onOptionsItemSelected $item")
         val navController = findNavController(R.id.nav_host_fragment)
         when(item.itemId) {
             R.id.homeFragment -> {
