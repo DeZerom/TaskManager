@@ -15,10 +15,12 @@
     </string>
     <string name="attachment_summary_off" translatable="false">Only download attachments when manually requested</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment" translatable="false">Home Fragment here</string>
     <string name="adding_new_project_its_name">Name of project</string>
     <string name="home_fragment_label">Home</string>
     <string name="settings_fragment_label">Settings</string>
     <string name="project_fragment_label">Project</string>
     <string name="error_toast_db">Database loading error</string>
+    <string name="home_fragment_adding_project">Add new project</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="add_new_project_fragment_label">Add new project</string>
 </resources>

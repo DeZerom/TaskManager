@@ -1,4 +1,4 @@
-package com.example.taskmanager.fragments
+package com.example.taskmanager.fragments.settings
 
 import android.os.Bundle
 import androidx.preference.PreferenceFragmentCompat

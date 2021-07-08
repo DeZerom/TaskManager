@@ -8,4 +8,6 @@
     <string name="settings_fragment_label">Настройки</string>
     <string name="project_fragment_label">Проект</string>
     <string name="error_toast_db">Ошибка загрузки базы данных</string>
+    <string name="home_fragment_adding_project">Создать новый проект</string>
+    <string name="add_new_project_fragment_label">Создать новый проект</string>
 </resources>
