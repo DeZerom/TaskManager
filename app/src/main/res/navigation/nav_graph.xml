@@ -29,7 +29,12 @@
         app:destination="@id/settingsFragment" />
     <fragment
         android:id="@+id/addProjectFragment"
-        android:name="com.example.taskmanager.AddProjectFragment"
+        android:name="com.example.taskmanager.fragments.add_project.AddProjectFragment"
         android:label="@string/add_new_project_fragment_label"
         tools:layout="@layout/fragment_add_project" />
+    <fragment
+        android:id="@+id/editProjectFragment"
+        android:name="com.example.taskmanager.fragments.edit_project.EditProjectFragment"
+        android:label="fragment_edit_project"
+        tools:layout="@layout/fragment_edit_project" />
 </navigation>

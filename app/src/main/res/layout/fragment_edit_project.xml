@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.add_project.AddProjectFragment" >
+    tools:context=".fragments.edit_project.EditProjectFragment" >
 
     <EditText
-        android:id="@+id/addProjectFragment_editText"
+        android:id="@+id/editProjectFragment_editText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -21,13 +21,13 @@
         app:layout_constraintVertical_bias="0.454" />
 
     <Button
-        android:id="@+id/addProjectFragment_button"
+        android:id="@+id/editProjectFragment_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="@string/home_fragment_adding_project"
+        android:text="@string/editProject_fragment_edit_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addProjectFragment_editText" />
+        app:layout_constraintTop_toBottomOf="@+id/editProjectFragment_editText" />
 </androidx.constraintlayout.widget.ConstraintLayout>

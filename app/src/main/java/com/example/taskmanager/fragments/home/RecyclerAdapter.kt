@@ -3,6 +3,8 @@ package com.example.taskmanager.fragments.home
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.AdapterListUpdateCallback
 import androidx.recyclerview.widget.RecyclerView
 import com.example.taskmanager.R
@@ -22,6 +24,10 @@ class RecyclerAdapter: RecyclerView.Adapter<RecyclerAdapter.RowHolder>() {
     override fun onBindViewHolder(holder: RowHolder, position: Int) {
         val currentItem = mProjects[position]
         holder.itemView.projectRow_name.text = currentItem.name
+
+        holder.itemView.projectRow_layout.setOnClickListener {
+            holder.itemView.findNavController().navigate(R.id.editProjectFragment)
+        }
     }
 
     override fun getItemCount(): Int {
