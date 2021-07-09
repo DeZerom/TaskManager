@@ -1,8 +1,10 @@
 package com.example.taskmanager.fragments.home
 
+import android.text.Layout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.NavAction
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.AdapterListUpdateCallback
@@ -26,7 +28,8 @@ class RecyclerAdapter: RecyclerView.Adapter<RecyclerAdapter.RowHolder>() {
         holder.itemView.projectRow_name.text = currentItem.name
 
         holder.itemView.projectRow_layout.setOnClickListener {
-            holder.itemView.findNavController().navigate(R.id.editProjectFragment)
+            val action = HomeFragmentDirections.actionHomeFragmentToEditProjectFragment(currentItem)
+            holder.itemView.findNavController().navigate(action)
         }
     }
 

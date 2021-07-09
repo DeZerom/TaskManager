@@ -10,8 +10,12 @@ class ProjectRepository(context: Context) {
 
     val allProjects: LiveData<List<Project>> = pDao.getAll()
 
-    fun addProject(project: Project) {
+    suspend fun addProject(project: Project) {
         pDao.addProject(project)
+    }
+
+    suspend fun updateProject(p: Project) {
+        pDao.updateProject(p)
     }
 
 }

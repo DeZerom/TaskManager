@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_homeFragment_to_addProjectFragment"
             app:destination="@id/addProjectFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_editProjectFragment"
+            app:destination="@id/editProjectFragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -35,6 +38,10 @@
     <fragment
         android:id="@+id/editProjectFragment"
         android:name="com.example.taskmanager.fragments.edit_project.EditProjectFragment"
-        android:label="fragment_edit_project"
-        tools:layout="@layout/fragment_edit_project" />
+        android:label="@string/editProject_fragment_label"
+        tools:layout="@layout/fragment_edit_project" >
+        <argument
+            android:name="currentItem"
+            app:argType="com.example.taskmanager.data.project.Project" />
+    </fragment>
 </navigation>

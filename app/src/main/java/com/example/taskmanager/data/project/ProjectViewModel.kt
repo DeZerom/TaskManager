@@ -17,4 +17,10 @@ class ProjectViewModel(application: Application): AndroidViewModel(application) 
         }
     }
 
+    fun updateProject(project: Project) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.updateProject(project)
+        }
+    }
+
 }

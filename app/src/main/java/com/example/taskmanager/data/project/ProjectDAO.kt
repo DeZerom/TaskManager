@@ -1,10 +1,7 @@
 package com.example.taskmanager.data.project
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 
 @Dao
 interface ProjectDAO {
@@ -16,7 +13,10 @@ interface ProjectDAO {
     fun getById(id: Int): Project
 
     @Insert
-    fun addProject(p: Project)
+    suspend fun addProject(p: Project)
+
+    @Update
+    suspend fun updateProject(p: Project)
 
 //    @Delete
 //    fun deleteById(id: Int)
