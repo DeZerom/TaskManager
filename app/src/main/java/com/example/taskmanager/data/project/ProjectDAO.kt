@@ -18,7 +18,7 @@ interface ProjectDAO {
     @Update
     suspend fun updateProject(p: Project)
 
-//    @Delete
-//    fun deleteById(id: Int)
+    @Delete
+    suspend fun deleteProject(p: Project)
 
 }

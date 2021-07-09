@@ -12,4 +12,9 @@
     <string name="add_new_project_fragment_label">Создать новый проект</string>
     <string name="editProject_fragment_label">Редактировать проект</string>
     <string name="editProject_fragment_edit_button">Сохранить</string>
+    <string name="editProject_deleteBtn">Удалить</string>
+    <string name="deleting_alert_title">Удалить</string>
+    <string name="deleting_alert_message">Вы действительно хотите удалить</string>
+    <string name="deleting_alert_pos_btn">Да</string>
+    <string name="deleting_alert_neg_btn">Нет</string>
 </resources>

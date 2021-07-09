@@ -18,4 +18,8 @@ class ProjectRepository(context: Context) {
         pDao.updateProject(p)
     }
 
+    suspend fun deleteProject(p: Project) {
+        pDao.deleteProject(p)
+    }
+
 }

@@ -1,12 +1,12 @@
 package com.example.taskmanager.fragments.edit_project
 
+import android.app.AlertDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavArgs
 import androidx.navigation.fragment.findNavController
 import com.example.taskmanager.R
 import com.example.taskmanager.data.project.Project
@@ -28,14 +28,42 @@ class EditProjectFragment : Fragment() {
         arguments?.let { args = EditProjectFragmentArgs.fromBundle(it) }
         mProjectModel = ViewModelProvider(this).get(ProjectViewModel::class.java)
 
+        //setting field from arguments bundle
         val edit = view.editProjectFragment_editText
         edit.setText(args.currentItem.name)
 
-        val btn = view.editProjectFragment_button
-        btn.setOnClickListener {
+        //apply button listener logic
+        val applyBtn = view.editProjectFragment_button
+        applyBtn.setOnClickListener {
             val project = Project(args.currentItem.id, edit.text.toString())
             mProjectModel.updateProject(project)
             findNavController().popBackStack()
+        }
+
+        //delete button listener logic
+        val deleteBtn = view.editProjectFragment_delete_button
+        deleteBtn.setOnClickListener {
+            //alert builder
+            val builder = AlertDialog.Builder(requireContext())
+
+            //title
+            var tmp = getString(R.string.deleting_alert_title)
+            tmp += " ${args.currentItem.name}?"
+            builder.setTitle(tmp)
+
+            //message
+            tmp = getString(R.string.deleting_alert_message)
+            tmp += " ${args.currentItem.name}?"
+            builder.setMessage(tmp)
+
+            //buttons
+            builder.setPositiveButton(R.string.deleting_alert_pos_btn) {_, _ ->
+                mProjectModel.deleteProject(args.currentItem)
+                findNavController().popBackStack()
+            }
+            builder.setNegativeButton(R.string.deleting_alert_neg_btn) {_, _ ->}
+            
+            builder.create().show()
         }
 
         return view

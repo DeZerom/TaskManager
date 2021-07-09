@@ -23,4 +23,10 @@ class ProjectViewModel(application: Application): AndroidViewModel(application) 
         }
     }
 
+    fun deleteProject(project: Project) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteProject(project)
+        }
+    }
+
 }

@@ -24,7 +24,12 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="add_new_project_fragment_label">Add new project</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="editProject_fragment_label">Edit project</string>
     <string name="editProject_fragment_edit_button">Apply</string>
+    <string name="editProject_deleteBtn">Delete</string>
+    <string name="deleting_alert_title">Delete</string>
+    <string name="deleting_alert_message">Are you sure want to delete</string>
+    <string name="deleting_alert_pos_btn">Yes</string>
+    <string name="deleting_alert_neg_btn">No</string>
 </resources>
