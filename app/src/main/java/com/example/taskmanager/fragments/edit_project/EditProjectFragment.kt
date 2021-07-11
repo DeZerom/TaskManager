@@ -62,7 +62,7 @@ class EditProjectFragment : Fragment() {
                 findNavController().popBackStack()
             }
             builder.setNegativeButton(R.string.deleting_alert_neg_btn) {_, _ ->}
-            
+
             builder.create().show()
         }
 

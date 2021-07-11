@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:shownIn="activity_main">
+    tools:shownIn="activity_main.xml">
 
     <item
         android:id="@+id/homeFragment"
@@ -13,7 +13,7 @@
         android:title="@string/settings_fragment_label"
         android:icon="@drawable/ic_baseline_settings_24"
         app:showAsAction="always" />
-    <item
-        android:id="@+id/projectFragment"
-        android:title="@string/project_fragment_label" />
+    <group android:id="@+id/projects_menu_group">
+
+    </group>
 </menu>

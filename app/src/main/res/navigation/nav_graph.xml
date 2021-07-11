@@ -25,7 +25,11 @@
         android:id="@+id/projectFragment"
         android:name="com.example.taskmanager.ProjectFragment"
         android:label="@string/project_fragment_label"
-        tools:layout="@layout/fragment_project" />
+        tools:layout="@layout/fragment_project" >
+        <argument
+            android:name="currentProject"
+            app:argType="com.example.taskmanager.data.project.Project" />
+    </fragment>
 
     <action
         android:id="@+id/open_settings_action"
@@ -44,4 +48,7 @@
             android:name="currentItem"
             app:argType="com.example.taskmanager.data.project.Project" />
     </fragment>
+    <action
+        android:id="@+id/action_global_projectFragment"
+        app:destination="@id/projectFragment" />
 </navigation>

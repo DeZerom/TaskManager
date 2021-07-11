@@ -3,18 +3,30 @@ package com.example.taskmanager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
+import android.view.Menu.NONE
 import android.view.MenuItem
+import androidx.appcompat.view.menu.MenuBuilder
+import androidx.appcompat.view.menu.MenuItemImpl
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.MenuItemCompat
+import androidx.core.view.contains
+import androidx.core.view.iterator
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.taskmanager.data.project.Project
+import com.example.taskmanager.data.project.ProjectViewModel
 import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var mProjectModel: ProjectViewModel
     private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var projects: List<Project>
     private val LOG_TAG = "1234"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +43,17 @@ class MainActivity : AppCompatActivity() {
             R.id.projectFragment), drawerLayout)
         setupActionBarWithNavController(navContr, appBarConfiguration)
         navView.setupWithNavController(navContr)
+
+        //menu items for projects
+        mProjectModel = ViewModelProvider(this).get(ProjectViewModel::class.java)
+        mProjectModel.allProjects.observe(this) {
+            val menu = navView.menu
+            menu.removeGroup(R.id.projects_menu_group)
+
+            for(p: Project in it) {
+                menu.add(R.id.projects_menu_group, NONE, NONE, p.name)
+            }
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -50,10 +73,6 @@ class MainActivity : AppCompatActivity() {
         when(item.itemId) {
             R.id.homeFragment -> {
                 navController.navigate(R.id.homeFragment)
-                return true
-            }
-            R.id.projectFragment -> {
-                navController.navigate(R.id.projectFragment)
                 return true
             }
             R.id.settingsFragment -> {
