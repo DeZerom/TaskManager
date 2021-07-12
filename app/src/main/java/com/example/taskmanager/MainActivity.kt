@@ -2,18 +2,14 @@ package com.example.taskmanager
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.Menu.NONE
 import android.view.MenuItem
-import androidx.appcompat.view.menu.MenuBuilder
-import androidx.appcompat.view.menu.MenuItemImpl
 import androidx.appcompat.widget.Toolbar
-import androidx.core.view.MenuItemCompat
-import androidx.core.view.contains
-import androidx.core.view.iterator
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -22,11 +18,13 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.data.project.ProjectViewModel
 import com.google.android.material.navigation.NavigationView
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var mProjectModel: ProjectViewModel
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var projects: List<Project>
+    private lateinit var mProjects: List<Project>
+    private lateinit var mProjectsMenuItemIds: Array<Int>
     private val LOG_TAG = "1234"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,12 +45,47 @@ class MainActivity : AppCompatActivity() {
         //menu items for projects
         mProjectModel = ViewModelProvider(this).get(ProjectViewModel::class.java)
         mProjectModel.allProjects.observe(this) {
+            mProjects = it
+            mProjectsMenuItemIds = Array(it.size) { 0 }
             val menu = navView.menu
             menu.removeGroup(R.id.projects_menu_group)
 
-            for(p: Project in it) {
-                menu.add(R.id.projects_menu_group, NONE, NONE, p.name)
+            var i = 1
+            for((j, p: Project) in it.withIndex()) {
+                //avoiding ids conflict in onOptionsItemSelected
+                while (i == R.id.settingsFragment || i == R.id.homeFragment) i++
+                //adding MenuItem to the menu
+                menu.add(R.id.projects_menu_group, i, NONE, p.name)
+                //writing item id and incrementing it just after
+                mProjectsMenuItemIds[j] = i++
             }
+        }
+
+        //listener for navigation
+        navView.setNavigationItemSelectedListener {
+            //navigate home fragment and settings fragment
+            when(it.itemId) {
+                R.id.homeFragment -> {
+                    navContr.navigate(R.id.homeFragment)
+                    return@setNavigationItemSelectedListener true
+                }
+                R.id.settingsFragment -> {
+                    navContr.navigate(R.id.settingsFragment)
+                    return@setNavigationItemSelectedListener true
+                }
+            }
+
+            //navigation to projects pages
+            if (mProjectsMenuItemIds.contains(it.itemId)) {
+                val proj = mProjects[mProjectsMenuItemIds.indexOf(it.itemId)]
+                val action = NavGraphDirections.actionGlobalProjectFragment(proj)
+                toolbar.title = proj.name
+                navContr.navigate(action)
+
+                return@setNavigationItemSelectedListener true
+            }
+
+            return@setNavigationItemSelectedListener false
         }
     }
 
