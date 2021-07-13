@@ -13,6 +13,12 @@
         android:title="@string/settings_fragment_label"
         android:icon="@drawable/ic_baseline_settings_24"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/editProjectFragment"
+        android:title="@string/editProject_fragment_label"
+        android:icon="@drawable/ic_baseline_edit_24"
+        app:showAsAction="ifRoom"/>
+
     <group android:id="@+id/projects_menu_group">
 
     </group>

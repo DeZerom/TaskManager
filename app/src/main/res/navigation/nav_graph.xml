@@ -55,4 +55,9 @@
         android:name="com.example.taskmanager.fragments.add_task.AddTaskFragment"
         android:label="AddTaskFragment"
         tools:layout="@layout/fragment_add_task"/>
+    <fragment
+        android:id="@+id/editTask"
+        android:name="com.example.taskmanager.fragments.edit_task.EditTask"
+        android:label="fragment_edit_task"
+        tools:layout="@layout/fragment_edit_task" />
 </navigation>

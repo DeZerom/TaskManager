@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.Menu.NONE
 import android.view.MenuItem
+import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
@@ -40,6 +41,9 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navContr, appBarConfiguration)
         navView.setupWithNavController(navContr)
 
+        //hiding edit project button from drawer menu
+        navView.menu.findItem(R.id.editProjectFragment).isVisible = false
+
         //menu items for projects
         mProjectModel = ViewModelProvider(this).get(ProjectViewModel::class.java)
         mProjectModel.allProjects.observe(this) {
@@ -62,22 +66,19 @@ class MainActivity : AppCompatActivity() {
         //listener for navigation
         navView.setNavigationItemSelectedListener {
             //navigate home fragment and settings fragment
-            when(it.itemId) {
-                R.id.homeFragment -> {
-                    navContr.navigate(R.id.homeFragment)
-                    return@setNavigationItemSelectedListener true
-                }
-                R.id.settingsFragment -> {
-                    navContr.navigate(R.id.settingsFragment)
-                    return@setNavigationItemSelectedListener true
-                }
-            }
+            if (tryToNavigateToMainDest(it)) return@setNavigationItemSelectedListener true
 
             //navigation to projects pages
             if (mProjectsMenuItemIds.contains(it.itemId)) {
                 val proj = mProjects[mProjectsMenuItemIds.indexOf(it.itemId)]
                 val action = NavGraphDirections.actionGlobalProjectFragment(proj)
+                //setting title in toolbar
                 toolbar.title = proj.name
+
+                //making edit project button visible
+                //when navigating to home or settings it will be hidden again
+                toolbar?.menu?.findItem(R.id.editProjectFragment)?.isVisible = true
+
                 navContr.navigate(action)
 
                 return@setNavigationItemSelectedListener true
@@ -95,19 +96,34 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.activity_main_menu, menu)
+        //hide edit project button before accessing project fragment
+        menu?.findItem(R.id.editProjectFragment)?.isVisible = false
+        //hide home fragment button because it isn't supposed to be in overflow
+        menu?.findItem(R.id.homeFragment)?.isVisible = false
 
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment)
+        return tryToNavigateToMainDest(item)
+    }
+
+    private fun tryToNavigateToMainDest(item: MenuItem): Boolean {
+        val navContr = findNavController(R.id.nav_host_fragment)
         when(item.itemId) {
             R.id.homeFragment -> {
-                navController.navigate(R.id.homeFragment)
+                //hide edit project button
+                toolbar?.menu?.findItem(R.id.editProjectFragment)?.isVisible = false
+                navContr.navigate(R.id.homeFragment)
                 return true
             }
             R.id.settingsFragment -> {
-                navController.navigate(R.id.settingsFragment)
+                //hide edit project button
+                toolbar?.menu?.findItem(R.id.editProjectFragment)?.isVisible = false
+                //hide settings button, because it isn't supposed to be in settings fragment
+                //onPause in SettingsFragment will make it visible again
+                toolbar?.menu?.findItem(R.id.settingsFragment)?.isVisible = false
+                navContr.navigate(R.id.settingsFragment)
                 return true
             }
         }
