@@ -1,4 +1,4 @@
-package com.example.taskmanager
+package com.example.taskmanager.fragments.project
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import com.example.taskmanager.R
 import com.example.taskmanager.data.project.Project
 import kotlinx.android.synthetic.main.fragment_project.view.*
 
@@ -18,7 +19,14 @@ class ProjectFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_project, container, false)
+        val view = inflater.inflate(R.layout.fragment_project, container, false)
+
+        val btn = view.projectFragment_floatingActionButton
+        btn.setOnClickListener {
+            findNavController().navigate(R.id.addTaskFragment)
+        }
+
+        return view
     }
 
     override fun onResume() {

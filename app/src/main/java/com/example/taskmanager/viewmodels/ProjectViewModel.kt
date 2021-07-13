@@ -1,8 +1,10 @@
-package com.example.taskmanager.data.project
+package com.example.taskmanager.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.taskmanager.data.project.Project
+import com.example.taskmanager.repositories.ProjectRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

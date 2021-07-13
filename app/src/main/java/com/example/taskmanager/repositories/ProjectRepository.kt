@@ -1,8 +1,9 @@
-package com.example.taskmanager.data.project
+package com.example.taskmanager.repositories
 
 import android.content.Context
 import androidx.lifecycle.LiveData
 import com.example.taskmanager.data.TheDatabase
+import com.example.taskmanager.data.project.Project
 
 class ProjectRepository(context: Context) {
     private val db = TheDatabase.getInstance(context)

@@ -23,7 +23,7 @@
         android:label="@string/settings_fragment_label" />
     <fragment
         android:id="@+id/projectFragment"
-        android:name="com.example.taskmanager.ProjectFragment"
+        android:name="com.example.taskmanager.fragments.project.ProjectFragment"
         tools:layout="@layout/fragment_project" >
         <argument
             android:name="currentProject"
@@ -50,4 +50,9 @@
     <action
         android:id="@+id/action_global_projectFragment"
         app:destination="@id/projectFragment" />
+    <fragment
+        android:id="@+id/addTaskFragment"
+        android:name="com.example.taskmanager.fragments.add_task.AddTaskFragment"
+        android:label="AddTaskFragment"
+        tools:layout="@layout/fragment_add_task"/>
 </navigation>
