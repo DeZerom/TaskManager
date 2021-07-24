@@ -9,12 +9,16 @@ import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavAction
+import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.taskmanager.data.project.Project
+import com.example.taskmanager.fragments.home.HomeFragmentDirections
+import com.example.taskmanager.fragments.project.ProjectFragmentDirections
 import com.example.taskmanager.viewmodels.ProjectViewModel
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
@@ -55,10 +59,11 @@ class MainActivity : AppCompatActivity() {
             var i = 1
             for((j, p: Project) in it.withIndex()) {
                 //avoiding ids conflict in onOptionsItemSelected
-                while (i == R.id.settingsFragment || i == R.id.homeFragment) i++
+                while (i == R.id.settingsFragment || i == R.id.homeFragment ||
+                    i == R.id.editProjectFragment) i++
                 //adding MenuItem to the menu
                 menu.add(R.id.projects_menu_group, i, NONE, p.name)
-                //writing item id and incrementing it just after
+                //writing item id
                 mProjectsMenuItemIds[j] = i++
             }
         }
@@ -68,15 +73,13 @@ class MainActivity : AppCompatActivity() {
             //navigate home fragment and settings fragment
             if (tryToNavigateToMainDest(it)) return@setNavigationItemSelectedListener true
 
-            //navigation to projects pages
+            //navigation to projectFragment
             if (mProjectsMenuItemIds.contains(it.itemId)) {
                 val proj = mProjects[mProjectsMenuItemIds.indexOf(it.itemId)]
                 val action = NavGraphDirections.actionGlobalProjectFragment(proj)
-                //setting title in toolbar
-                toolbar.title = proj.name
 
                 //making edit project button visible
-                //when navigating to home or settings it will be hidden again
+                //it will be hidden again when navigating to other fragments
                 toolbar?.menu?.findItem(R.id.editProjectFragment)?.isVisible = true
 
                 navContr.navigate(action)
@@ -100,12 +103,40 @@ class MainActivity : AppCompatActivity() {
         menu?.findItem(R.id.editProjectFragment)?.isVisible = false
         //hide home fragment button because it isn't supposed to be in overflow
         menu?.findItem(R.id.homeFragment)?.isVisible = false
+        //hide editFragment button
+        menu?.findItem(R.id.editProjectFragment)?.isVisible = false
 
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return tryToNavigateToMainDest(item)
+        if (tryToNavigateToMainDest(item)) return true
+        val navContr = findNavController(R.id.nav_host_fragment)
+
+        //navigating to editProjectFragment
+        when (item.itemId) {
+            //editProjectFragment
+            R.id.editProjectFragment -> {
+                if (navContr.currentDestination?.id == R.id.projectFragment) {
+                    //finding project
+                    val projName = toolbar.title.toString() //proj name has been written in title
+                    val proj = mProjects.find { p ->
+                        return@find p.name == projName
+                    }
+
+                    //navigating
+                    proj?.let {
+                        val a = ProjectFragmentDirections
+                            .actionProjectFragmentToEditProjectFragment(proj)
+                        navContr.navigate(a)
+
+                        return true
+                    }
+                }
+            }
+        }
+
+        return false
     }
 
     private fun tryToNavigateToMainDest(item: MenuItem): Boolean {

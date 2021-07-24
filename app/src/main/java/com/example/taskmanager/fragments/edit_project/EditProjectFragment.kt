@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.taskmanager.R
 import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.viewmodels.ProjectViewModel
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_edit_project.view.*
 
 class EditProjectFragment : Fragment() {
@@ -37,7 +38,8 @@ class EditProjectFragment : Fragment() {
         applyBtn.setOnClickListener {
             val project = Project(args.currentItem.id, edit.text.toString())
             mProjectModel.updateProject(project)
-            findNavController().popBackStack()
+            val a = EditProjectFragmentDirections.actionGlobalProjectFragment(project)
+            findNavController().navigate(a)
         }
 
         //delete button listener logic
@@ -59,7 +61,7 @@ class EditProjectFragment : Fragment() {
             //buttons
             builder.setPositiveButton(R.string.deleting_alert_pos_btn) {_, _ ->
                 mProjectModel.deleteProject(args.currentItem)
-                findNavController().popBackStack()
+                findNavController().navigate(R.id.homeFragment)
             }
             builder.setNegativeButton(R.string.deleting_alert_neg_btn) {_, _ ->}
 
@@ -67,5 +69,17 @@ class EditProjectFragment : Fragment() {
         }
 
         return view
+    }
+
+    override fun onResume() {
+        activity?.toolbar?.menu?.findItem(R.id.editProjectFragment)?.isVisible = false
+
+        super.onResume()
+    }
+
+    override fun onPause() {
+        activity?.toolbar?.menu?.findItem(R.id.editProjectFragment)?.isVisible = true
+
+        super.onPause()
     }
 }
