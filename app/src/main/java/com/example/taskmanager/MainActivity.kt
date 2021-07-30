@@ -139,8 +139,13 @@ class MainActivity : AppCompatActivity() {
         return false
     }
 
+    /**
+     * Tries to navigate to [R.layout.home_fragment] or to [R.xml.root_preferences]
+     * @return true if navigated successful, false otherwise
+     */
     private fun tryToNavigateToMainDest(item: MenuItem): Boolean {
         val navContr = findNavController(R.id.nav_host_fragment)
+
         when(item.itemId) {
             R.id.homeFragment -> {
                 //hide edit project button
@@ -151,12 +156,10 @@ class MainActivity : AppCompatActivity() {
             R.id.settingsFragment -> {
                 //hide edit project button
                 toolbar?.menu?.findItem(R.id.editProjectFragment)?.isVisible = false
-                //hide settings button, because it isn't supposed to be in settings fragment
-                //onPause in SettingsFragment will make it visible again
-                toolbar?.menu?.findItem(R.id.settingsFragment)?.isVisible = false
                 navContr.navigate(R.id.settingsFragment)
                 return true
             }
+
         }
 
         return false

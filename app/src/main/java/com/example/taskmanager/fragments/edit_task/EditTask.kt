@@ -38,7 +38,7 @@ class EditTask : Fragment() {
         //apply btn
         val aBtn = view.editTask_applyButton
         aBtn.setOnClickListener {
-            val task = Task(mTask.id, tv.text.toString())
+            val task = Task(mTask.id, tv.text.toString(), mTask.projectOwnerId)
             mTaskViewModel.updateTask(task)
         }
 
@@ -62,7 +62,7 @@ class EditTask : Fragment() {
             builder.setPositiveButton(R.string.deleting_alert_pos_btn) {_, _ ->
                 mTaskViewModel.deleteTask(mTask)
                 findNavController().popBackStack()
-                //TODO may cause problems
+                //TODO popBackStack may cause problems
             }
             builder.setNegativeButton(R.string.deleting_alert_neg_btn) {_, _ ->}
 

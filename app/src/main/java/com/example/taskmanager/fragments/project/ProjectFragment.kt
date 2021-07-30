@@ -22,19 +22,10 @@ class ProjectFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_project, container, false)
-
-        //add task
-        val btn = view.projectFragment_floatingActionButton
-        btn.setOnClickListener {
-            findNavController().navigate(R.id.addTaskFragment)
-        }
-
-        return view
+        return inflater.inflate(R.layout.fragment_project, container, false)
     }
 
     override fun onResume() {
-        Log.i(LOG_TAG, "Project fragment is resumed")
         //get Project
         val tmp = arguments?.let { ProjectFragmentArgs.fromBundle(it).currentProject }
         if (tmp != null) {
@@ -51,13 +42,14 @@ class ProjectFragment : Fragment() {
         //make editProject button in toolbar visible
         activity?.toolbar?.menu?.findItem(R.id.editProjectFragment)?.isVisible = true
 
+        //add task button
+        val btn = view?.projectFragment_floatingActionButton
+        btn?.setOnClickListener {
+            val action = ProjectFragmentDirections.actionProjectFragmentToAddTaskFragment(mProject)
+            findNavController().navigate(action)
+        }
+
         super.onResume()
-    }
-
-    override fun onPause() {
-        Log.i(LOG_TAG, "ProjectFragment is paused")
-
-        super.onPause()
     }
 
 }

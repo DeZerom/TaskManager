@@ -9,7 +9,7 @@ import com.example.taskmanager.data.project.ProjectDAO
 import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.data.task.TaskDAO
 
-@Database(entities = [Project::class, Task::class], version = 3)
+@Database(entities = [Project::class, Task::class], version = 4)
 abstract class TheDatabase: RoomDatabase() {
 
     abstract fun getProjectDao(): ProjectDAO
@@ -45,6 +45,22 @@ abstract class TheDatabase: RoomDatabase() {
             }
         }
 
+        private val MIGRATION_3_4 = object : Migration(3, 4) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "DELETE FROM Project"
+                )
+
+                database.execSQL(
+                    "DROP TABLE Task"
+                )
+
+                database.execSQL(
+                    "CREATE TABLE Task(id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, \nname TEXT NOT NULL, \nproject_owner_id INTEGER NOT NULL,\nFOREIGN KEY (project_owner_id) REFERENCES Project(id)\nON DELETE CASCADE\nON UPDATE CASCADE)"
+                )
+            }
+        }
+
         @Synchronized
         fun getInstance(context: Context): TheDatabase {
             var tmp = instance
@@ -52,7 +68,7 @@ abstract class TheDatabase: RoomDatabase() {
                 tmp
             } else {
                 tmp = Room.databaseBuilder(context, TheDatabase::class.java, "TheDb")
-                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
                     .build()
                 instance = tmp
                 tmp

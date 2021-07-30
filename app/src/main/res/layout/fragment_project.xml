@@ -7,12 +7,11 @@
     android:layout_height="match_parent"
     tools:context=".fragments.project.ProjectFragment">
 
-    <TextView
-        android:id="@+id/projectFragment_textView"
-        android:layout_width="wrap_content"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/projectFragment_recycler"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/adding_new_project_its_name"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
