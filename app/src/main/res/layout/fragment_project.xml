@@ -5,7 +5,8 @@
     android:id="@+id/project_fragment_constraint_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.project.ProjectFragment">
+    tools:context=".fragments.project.ProjectFragment"
+    android:paddingTop="?actionBarSize">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/projectFragment_recycler"

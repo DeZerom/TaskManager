@@ -40,6 +40,7 @@ class EditTask : Fragment() {
         aBtn.setOnClickListener {
             val task = Task(mTask.id, tv.text.toString(), mTask.projectOwnerId)
             mTaskViewModel.updateTask(task)
+            findNavController().popBackStack()
         }
 
         //delete btn

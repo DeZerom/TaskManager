@@ -1,4 +1,4 @@
-package com.example.taskmanager.fragments.home
+package com.example.taskmanager.fragments.project
 
 import android.view.LayoutInflater
 import android.view.View
@@ -24,7 +24,7 @@ class RecyclerAdapter: RecyclerView.Adapter<RecyclerAdapter.RowHolder>() {
         holder.itemView.taskRow_name.text = currentItem.name
 
         holder.itemView.taskRow_layout.setOnClickListener {
-            val action = HomeFragmentDirections.actionHomeFragmentToEditTask(currentItem)
+            val action = ProjectFragmentDirections.actionProjectFragmentToEditTask(currentItem)
             holder.itemView.findNavController().navigate(action)
         }
     }

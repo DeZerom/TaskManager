@@ -16,9 +16,6 @@
         <action
             android:id="@+id/action_homeFragment_to_editProjectFragment"
             app:destination="@id/editProjectFragment" />
-        <action
-            android:id="@+id/action_homeFragment_to_editTask"
-            app:destination="@id/editTask" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -37,6 +34,9 @@
         <action
             android:id="@+id/action_projectFragment_to_addTaskFragment"
             app:destination="@id/addTaskFragment" />
+        <action
+            android:id="@+id/action_projectFragment_to_editTask"
+            app:destination="@id/editTask" />
     </fragment>
 
     <action
