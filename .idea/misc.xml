@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Projects/TaskManager/app/src/main/res/layout/fragment_add_task.xml" value="0.21693840579710144" />
+        <entry key="..\:/Projects/TaskManager/app/src/main/res/layout/fragment_edit_project.xml" value="0.12360688956433637" />
         <entry key="..\:/Projects/TaskManager/app/src/main/res/layout/fragment_edit_task.xml" value="0.2006340579710145" />
         <entry key="..\:/Projects/TaskManager/app/src/main/res/layout/project_row.xml" value="0.2006340579710145" />
         <entry key="..\:/Projects/TaskManager/app/src/main/res/layout/project_view.xml" value="0.2006340579710145" />

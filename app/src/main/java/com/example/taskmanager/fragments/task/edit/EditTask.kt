@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Spinner
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.taskmanager.R
@@ -17,8 +17,12 @@ import com.example.taskmanager.viewmodels.ProjectViewModel
 import com.example.taskmanager.viewmodels.TaskViewModel
 import kotlinx.android.synthetic.main.fragment_edit_task.view.*
 import java.time.LocalDate
+import java.time.format.DateTimeParseException
 
 class EditTask : Fragment() {
+    /**
+     * The task to edit
+     */
     private lateinit var mTask: Task
     private lateinit var mTaskViewModel: TaskViewModel
     private lateinit var mProjectViewModel: ProjectViewModel
@@ -40,7 +44,7 @@ class EditTask : Fragment() {
         mProjectViewModel = ViewModelProvider(this).get(ProjectViewModel::class.java)
 
         //set text to edit fields
-        val tv = view.editTask_editText
+        val tv = view.editTask_editName
         tv.setText(mTask.name)
 
         //spinner
@@ -60,13 +64,15 @@ class EditTask : Fragment() {
 
         //apply btn
         val aBtn = view.editTask_applyButton
+        val editDate = view.editTask_editDate
         aBtn.setOnClickListener {
             //there are only Project instances in spinner
             val ownerId = (spinner.selectedItem as Project).id
-            //TODO ask user for a Task.date
-            val task = Task(mTask.id, tv.text.toString(), ownerId, LocalDate.now())
-            mTaskViewModel.updateTask(task)
-            findNavController().popBackStack()
+            val task = createTask(tv.text.toString(), ownerId, editDate.text.toString())
+            task?.let {
+                mTaskViewModel.updateTask(it)
+                findNavController().popBackStack()
+            }
         }
 
         //delete btn
@@ -89,7 +95,6 @@ class EditTask : Fragment() {
             builder.setPositiveButton(R.string.deleting_alert_pos_btn) {_, _ ->
                 mTaskViewModel.deleteTask(mTask)
                 findNavController().popBackStack()
-                //TODO popBackStack may cause problems
             }
             builder.setNegativeButton(R.string.deleting_alert_neg_btn) {_, _ ->}
 
@@ -97,5 +102,52 @@ class EditTask : Fragment() {
         }
         
         return view
+    }
+
+    /**
+     * Creates a new [Task] with given [name], [parentProjectId], [date] and id of [mTask]. If name is incorrect,
+     * it will return null. If date is incorrect, it will return null.
+     * @param name for [Task.name]
+     * @param parentProjectId for [Task.projectOwnerId]
+     * @param date for [Task.date]
+     * @return [Task] if [name] and [date] is correct. Null otherwise.
+     * @see checkName
+     * @see checkDate
+     */
+    private fun createTask(name: String, parentProjectId: Int, date: String): Task? {
+        if (!checkName(name)) return null
+        val localDate = checkDate(date)
+        localDate?: return null
+
+        return Task(mTask.id, name, parentProjectId, localDate)
+    }
+
+    /**
+     * Checks if name is blank. Shows [Toast] if name is blank.
+     * @return True if name is blank, false if name is not blank
+     * @see isBlank
+     * @see isNotBlank
+     */
+    private fun checkName(name: String): Boolean {
+        if (name.isBlank()) Toast.makeText(context,
+            R.string.addTaskFragment_toast_emptyName, Toast.LENGTH_SHORT).show()
+
+        return name.isNotBlank()
+    }
+
+    /**
+     * Tries to parse [date]. If successful returns [LocalDate] instance representing [date], else
+     * returns null.
+     * @param date date in string format.
+     * @return [LocalDate] instance or null.
+     * @see LocalDate.parse
+     */
+    private fun checkDate(date: String): LocalDate? {
+        return try {
+            LocalDate.parse(date)
+        } catch (e: DateTimeParseException) {
+            Toast.makeText(context, "Bad date", Toast.LENGTH_SHORT).show()
+            null
+        }
     }
 }
