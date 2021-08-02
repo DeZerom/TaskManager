@@ -16,6 +16,7 @@ import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.viewmodels.ProjectViewModel
 import com.example.taskmanager.viewmodels.TaskViewModel
 import kotlinx.android.synthetic.main.fragment_edit_task.view.*
+import java.time.LocalDate
 
 class EditTask : Fragment() {
     private lateinit var mTask: Task
@@ -62,7 +63,8 @@ class EditTask : Fragment() {
         aBtn.setOnClickListener {
             //there are only Project instances in spinner
             val ownerId = (spinner.selectedItem as Project).id
-            val task = Task(mTask.id, tv.text.toString(), ownerId)
+            //TODO ask user for a Task.date
+            val task = Task(mTask.id, tv.text.toString(), ownerId, LocalDate.now())
             mTaskViewModel.updateTask(task)
             findNavController().popBackStack()
         }

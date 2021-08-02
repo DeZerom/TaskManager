@@ -15,6 +15,7 @@ import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.viewmodels.ProjectViewModel
 import com.example.taskmanager.viewmodels.TaskViewModel
 import kotlinx.android.synthetic.main.fragment_add_task.view.*
+import java.time.LocalDate
 
 class AddTaskFragment : Fragment() {
     /**
@@ -84,7 +85,8 @@ class AddTaskFragment : Fragment() {
     private fun createTask(name: String, parentProjectId: Int): Task? {
         if (!checkName(name)) return null
 
-        return Task(0, name, parentProjectId)
+        //TODO ask user for a Task.date
+        return Task(0, name, parentProjectId, LocalDate.now())
     }
 
     /**
