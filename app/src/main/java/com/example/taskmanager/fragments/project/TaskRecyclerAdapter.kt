@@ -7,9 +7,10 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.taskmanager.R
 import com.example.taskmanager.data.task.Task
+import com.example.taskmanager.viewmodels.TaskViewModel
 import kotlinx.android.synthetic.main.task_row.view.*
 
-class RecyclerAdapter: RecyclerView.Adapter<RecyclerAdapter.RowHolder>() {
+class TaskRecyclerAdapter: RecyclerView.Adapter<TaskRecyclerAdapter.RowHolder>() {
     private var mTasks = emptyList<Task>()
 
     class RowHolder(itemView: View): RecyclerView.ViewHolder(itemView) {}
@@ -23,7 +24,7 @@ class RecyclerAdapter: RecyclerView.Adapter<RecyclerAdapter.RowHolder>() {
         val currentItem = mTasks[position]
         holder.itemView.taskRow_name.text = currentItem.name
 
-        holder.itemView.taskRow_layout.setOnClickListener {
+        holder.itemView.taskRow_name.setOnClickListener {
             val action = ProjectFragmentDirections.actionProjectFragmentToEditTask(currentItem)
             holder.itemView.findNavController().navigate(action)
         }

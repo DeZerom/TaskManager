@@ -1,4 +1,4 @@
-package com.example.taskmanager.fragments.add_task
+package com.example.taskmanager.fragments.task.add
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,15 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.taskmanager.R
 import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.viewmodels.TaskViewModel
-import kotlinx.android.synthetic.main.fragment_add_project.view.*
 import kotlinx.android.synthetic.main.fragment_add_task.view.*
 
 class AddTaskFragment : Fragment() {

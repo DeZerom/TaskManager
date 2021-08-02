@@ -1,11 +1,9 @@
 package com.example.taskmanager.fragments.project
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -13,16 +11,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.taskmanager.R
 import com.example.taskmanager.data.project.Project
-import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.viewmodels.TaskViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_project.view.*
 
 class ProjectFragment : Fragment() {
     private lateinit var mProject: Project
-    private lateinit var mAllTasks: List<Task>
     private lateinit var mTaskViewModel: TaskViewModel
-    private val mRecyclerAdapter = RecyclerAdapter()
+    private val mRecyclerAdapter = TaskRecyclerAdapter()
     private val LOG_TAG = "1234"
 
     override fun onCreateView(
@@ -31,7 +27,6 @@ class ProjectFragment : Fragment() {
     ): View? {
         //get taskViewModel
         mTaskViewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
-
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_project, container, false)
 

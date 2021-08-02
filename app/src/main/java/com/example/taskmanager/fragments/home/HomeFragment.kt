@@ -9,11 +9,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.taskmanager.R
-import com.example.taskmanager.fragments.project.RecyclerAdapter
-import com.example.taskmanager.viewmodels.TaskViewModel
+import com.example.taskmanager.viewmodels.ProjectViewModel
 import kotlinx.android.synthetic.main.home_fragment.view.*
 
 class HomeFragment : Fragment() {
+    private lateinit var mProjectViewModel: ProjectViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,6 +26,18 @@ class HomeFragment : Fragment() {
         val addBtn = view.homeFragment_floatingActionButton
         addBtn.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_addProjectFragment)
+        }
+
+        //recycler
+        val r = view.homeFragment_recycler
+        val adapter = ProjectRecyclerAdapter()
+        r.adapter = adapter
+        r.layoutManager = LinearLayoutManager(requireContext())
+
+        //recycler data updating
+        mProjectViewModel = ViewModelProvider(this).get(ProjectViewModel::class.java)
+        mProjectViewModel.allProjects.observe(viewLifecycleOwner) {
+            adapter.setData(it)
         }
 
         return view
