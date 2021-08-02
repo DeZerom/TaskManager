@@ -24,8 +24,21 @@
         android:id="@+id/taskRow_checkBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/taskRow_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2000-01-01"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        tools:layout_editor_absoluteX="257dp"
+        tools:layout_editor_absoluteY="37dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
