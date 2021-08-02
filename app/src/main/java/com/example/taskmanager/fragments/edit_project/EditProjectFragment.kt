@@ -30,7 +30,7 @@ class EditProjectFragment : Fragment() {
         mProjectModel = ViewModelProvider(this).get(ProjectViewModel::class.java)
 
         //setting field from arguments bundle
-        val edit = view.editProjectFragment_editText
+        val edit = view.editProjectFragment_editName
         edit.setText(args.currentItem.name)
 
         //apply button listener logic

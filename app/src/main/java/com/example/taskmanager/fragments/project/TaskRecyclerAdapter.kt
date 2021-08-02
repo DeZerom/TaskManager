@@ -22,7 +22,11 @@ class TaskRecyclerAdapter: RecyclerView.Adapter<TaskRecyclerAdapter.RowHolder>()
 
     override fun onBindViewHolder(holder: RowHolder, position: Int) {
         val currentItem = mTasks[position]
+
+        //set name field
         holder.itemView.taskRow_name.text = currentItem.name
+        //set date field
+        holder.itemView.taskRow_date.text = currentItem.date.toString()
 
         holder.itemView.taskRow_name.setOnClickListener {
             val action = ProjectFragmentDirections.actionProjectFragmentToEditTask(currentItem)

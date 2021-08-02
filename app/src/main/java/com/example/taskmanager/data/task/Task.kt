@@ -1,13 +1,12 @@
 package com.example.taskmanager.data.task
 
 import android.os.Parcelable
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
+import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
-import androidx.room.PrimaryKey
 import com.example.taskmanager.data.project.Project
+import com.example.taskmanager.data.task.converters.LocalDateConverter
 import kotlinx.android.parcel.Parcelize
+import java.time.LocalDate
 
 @Parcelize
 @Entity(foreignKeys = [ForeignKey(
@@ -18,10 +17,15 @@ import kotlinx.android.parcel.Parcelize
     onUpdate = CASCADE
 )]
 )
+@TypeConverters(LocalDateConverter::class)
 data class Task(
     @PrimaryKey(autoGenerate = true) val id: Int,
+
     @ColumnInfo val name: String,
-    @ColumnInfo(name = "project_owner_id") val projectOwnerId: Int
+
+    @ColumnInfo(name = "project_owner_id") val projectOwnerId: Int,
+
+    @ColumnInfo(defaultValue = "2000-01-01") val date: LocalDate
 ): Parcelable
 {
     override fun toString(): String {

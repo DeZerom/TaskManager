@@ -7,7 +7,7 @@
     tools:context=".fragments.add_project.AddProjectFragment" >
 
     <EditText
-        android:id="@+id/addTaskFragment_editText"
+        android:id="@+id/addTaskFragment_editName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -28,9 +28,8 @@
         android:layout_marginTop="24dp"
         android:text="@string/add_task"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/addTask_spinner" />
+        app:layout_constraintTop_toBottomOf="@id/addTask_spinner"/>
 
     <Spinner
         android:id="@+id/addTask_spinner"
@@ -41,5 +40,18 @@
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/addTaskFragment_editText" />
+        app:layout_constraintTop_toBottomOf="@id/addTaskFragment_editDate" />
+
+    <EditText
+        android:id="@+id/addTaskFragment_editDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:ems="10"
+        android:inputType="date"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/addTaskFragment_editName"
+        tools:layout_editor_absoluteX="148dp"
+        tools:layout_editor_absoluteY="204dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

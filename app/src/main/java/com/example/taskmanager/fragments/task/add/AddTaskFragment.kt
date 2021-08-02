@@ -15,6 +15,8 @@ import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.viewmodels.ProjectViewModel
 import com.example.taskmanager.viewmodels.TaskViewModel
 import kotlinx.android.synthetic.main.fragment_add_task.view.*
+import java.time.LocalDate
+import java.time.format.DateTimeParseException
 
 class AddTaskFragment : Fragment() {
     /**
@@ -60,31 +62,39 @@ class AddTaskFragment : Fragment() {
             }))
         }
 
-        //add button
-        val edit = view.addTaskFragment_editText
+        //add new task
         val btn = view.addTaskFragment_button
+        val editName = view.addTaskFragment_editName
+        val editDate = view.addTaskFragment_editDate
         btn.setOnClickListener {
             val projectOwnerId = (spinner.selectedItem as Project).id
-            val task = createTask(edit.text.toString(), projectOwnerId)
-            task?.let { mTaskModel.addTask(it) }
-            //navigate back
-            //TODO may cause problems
-            findNavController().popBackStack()
+            val task = createTask(editName.text.toString(), projectOwnerId, editDate.text.toString())
+            task?.let {
+                mTaskModel.addTask(it)
+                //navigate back
+                findNavController().popBackStack()
+            }
         }
 
         return view
     }
 
     /**
-     * Creates a new [Task] with given [Task.name] and [Task.projectOwnerId]. If name is incorrect,
-     * it will return Null.
-     * @return [Task] if name is correct. Null otherwise.
+     * Creates a new [Task] with given [name], [parentProjectId], [date]. If name is incorrect,
+     * it will return null. If date is incorrect, it will return null.
+     * @param name for [Task.name]
+     * @param parentProjectId for [Task.projectOwnerId]
+     * @param date for [Task.date]
+     * @return [Task] if [name] and [date] is correct. Null otherwise.
      * @see checkName
+     * @see checkDate
      */
-    private fun createTask(name: String, parentProjectId: Int): Task? {
+    private fun createTask(name: String, parentProjectId: Int, date: String): Task? {
         if (!checkName(name)) return null
+        val localDate = checkDate(date)
+        localDate?: return null
 
-        return Task(0, name, parentProjectId)
+        return Task(0, name, parentProjectId, localDate)
     }
 
     /**
@@ -94,9 +104,25 @@ class AddTaskFragment : Fragment() {
      * @see isNotBlank
      */
     private fun checkName(name: String): Boolean {
-        if (name.isBlank()) Toast.makeText(requireContext(),
+        if (name.isBlank()) Toast.makeText(context,
             R.string.addTaskFragment_toast_emptyName, Toast.LENGTH_SHORT).show()
 
         return name.isNotBlank()
+    }
+
+    /**
+     * Tries to parse [date]. If successful returns [LocalDate] instance representing [date], else
+     * returns null.
+     * @param date date in string format.
+     * @return [LocalDate] instance or null.
+     * @see LocalDate.parse
+     */
+    private fun checkDate(date: String): LocalDate? {
+        return try {
+            LocalDate.parse(date)
+        } catch (e: DateTimeParseException) {
+            Toast.makeText(context, "Bad date", Toast.LENGTH_SHORT).show()
+            null
+        }
     }
 }
