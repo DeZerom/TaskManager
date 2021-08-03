@@ -1,25 +1,20 @@
 package com.example.taskmanager
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Gravity
 import android.view.Menu
 import android.view.Menu.NONE
 import android.view.MenuItem
-import androidx.appcompat.view.menu.ActionMenuItem
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavAction
-import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.taskmanager.data.project.Project
-import com.example.taskmanager.fragments.home.HomeFragmentDirections
 import com.example.taskmanager.fragments.project.ProjectFragmentDirections
 import com.example.taskmanager.viewmodels.ProjectViewModel
 import com.google.android.material.navigation.NavigationView
