@@ -105,7 +105,7 @@ class AddTaskFragment : Fragment() {
      */
     private fun checkName(name: String): Boolean {
         if (name.isBlank()) Toast.makeText(context,
-            R.string.addTaskFragment_toast_emptyName, Toast.LENGTH_SHORT).show()
+            R.string.taskNameInput_blankName, Toast.LENGTH_SHORT).show()
 
         return name.isNotBlank()
     }
@@ -121,7 +121,7 @@ class AddTaskFragment : Fragment() {
         return try {
             LocalDate.parse(date)
         } catch (e: DateTimeParseException) {
-            Toast.makeText(context, "Bad date", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, R.string.taskDateInput_incorrectDate, Toast.LENGTH_SHORT).show()
             null
         }
     }

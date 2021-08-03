@@ -2,11 +2,13 @@ package com.example.taskmanager
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Gravity
 import android.view.Menu
 import android.view.Menu.NONE
 import android.view.MenuItem
 import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavAction
@@ -69,9 +71,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         //listener for navigation
+        //from drawer
         navView.setNavigationItemSelectedListener {
             //navigate home fragment and settings fragment
-            if (tryToNavigateToMainDest(it)) return@setNavigationItemSelectedListener true
+            if (tryToNavigateToMainDest(it)) {
+                drawerLayout.closeDrawer(GravityCompat.START)
+                return@setNavigationItemSelectedListener true
+            }
 
             //navigation to projectFragment
             if (mProjectsMenuItemIds.contains(it.itemId)) {
@@ -83,7 +89,10 @@ class MainActivity : AppCompatActivity() {
                 toolbar?.menu?.findItem(R.id.editProjectFragment)?.isVisible = true
 
                 navContr.navigate(action)
+                it.isChecked = true
 
+                //hide drawer
+                drawerLayout.closeDrawer(GravityCompat.START)
                 return@setNavigationItemSelectedListener true
             }
 
@@ -109,6 +118,7 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    //options menu (buttons in toolbar)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (tryToNavigateToMainDest(item)) return true
         val navContr = findNavController(R.id.nav_host_fragment)

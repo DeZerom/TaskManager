@@ -17,9 +17,10 @@
     <string name="deleting_alert_message">Вы действительно хотите удалить</string>
     <string name="deleting_alert_pos_btn">Да</string>
     <string name="deleting_alert_neg_btn">Нет</string>
-    <string name="addTaskFragment_toast_emptyName">Пожалуйста, введите назване задачи</string>
     <string name="adding_new_task_its_name">Имя задачи</string>
     <string name="add_task">Добавить новую задачу</string>
     <string name="addTaskFragment_label">Добавление задачи</string>
     <string name="editTaskFragment_label">Редактирование задачи</string>
+    <string name="taskNameInput_blankName">Пожалуйста, введите название задачи</string>
+    <string name="taskDateInput_incorrectDate">Пожалуйста, введите дату в формате ГГГГ-ММ-ДД</string>
 </resources>

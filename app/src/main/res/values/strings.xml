@@ -33,9 +33,10 @@
     <string name="deleting_alert_pos_btn">Yes</string>
     <string name="deleting_alert_neg_btn">No</string>
     <string name="errorToast_arguments_providing_nullError" translatable="false">Providing data to fragment error</string>
-    <string name="addTaskFragment_toast_emptyName">Please, enter the name of task</string>
     <string name="adding_new_task_its_name">Name of task</string>
     <string name="add_task">Add new task</string>
     <string name="addTaskFragment_label">Adding task</string>
     <string name="editTaskFragment_label">Editing task</string>
+    <string name="taskNameInput_blankName">Please, enter a name of the task</string>
+    <string name="taskDateInput_incorrectDate">Please, enter a date in format YYYY-MM_DD</string>
 </resources>
