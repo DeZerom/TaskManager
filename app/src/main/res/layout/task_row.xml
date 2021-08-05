@@ -5,40 +5,62 @@
     android:id="@+id/taskRow_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16sp">
+    android:paddingTop="16dp"
+    android:paddingHorizontal="16dp">
 
     <TextView
         android:id="@+id/taskRow_name"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:minHeight="48dp"
         android:text="@string/adding_new_task_its_name"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/taskRow_checkBox"
         app:layout_constraintTop_toTopOf="parent" />
 
     <CheckBox
         android:id="@+id/taskRow_checkBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/taskRow_flow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="taskRow_name,taskRow_checkBox"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="16dp" />
 
     <TextView
         android:id="@+id/taskRow_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
         android:text="2000-01-01"
         android:textColor="@color/black"
+        android:layout_marginBottom="16dp"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="257dp"
-        tools:layout_editor_absoluteY="37dp" />
+        app:layout_constraintTop_toBottomOf="@id/taskRow_flow" />
+
+    <Spinner
+        android:id="@+id/taskRow_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/taskRow_flow"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

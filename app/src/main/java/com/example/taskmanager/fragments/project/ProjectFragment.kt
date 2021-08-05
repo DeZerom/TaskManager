@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.fragment_project.view.*
 class ProjectFragment : Fragment() {
     private lateinit var mProject: Project
     private lateinit var mTaskViewModel: TaskViewModel
-    private val mRecyclerAdapter = TaskRecyclerAdapter()
+    private lateinit var mRecyclerAdapter: TaskRecyclerAdapter
     private val LOG_TAG = "1234"
 
     override fun onCreateView(
@@ -32,6 +32,7 @@ class ProjectFragment : Fragment() {
 
         //set adapter to recycler
         val recyclerView = view.projectFragment_recycler
+        mRecyclerAdapter = TaskRecyclerAdapter(requireContext())
         recyclerView.adapter = mRecyclerAdapter
         //set layout manager
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -60,15 +61,23 @@ class ProjectFragment : Fragment() {
             findNavController().navigate(action)
         }
 
-        //get all tasks
+        //observe tasks and set them to recycler
         mTaskViewModel.allTasks.observe(viewLifecycleOwner) {
             //set to recycler tasks which is owned by mProject
             mRecyclerAdapter.setData(it.filter { t ->
                 return@filter t.projectOwnerId == mProject.id
             })
         }
+        // TODO it's tmp solution. Should provide all projects
+        mRecyclerAdapter.setProjects(listOf(mProject))
 
         super.onResume()
     }
 
+    override fun onPause() {
+        super.onPause()
+
+        //hide edit project button
+        activity?.toolbar?.menu?.findItem(R.id.editProjectFragment)?.isVisible = false
+    }
 }
