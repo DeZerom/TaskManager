@@ -61,7 +61,7 @@
         app:destination="@id/projectFragment" />
     <fragment
         android:id="@+id/addTaskFragment"
-        android:name="com.example.taskmanager.fragments.task.add.AddTaskFragment"
+        android:name="com.example.taskmanager.fragments.task_holders.add.AddTaskFragment"
         android:label="@string/addTaskFragment_label"
         tools:layout="@layout/fragment_add_task">
         <argument
@@ -70,7 +70,7 @@
     </fragment>
     <fragment
         android:id="@+id/editTask"
-        android:name="com.example.taskmanager.fragments.task.edit.EditTask"
+        android:name="com.example.taskmanager.fragments.task_holders.edit.EditTask"
         android:label="@string/editTaskFragment_label"
         tools:layout="@layout/fragment_edit_task" >
         <argument
