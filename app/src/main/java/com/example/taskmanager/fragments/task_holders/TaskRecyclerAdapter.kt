@@ -1,4 +1,4 @@
-package com.example.taskmanager.fragments.project
+package com.example.taskmanager.fragments.task_holders
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.taskmanager.R
 import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.data.task.Task
-import com.example.taskmanager.viewmodels.TaskViewModel
+import com.example.taskmanager.fragments.task_holders.project.ProjectFragmentDirections
 import kotlinx.android.synthetic.main.task_row.view.*
 
 class TaskRecyclerAdapter(context: Context): RecyclerView.Adapter<TaskRecyclerAdapter.RowHolder>() {

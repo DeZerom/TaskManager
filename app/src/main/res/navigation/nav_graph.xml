@@ -23,7 +23,7 @@
         android:label="@string/settings_fragment_label" />
     <fragment
         android:id="@+id/projectFragment"
-        android:name="com.example.taskmanager.fragments.project.ProjectFragment"
+        android:name="com.example.taskmanager.fragments.task_holders.project.ProjectFragment"
         tools:layout="@layout/fragment_project" >
         <argument
             android:name="currentProject"

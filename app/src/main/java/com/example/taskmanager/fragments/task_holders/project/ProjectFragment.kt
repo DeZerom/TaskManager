@@ -1,4 +1,4 @@
-package com.example.taskmanager.fragments.project
+package com.example.taskmanager.fragments.task_holders.project
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.taskmanager.R
 import com.example.taskmanager.data.project.Project
+import com.example.taskmanager.fragments.task_holders.TaskRecyclerAdapter
 import com.example.taskmanager.viewmodels.TaskViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_project.view.*

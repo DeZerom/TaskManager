@@ -1,6 +1,7 @@
 package com.example.taskmanager
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.Menu.NONE
 import android.view.MenuItem
@@ -9,13 +10,15 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavArgument
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.taskmanager.data.project.Project
-import com.example.taskmanager.fragments.project.ProjectFragmentDirections
+import com.example.taskmanager.fragments.task_holders.project.ProjectFragmentArgs
+import com.example.taskmanager.fragments.task_holders.project.ProjectFragmentDirections
 import com.example.taskmanager.viewmodels.ProjectViewModel
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
@@ -41,9 +44,6 @@ class MainActivity : AppCompatActivity() {
             R.id.projectFragment), drawerLayout)
         setupActionBarWithNavController(navContr, appBarConfiguration)
         navView.setupWithNavController(navContr)
-
-        //hiding edit project button from drawer menu
-        navView.menu.findItem(R.id.editProjectFragment).isVisible = false
 
         //menu items for projects
         mProjectModel = ViewModelProvider(this).get(ProjectViewModel::class.java)
@@ -123,8 +123,10 @@ class MainActivity : AppCompatActivity() {
             //editProjectFragment
             R.id.editProjectFragment -> {
                 if (navContr.currentDestination?.id == R.id.projectFragment) {
-                    //finding project
-                    val projName = toolbar.title.toString() //proj name has been written in title
+                    // TODO avoid this pornography with toolbar.title
+                    //get Project instance that is being representing by current projectFragment
+                    val projName =
+                        toolbar.title.toString() //proj name has been written in title
                     val proj = mProjects.find { p ->
                         return@find p.name == projName
                     }
