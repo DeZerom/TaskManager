@@ -23,4 +23,6 @@
     <string name="editTaskFragment_label">Редактирование задачи</string>
     <string name="taskNameInput_blankName">Пожалуйста, введите название задачи</string>
     <string name="taskDateInput_incorrectDate">Пожалуйста, введите дату в формате ГГГГ-ММ-ДД</string>
+    <string name="localDate_pattern">ГГГГ-ММ-ДД</string>
+    <string name="dayFragment_today_label">Сегодня</string>
 </resources>

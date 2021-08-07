@@ -52,7 +52,7 @@ class EditTask : Fragment() {
         //set text to edit fields
         val tv = view.editTask_editName
         tv.setText(mTask.name)
-        editTask_editDate.setText(mTask.date.toString())
+        view.editTask_editDate.setText(mTask.date.toString())
 
         //spinner
         val spinner = view.editTask_spinner

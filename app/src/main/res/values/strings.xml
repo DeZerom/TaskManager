@@ -14,16 +14,13 @@
     <string name="attachment_summary_on" translatable="false">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off" translatable="false">Only download attachments when manually requested</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="adding_new_project_its_name">Name of project</string>
     <string name="home_fragment_label">Home</string>
     <string name="settings_fragment_label">Settings</string>
     <string name="project_fragment_label">Project</string>
     <string name="error_toast_db">Database loading error</string>
     <string name="home_fragment_adding_project">Add new project</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="add_new_project_fragment_label">Add new project</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="editProject_fragment_label">Edit project</string>
     <string name="editProject_fragment_edit_button">Apply</string>
@@ -39,4 +36,6 @@
     <string name="editTaskFragment_label">Editing task</string>
     <string name="taskNameInput_blankName">Please, enter a name of the task</string>
     <string name="taskDateInput_incorrectDate">Please, enter a date in format YYYY-MM_DD</string>
+    <string name="localDate_pattern">YYYY-MM-DD</string>
+    <string name="dayFragment_today_label">Today</string>
 </resources>

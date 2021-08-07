@@ -80,6 +80,6 @@
     <fragment
         android:id="@+id/dayFragment"
         android:name="com.example.taskmanager.fragments.task_holders.day.DayFragment"
-        android:label="fragment_day"
+        android:label="@string/dayFragment_today_label"
         tools:layout="@layout/fragment_day" />
 </navigation>
