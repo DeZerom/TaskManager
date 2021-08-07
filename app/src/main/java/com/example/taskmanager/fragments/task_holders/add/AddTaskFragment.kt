@@ -1,6 +1,5 @@
-package com.example.taskmanager.fragments.task.edit
+package com.example.taskmanager.fragments.task_holders.add
 
-import android.app.AlertDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -15,40 +14,41 @@ import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.viewmodels.ProjectViewModel
 import com.example.taskmanager.viewmodels.TaskViewModel
-import kotlinx.android.synthetic.main.fragment_edit_task.view.*
+import kotlinx.android.synthetic.main.fragment_add_task.view.*
 import java.time.LocalDate
 import java.time.format.DateTimeParseException
 
-class EditTask : Fragment() {
+class AddTaskFragment : Fragment() {
     /**
-     * The task to edit
+     * Contains default [Project] that is considered to be parent of a new task
      */
-    private lateinit var mTask: Task
-    private lateinit var mTaskViewModel: TaskViewModel
-    private lateinit var mProjectViewModel: ProjectViewModel
+    private lateinit var mParentProject: Project
+
+    /**
+     * Adapter for spinner view
+     * @see addTask_spinner
+     */
     private lateinit var mSpinnerAdapter: ArrayAdapter<Project>
+    private lateinit var mTaskModel: TaskViewModel
+    private lateinit var mProjectViewModel: ProjectViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_edit_task, container, false)
+        val view = inflater.inflate(R.layout.fragment_add_task, container, false)
 
-        //get arguments
-        val tmp = arguments?.let { EditTaskArgs.fromBundle(it).item }
-        tmp?.let { mTask = it }
+        //view models
+        mTaskModel = ViewModelProvider(this).get(TaskViewModel::class.java)
+        mProjectViewModel = ViewModelProvider(this).get((ProjectViewModel::class.java))
 
-        //get view models
-        mTaskViewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
-        mProjectViewModel = ViewModelProvider(this).get(ProjectViewModel::class.java)
-
-        //set text to edit fields
-        val tv = view.editTask_editName
-        tv.setText(mTask.name)
+        //get parent project
+        val tmp = arguments?.let { AddTaskFragmentArgs.fromBundle(it).item }
+        tmp?.let { mParentProject = it }
 
         //spinner
-        val spinner = view.editTask_spinner
+        val spinner = view.addTask_spinner
         mSpinnerAdapter = ArrayAdapter<Project>(requireContext(),
             R.layout.support_simple_spinner_dropdown_item)
         spinner.adapter = mSpinnerAdapter
@@ -58,54 +58,40 @@ class EditTask : Fragment() {
             mSpinnerAdapter.addAll(it)
             //set default selection
             spinner.setSelection(mSpinnerAdapter.getPosition(it.find { p ->
-                return@find p.id == mTask.projectOwnerId
+                return@find p.id == mParentProject.id
             }))
         }
 
-        //apply btn
-        val aBtn = view.editTask_applyButton
-        val editDate = view.editTask_editDate
-        aBtn.setOnClickListener {
-            //there are only Project instances in spinner
-            val ownerId = (spinner.selectedItem as Project).id
-            val task = createTask(tv.text.toString(), ownerId, editDate.text.toString())
+        //add new task
+        val btn = view.addTaskFragment_button
+        val editName = view.addTaskFragment_editName
+        val editDate = view.addTaskFragment_editDate
+        btn.setOnClickListener {
+            val projectOwnerId = (spinner.selectedItem as Project).id
+            val task = createTask(editName.text.toString(), projectOwnerId, editDate.text.toString())
             task?.let {
-                mTaskViewModel.updateTask(it)
+                mTaskModel.addTask(it)
+                //navigate back
                 findNavController().popBackStack()
             }
         }
 
-        //delete btn
-        val dBtn = view.editTask_deleteButton
-        dBtn.setOnClickListener {
-            //alert builder
-            val builder = AlertDialog.Builder(requireContext())
-
-            //title
-            var tmp1 = getString(R.string.deleting_alert_title)
-            tmp1 += " ${mTask.name}?"
-            builder.setTitle(tmp1)
-
-            //message
-            tmp1 = getString(R.string.deleting_alert_message)
-            tmp1 += " ${mTask.name}?"
-            builder.setMessage(tmp1)
-
-            //buttons
-            builder.setPositiveButton(R.string.deleting_alert_pos_btn) {_, _ ->
-                mTaskViewModel.deleteTask(mTask)
-                findNavController().popBackStack()
+        //chk box logic
+        val chk = view.addTask_chkBoxToday
+        chk.setOnClickListener {
+            if (chk.isChecked) {
+                editDate.setText(LocalDate.now().toString())
+                editDate.isEnabled = false
+            } else {
+                editDate.isEnabled = true
             }
-            builder.setNegativeButton(R.string.deleting_alert_neg_btn) {_, _ ->}
-
-            builder.create().show()
         }
-        
+
         return view
     }
 
     /**
-     * Creates a new [Task] with given [name], [parentProjectId], [date] and id of [mTask]. If name is incorrect,
+     * Creates a new [Task] with given [name], [parentProjectId], [date]. If name is incorrect,
      * it will return null. If date is incorrect, it will return null.
      * @param name for [Task.name]
      * @param parentProjectId for [Task.projectOwnerId]
@@ -119,7 +105,7 @@ class EditTask : Fragment() {
         val localDate = checkDate(date)
         localDate?: return null
 
-        return Task(mTask.id, name, parentProjectId, localDate)
+        return Task(0, name, parentProjectId, localDate)
     }
 
     /**

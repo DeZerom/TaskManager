@@ -5,7 +5,7 @@
     android:id="@+id/editTask_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.task.edit.EditTask" >
+    tools:context=".fragments.task_holders.edit.EditTask" >
 
     <EditText
         android:id="@+id/editTask_editName"

@@ -12,6 +12,7 @@ import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.fragments.task_holders.project.ProjectFragmentDirections
 import kotlinx.android.synthetic.main.task_row.view.*
+import java.util.ArrayList
 
 class TaskRecyclerAdapter(context: Context): RecyclerView.Adapter<TaskRecyclerAdapter.RowHolder>() {
     private var mTasks = emptyList<Task>()
@@ -56,6 +57,7 @@ class TaskRecyclerAdapter(context: Context): RecyclerView.Adapter<TaskRecyclerAd
 
     fun setProjects(projects: List<Project>) {
         mSpinnerAdapter.clear()
-        mSpinnerAdapter.addAll(projects)
+        mProjects = projects
+        mSpinnerAdapter.addAll(mProjects)
     }
 }

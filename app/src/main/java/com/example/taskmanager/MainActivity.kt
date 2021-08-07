@@ -73,7 +73,10 @@ class MainActivity : AppCompatActivity() {
                 drawerLayout.closeDrawer(GravityCompat.START)
                 return@setNavigationItemSelectedListener true
             }
-
+            //todo tmp solution for navigating dayFragment
+            if (it.itemId == R.id.dayFragment) {
+                navContr.navigate(R.id.dayFragment)
+            }
             //navigation to projectFragment
             if (mProjectsMenuItemIds.contains(it.itemId)) {
                 val proj = mProjects[mProjectsMenuItemIds.indexOf(it.itemId)]
