@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.taskmanager.R
 import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.fragments.task_holders.TaskRecyclerAdapter
+import com.example.taskmanager.viewmodels.ProjectViewModel
 import com.example.taskmanager.viewmodels.TaskViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_project.view.*
@@ -19,6 +20,7 @@ import kotlinx.android.synthetic.main.fragment_project.view.*
 class ProjectFragment : Fragment() {
     private lateinit var mProject: Project
     private lateinit var mTaskViewModel: TaskViewModel
+    private lateinit var mProjectViewModel: ProjectViewModel
     private lateinit var mRecyclerAdapter: TaskRecyclerAdapter
     private val LOG_TAG = "1234"
 
@@ -26,10 +28,13 @@ class ProjectFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        //get taskViewModel
-        mTaskViewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_project, container, false)
+
+        //get view models
+        val provider = ViewModelProvider(this)
+        mTaskViewModel = provider.get(TaskViewModel::class.java)
+        mProjectViewModel = provider.get(ProjectViewModel::class.java)
 
         //set adapter to recycler
         val recyclerView = view.projectFragment_recycler
@@ -37,6 +42,11 @@ class ProjectFragment : Fragment() {
         recyclerView.adapter = mRecyclerAdapter
         //set layout manager
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        //observe projects
+        mProjectViewModel.allProjects.observe(viewLifecycleOwner) {
+            mRecyclerAdapter.setProjects(it)
+        }
 
         return view
     }
@@ -69,8 +79,6 @@ class ProjectFragment : Fragment() {
                 return@filter t.projectOwnerId == mProject.id
             })
         }
-        // TODO it's tmp solution. Should provide all projects
-        mRecyclerAdapter.setProjects(listOf(mProject))
 
         super.onResume()
     }
