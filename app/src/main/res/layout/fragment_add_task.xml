@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.add_project.AddProjectFragment" >
+    tools:context=".fragments.task_holders.add.AddTaskFragment" >
 
     <EditText
         android:id="@+id/addTaskFragment_editName"
@@ -54,4 +54,14 @@
         app:layout_constraintTop_toBottomOf="@id/addTaskFragment_editName"
         tools:layout_editor_absoluteX="148dp"
         tools:layout_editor_absoluteY="204dp" />
+
+    <CheckBox
+        android:id="@+id/addTask_chkBoxToday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toTopOf="@id/addTaskFragment_editName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Today" />
 </androidx.constraintlayout.widget.ConstraintLayout>

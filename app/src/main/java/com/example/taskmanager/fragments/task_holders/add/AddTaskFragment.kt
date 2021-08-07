@@ -76,6 +76,17 @@ class AddTaskFragment : Fragment() {
             }
         }
 
+        //chk box logic
+        val chk = view.addTask_chkBoxToday
+        chk.setOnClickListener {
+            if (chk.isChecked) {
+                editDate.setText(LocalDate.now().toString())
+                editDate.isEnabled = false
+            } else {
+                editDate.isEnabled = true
+            }
+        }
+
         return view
     }
 

@@ -11,6 +11,8 @@ import com.example.taskmanager.R
 import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.viewmodels.ProjectViewModel
 import kotlinx.android.synthetic.main.fragment_add_project.view.*
+import kotlinx.android.synthetic.main.fragment_add_task.view.*
+import java.time.LocalDate
 
 class AddProjectFragment : Fragment() {
     private lateinit var mProjectModel: ProjectViewModel
@@ -25,6 +27,7 @@ class AddProjectFragment : Fragment() {
         //ProjectViewModel
         mProjectModel = ViewModelProvider(this).get(ProjectViewModel::class.java)
 
+        //add task btn
         val btn = view.addProjectFragment_button
         val edit = view.addProjectFragment_editText
         btn.setOnClickListener {

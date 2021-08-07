@@ -77,4 +77,9 @@
             android:name="item"
             app:argType="com.example.taskmanager.data.task.Task" />
     </fragment>
+    <fragment
+        android:id="@+id/dayFragment"
+        android:name="com.example.taskmanager.fragments.task_holders.day.DayFragment"
+        android:label="fragment_day"
+        tools:layout="@layout/fragment_day" />
 </navigation>
