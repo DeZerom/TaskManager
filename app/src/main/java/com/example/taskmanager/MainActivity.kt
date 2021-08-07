@@ -24,6 +24,7 @@ import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
+    //alfa 0.0.1
     private lateinit var mProjectModel: ProjectViewModel
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var mProjects: List<Project>
