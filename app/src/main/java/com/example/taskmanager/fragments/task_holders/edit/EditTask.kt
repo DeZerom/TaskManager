@@ -2,12 +2,16 @@ package com.example.taskmanager.fragments.task_holders.edit
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.taskmanager.R
@@ -15,6 +19,7 @@ import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.viewmodels.ProjectViewModel
 import com.example.taskmanager.viewmodels.TaskViewModel
+import kotlinx.android.synthetic.main.fragment_edit_task.*
 import kotlinx.android.synthetic.main.fragment_edit_task.view.*
 import java.time.LocalDate
 import java.time.format.DateTimeParseException
@@ -27,6 +32,7 @@ class EditTask : Fragment() {
     private lateinit var mTaskViewModel: TaskViewModel
     private lateinit var mProjectViewModel: ProjectViewModel
     private lateinit var mSpinnerAdapter: ArrayAdapter<Project>
+    private val LOG_TAG = "1234"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,6 +52,7 @@ class EditTask : Fragment() {
         //set text to edit fields
         val tv = view.editTask_editName
         tv.setText(mTask.name)
+        editTask_editDate.setText(mTask.date.toString())
 
         //spinner
         val spinner = view.editTask_spinner
@@ -100,6 +107,38 @@ class EditTask : Fragment() {
 
             builder.create().show()
         }
+
+        //edit date auto separators
+        editDate.addTextChangedListener( object : TextWatcher {
+            private var isAdded = false
+            private var lBefore = -1
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                s?.let { lBefore = it.length }
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                s?.let {
+                    isAdded = lBefore < it.length
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                s?.let {
+                    //str is not null
+                    if (isAdded) {
+                        when (s.length) {
+                            5 -> {
+                                s.insert(4, "-")
+                            }
+                            8 -> {
+                                s.insert(7, "-")
+                            }
+                        }
+                    }
+                }
+            }
+        })
         
         return view
     }

@@ -1,6 +1,8 @@
 package com.example.taskmanager.fragments.task_holders.add
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -86,6 +88,37 @@ class AddTaskFragment : Fragment() {
                 editDate.isEnabled = true
             }
         }
+
+        editDate.addTextChangedListener( object : TextWatcher {
+            private var isAdded = false
+            private var lBefore = -1
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                s?.let { lBefore = it.length }
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                s?.let {
+                    isAdded = lBefore < it.length
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                s?.let {
+                    //str is not null
+                    if (isAdded) {
+                        when (s.length) {
+                            5 -> {
+                                s.insert(4, "-")
+                            }
+                            8 -> {
+                                s.insert(7, "-")
+                            }
+                        }
+                    }
+                }
+            }
+        })
 
         return view
     }
