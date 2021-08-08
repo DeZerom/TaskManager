@@ -8,6 +8,7 @@ import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
+import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -64,6 +65,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        //hide editProject btn from drawer
+        navView.menu.findItem(R.id.editProjectFragment).isVisible = false
+
         //listener for navigation
         //from drawer
         navView.setNavigationItemSelectedListener(onNavigationItemSelectedListener)
@@ -107,6 +111,7 @@ class MainActivity : AppCompatActivity() {
                 navController.navigate(R.id.settingsFragment)
             }
             in mProjectsMenuItemIds -> {
+                it.isChecked = true
                 mLastNavigatedProject = mProjects[mProjectsMenuItemIds.indexOf(it.itemId)]
                 val a = NavGraphDirections.actionGlobalProjectFragment(mLastNavigatedProject)
                 navController.navigate(a)
@@ -122,6 +127,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         navButtonsVisibilityHandler(it.itemId)
+        main_drawerLayout.close()
 
         return@OnNavigationItemSelectedListener false
     }
