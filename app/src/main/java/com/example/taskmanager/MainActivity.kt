@@ -1,33 +1,32 @@
 package com.example.taskmanager
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.Menu.NONE
 import android.view.MenuItem
+import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavArgument
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.taskmanager.data.project.Project
-import com.example.taskmanager.fragments.task_holders.project.ProjectFragmentArgs
 import com.example.taskmanager.fragments.task_holders.project.ProjectFragmentDirections
 import com.example.taskmanager.viewmodels.ProjectViewModel
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var mProjectModel: ProjectViewModel
+    private lateinit var mProjectViewModel: ProjectViewModel
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var mProjects: List<Project>
     private lateinit var mProjectsMenuItemIds: Array<Int>
+    private lateinit var mLastNavigatedProject: Project
     private val LOG_TAG = "1234"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,8 +45,8 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navContr)
 
         //menu items for projects
-        mProjectModel = ViewModelProvider(this).get(ProjectViewModel::class.java)
-        mProjectModel.allProjects.observe(this) {
+        mProjectViewModel = ViewModelProvider(this).get(ProjectViewModel::class.java)
+        mProjectViewModel.allProjects.observe(this) {
             mProjects = it
             mProjectsMenuItemIds = Array(it.size) { 0 }
             val menu = navView.menu
@@ -112,6 +111,8 @@ class MainActivity : AppCompatActivity() {
         menu?.findItem(R.id.homeFragment)?.isVisible = false
         //hide editFragment button
         menu?.findItem(R.id.editProjectFragment)?.isVisible = false
+        //hide today
+        menu?.findItem(R.id.dayFragment)?.isVisible = false
 
         return true
     }
@@ -173,5 +174,57 @@ class MainActivity : AppCompatActivity() {
         }
 
         return false
+    }
+
+    private val onNavigationItemSelectedListener = NavigationView.OnNavigationItemSelectedListener {
+        val navController = findNavController(R.id.nav_host_fragment)
+
+        when (it.itemId) {
+            R.id.homeFragment -> {
+                navController.navigate(R.id.homeFragment)
+            }
+            R.id.settingsFragment -> {
+                navController.navigate(R.id.settingsFragment)
+            }
+            in mProjectsMenuItemIds -> {
+                mLastNavigatedProject = mProjects[mProjectsMenuItemIds.indexOf(it.itemId)]
+                val a = NavGraphDirections.actionGlobalProjectFragment(mLastNavigatedProject)
+                navController.navigate(a)
+            }
+            R.id.editProjectFragment -> {
+                val a = ProjectFragmentDirections.actionProjectFragmentToEditProjectFragment(
+                    mLastNavigatedProject)
+                navController.navigate(a)
+            }
+        }
+
+        navButtonsVisibilityHandler(it.itemId)
+
+        return@OnNavigationItemSelectedListener false
+    }
+
+    private fun navButtonsVisibilityHandler(@IdRes destinationId: Int) {
+        //get buttons
+        val editProject = toolbar.menu.findItem(R.id.editProjectFragment)
+        val settings = toolbar.menu.findItem(R.id.settingsFragment)
+
+        //set them invisible
+        editProject.isVisible = false
+        settings.isVisible = false
+
+        //set them visible again if needed
+        when (destinationId) {
+            R.id.homeFragment -> {
+                settings.isVisible = true
+            }
+            R.id.settingsFragment -> {/* do nothing */}
+            in mProjectsMenuItemIds -> {
+                editProject.isVisible = true
+                settings.isVisible = true
+            }
+            R.id.editProjectFragment -> {
+                settings.isVisible = true
+            }
+        }
     }
 }
