@@ -24,7 +24,6 @@ import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
-    //alfa 0.0.1
     private lateinit var mProjectModel: ProjectViewModel
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var mProjects: List<Project>
@@ -42,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         val navView: NavigationView = findViewById(R.id.nav_view)
         val navContr = findNavController(R.id.nav_host_fragment)
         appBarConfiguration = AppBarConfiguration(setOf(R.id.homeFragment, R.id.settingsFragment,
-            R.id.projectFragment), drawerLayout)
+            R.id.projectFragment, R.id.dayFragment), drawerLayout)
         setupActionBarWithNavController(navContr, appBarConfiguration)
         navView.setupWithNavController(navContr)
 

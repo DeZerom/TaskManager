@@ -34,9 +34,6 @@
         <action
             android:id="@+id/action_projectFragment_to_addTaskFragment"
             app:destination="@id/addTaskFragment" />
-        <action
-            android:id="@+id/action_projectFragment_to_editTask"
-            app:destination="@id/editTask" />
     </fragment>
 
     <action
@@ -66,7 +63,8 @@
         tools:layout="@layout/fragment_add_task">
         <argument
             android:name="item"
-            app:argType="com.example.taskmanager.data.project.Project" />
+            app:argType="com.example.taskmanager.data.project.Project"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/editTask"
@@ -81,5 +79,12 @@
         android:id="@+id/dayFragment"
         android:name="com.example.taskmanager.fragments.task_holders.day.DayFragment"
         android:label="@string/dayFragment_today_label"
-        tools:layout="@layout/fragment_day" />
+        tools:layout="@layout/fragment_day" >
+        <action
+            android:id="@+id/action_dayFragment_to_addTaskFragment"
+            app:destination="@id/addTaskFragment" />
+    </fragment>
+    <action
+        android:id="@+id/action_global_editTask"
+        app:destination="@id/editTask" />
 </navigation>
