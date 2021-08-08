@@ -1,34 +1,33 @@
 package com.example.taskmanager
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.Menu.NONE
 import android.view.MenuItem
+import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
+import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavArgument
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.taskmanager.data.project.Project
-import com.example.taskmanager.fragments.task_holders.project.ProjectFragmentArgs
 import com.example.taskmanager.fragments.task_holders.project.ProjectFragmentDirections
 import com.example.taskmanager.viewmodels.ProjectViewModel
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
-    //alfa 0.0.1
-    private lateinit var mProjectModel: ProjectViewModel
+    private lateinit var mProjectViewModel: ProjectViewModel
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var mProjects: List<Project>
     private lateinit var mProjectsMenuItemIds: Array<Int>
+    private lateinit var mLastNavigatedProject: Project
     private val LOG_TAG = "1234"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,13 +41,13 @@ class MainActivity : AppCompatActivity() {
         val navView: NavigationView = findViewById(R.id.nav_view)
         val navContr = findNavController(R.id.nav_host_fragment)
         appBarConfiguration = AppBarConfiguration(setOf(R.id.homeFragment, R.id.settingsFragment,
-            R.id.projectFragment), drawerLayout)
+            R.id.projectFragment, R.id.dayFragment), drawerLayout)
         setupActionBarWithNavController(navContr, appBarConfiguration)
         navView.setupWithNavController(navContr)
 
         //menu items for projects
-        mProjectModel = ViewModelProvider(this).get(ProjectViewModel::class.java)
-        mProjectModel.allProjects.observe(this) {
+        mProjectViewModel = ViewModelProvider(this).get(ProjectViewModel::class.java)
+        mProjectViewModel.allProjects.observe(this) {
             mProjects = it
             mProjectsMenuItemIds = Array(it.size) { 0 }
             val menu = navView.menu
@@ -66,37 +65,12 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        //hide editProject btn from drawer
+        navView.menu.findItem(R.id.editProjectFragment).isVisible = false
+
         //listener for navigation
         //from drawer
-        navView.setNavigationItemSelectedListener {
-            //navigate home fragment and settings fragment
-            if (tryToNavigateToMainDest(it)) {
-                drawerLayout.closeDrawer(GravityCompat.START)
-                return@setNavigationItemSelectedListener true
-            }
-            //todo tmp solution for navigating dayFragment
-            if (it.itemId == R.id.dayFragment) {
-                navContr.navigate(R.id.dayFragment)
-            }
-            //navigation to projectFragment
-            if (mProjectsMenuItemIds.contains(it.itemId)) {
-                val proj = mProjects[mProjectsMenuItemIds.indexOf(it.itemId)]
-                val action = NavGraphDirections.actionGlobalProjectFragment(proj)
-
-                //making edit project button visible
-                //it will be hidden again when navigating to other fragments
-                toolbar?.menu?.findItem(R.id.editProjectFragment)?.isVisible = true
-
-                navContr.navigate(action)
-                it.isChecked = true
-
-                //hide drawer
-                drawerLayout.closeDrawer(GravityCompat.START)
-                return@setNavigationItemSelectedListener true
-            }
-
-            return@setNavigationItemSelectedListener false
-        }
+        navView.setNavigationItemSelectedListener(onNavigationItemSelectedListener)
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -111,68 +85,94 @@ class MainActivity : AppCompatActivity() {
         menu?.findItem(R.id.editProjectFragment)?.isVisible = false
         //hide home fragment button because it isn't supposed to be in overflow
         menu?.findItem(R.id.homeFragment)?.isVisible = false
-        //hide editFragment button
-        menu?.findItem(R.id.editProjectFragment)?.isVisible = false
+        //hide today
+        menu?.findItem(R.id.dayFragment)?.isVisible = false
 
         return true
     }
 
     //options menu (buttons in toolbar)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (tryToNavigateToMainDest(item)) return true
-        val navContr = findNavController(R.id.nav_host_fragment)
-
-        //navigating to editProjectFragment
-        when (item.itemId) {
-            //editProjectFragment
-            R.id.editProjectFragment -> {
-                if (navContr.currentDestination?.id == R.id.projectFragment) {
-                    // TODO avoid this pornography with toolbar.title
-                    //get Project instance that is being representing by current projectFragment
-                    val projName =
-                        toolbar.title.toString() //proj name has been written in title
-                    val proj = mProjects.find { p ->
-                        return@find p.name == projName
-                    }
-
-                    //navigating
-                    proj?.let {
-                        val a = ProjectFragmentDirections
-                            .actionProjectFragmentToEditProjectFragment(proj)
-                        navContr.navigate(a)
-
-                        return true
-                    }
-                }
-            }
-        }
-
-        return false
+        return onNavigationItemSelectedListener.onNavigationItemSelected(item)
     }
 
     /**
-     * Tries to navigate to [R.layout.home_fragment] or to [R.xml.root_preferences]
-     * @return true if navigated successful, false otherwise
+     * Navigates to needed destination. Sets arguments if needed. Calls [navButtonsVisibilityHandler].
+     * @see navButtonsVisibilityHandler
      */
-    private fun tryToNavigateToMainDest(item: MenuItem): Boolean {
-        val navContr = findNavController(R.id.nav_host_fragment)
+    private val onNavigationItemSelectedListener = NavigationView.OnNavigationItemSelectedListener {
+        val navController = findNavController(R.id.nav_host_fragment)
 
-        when(item.itemId) {
+        when (it.itemId) {
             R.id.homeFragment -> {
-                //hide edit project button
-                toolbar?.menu?.findItem(R.id.editProjectFragment)?.isVisible = false
-                navContr.navigate(R.id.homeFragment)
-                return true
+                navController.navigate(R.id.homeFragment)
             }
             R.id.settingsFragment -> {
-                //hide edit project button
-                toolbar?.menu?.findItem(R.id.editProjectFragment)?.isVisible = false
-                navContr.navigate(R.id.settingsFragment)
-                return true
+                navController.navigate(R.id.settingsFragment)
             }
-
+            in mProjectsMenuItemIds -> {
+                it.isChecked = true
+                mLastNavigatedProject = mProjects[mProjectsMenuItemIds.indexOf(it.itemId)]
+                val a = NavGraphDirections.actionGlobalProjectFragment(mLastNavigatedProject)
+                navController.navigate(a)
+            }
+            R.id.editProjectFragment -> {
+                val a = ProjectFragmentDirections.actionProjectFragmentToEditProjectFragment(
+                    mLastNavigatedProject)
+                navController.navigate(a)
+            }
+            R.id.dayFragment -> {
+                navController.navigate(R.id.dayFragment)
+            }
         }
 
-        return false
+        navButtonsVisibilityHandler(it.itemId)
+        main_drawerLayout.close()
+
+        return@OnNavigationItemSelectedListener false
+    }
+
+    /**
+     * Sets visibility for [R.id.settingsFragment] and [R.id.editProjectFragment] depending on
+     * destination id.
+     * @param destinationId the Id of destination that is being accessed
+     * @see MenuItem.setVisible
+     * @see MenuItem.isVisible
+     */
+    private fun navButtonsVisibilityHandler(@IdRes destinationId: Int) {
+        //get buttons
+        val editProject = toolbar.menu.findItem(R.id.editProjectFragment)
+        val settings = toolbar.menu.findItem(R.id.settingsFragment)
+
+        //save old state
+        val oldEditVisibility = editProject.isVisible
+        val oldSettingsVisibility = settings.isVisible
+
+        //set them invisible
+        editProject.isVisible = false
+        settings.isVisible = false
+
+        //set them visible again if needed
+        when (destinationId) {
+            R.id.homeFragment -> {
+                settings.isVisible = true
+            }
+            R.id.settingsFragment -> {/* do nothing */}
+            in mProjectsMenuItemIds -> {
+                editProject.isVisible = true
+                settings.isVisible = true
+            }
+            R.id.editProjectFragment -> {
+                settings.isVisible = true
+            }
+            R.id.dayFragment -> {
+                settings.isVisible = true
+            }
+            else -> {
+                //use old state
+                editProject.isVisible = oldEditVisibility
+                settings.isVisible = oldSettingsVisibility
+            }
+        }
     }
 }

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.example.taskmanager.NavGraphDirections
 import com.example.taskmanager.R
 import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.data.task.Task
@@ -41,7 +42,7 @@ class TaskRecyclerAdapter(context: Context): RecyclerView.Adapter<TaskRecyclerAd
         }))
 
         holder.itemView.taskRow_name.setOnClickListener {
-            val action = ProjectFragmentDirections.actionProjectFragmentToEditTask(currentItem)
+            val action = NavGraphDirections.actionGlobalEditTask(currentItem)
             holder.itemView.findNavController().navigate(action)
         }
     }

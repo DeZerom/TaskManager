@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.taskmanager.R
 import com.example.taskmanager.fragments.home.ProjectRecyclerAdapter
@@ -42,6 +43,15 @@ class DayFragment : Fragment() {
         //observe projects to put them into task_row's spinner
         mProjectViewModel.allProjects.observe(viewLifecycleOwner) {
             mTaskRecyclerAdapter.setProjects(it)
+        }
+
+        //addTask btn
+        //addTaskFragment asks for a Project to set default parent project for task in spinner view,
+        //so we can provide null. AddTaskFragment will handle it
+        val addTaskBtn = view.dayFragment_floatingActionButton
+        addTaskBtn.setOnClickListener {
+            val a = DayFragmentDirections.actionDayFragmentToAddTaskFragment(null)
+            findNavController().navigate(a)
         }
 
         return view

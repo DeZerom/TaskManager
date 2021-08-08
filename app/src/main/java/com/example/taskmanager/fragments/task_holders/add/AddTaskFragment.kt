@@ -24,7 +24,7 @@ class AddTaskFragment : Fragment() {
     /**
      * Contains default [Project] that is considered to be parent of a new task
      */
-    private lateinit var mParentProject: Project
+    private var mParentProject: Project? = null
 
     /**
      * Adapter for spinner view
@@ -46,8 +46,7 @@ class AddTaskFragment : Fragment() {
         mProjectViewModel = ViewModelProvider(this).get((ProjectViewModel::class.java))
 
         //get parent project
-        val tmp = arguments?.let { AddTaskFragmentArgs.fromBundle(it).item }
-        tmp?.let { mParentProject = it }
+        mParentProject = arguments?.let { AddTaskFragmentArgs.fromBundle(it).item }
 
         //spinner
         val spinner = view.addTask_spinner
@@ -58,10 +57,12 @@ class AddTaskFragment : Fragment() {
         mProjectViewModel.allProjects.observe(viewLifecycleOwner) {
             mSpinnerAdapter.clear()
             mSpinnerAdapter.addAll(it)
-            //set default selection
-            spinner.setSelection(mSpinnerAdapter.getPosition(it.find { p ->
-                return@find p.id == mParentProject.id
-            }))
+            //set default selection if mParentProject is not null
+            mParentProject?.let { pp ->
+                spinner.setSelection(mSpinnerAdapter.getPosition(it.find { p ->
+                    return@find p.id == pp.id
+                }))
+            }
         }
 
         //add new task
@@ -89,6 +90,7 @@ class AddTaskFragment : Fragment() {
             }
         }
 
+        //auto date separators
         editDate.addTextChangedListener( object : TextWatcher {
             private var isAdded = false
             private var lBefore = -1
