@@ -22,7 +22,7 @@
     <group android:id="@+id/menu_timeLaps_group">
         <item
             android:id="@+id/dayFragment"
-            android:title="Today" />
+            android:title="@string/dayFragment_today_label" />
     </group>
     <group android:id="@+id/projects_menu_group">
 
