@@ -87,6 +87,8 @@ class MainActivity : AppCompatActivity() {
         menu?.findItem(R.id.homeFragment)?.isVisible = false
         //hide today
         menu?.findItem(R.id.dayFragment)?.isVisible = false
+        //hide month
+        menu?.findItem(R.id.monthFragment)?.isVisible = false
 
         return true
     }
@@ -106,23 +108,32 @@ class MainActivity : AppCompatActivity() {
         when (it.itemId) {
             R.id.homeFragment -> {
                 navController.navigate(R.id.homeFragment)
+                return@OnNavigationItemSelectedListener true
             }
             R.id.settingsFragment -> {
                 navController.navigate(R.id.settingsFragment)
+                return@OnNavigationItemSelectedListener true
             }
             in mProjectsMenuItemIds -> {
                 it.isChecked = true
                 mLastNavigatedProject = mProjects[mProjectsMenuItemIds.indexOf(it.itemId)]
                 val a = NavGraphDirections.actionGlobalProjectFragment(mLastNavigatedProject)
                 navController.navigate(a)
+                return@OnNavigationItemSelectedListener true
             }
             R.id.editProjectFragment -> {
                 val a = ProjectFragmentDirections.actionProjectFragmentToEditProjectFragment(
                     mLastNavigatedProject)
                 navController.navigate(a)
+                return@OnNavigationItemSelectedListener true
             }
             R.id.dayFragment -> {
                 navController.navigate(R.id.dayFragment)
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.monthFragment -> {
+                navController.navigate(R.id.monthFragment)
+                return@OnNavigationItemSelectedListener true
             }
         }
 
@@ -166,6 +177,9 @@ class MainActivity : AppCompatActivity() {
                 settings.isVisible = true
             }
             R.id.dayFragment -> {
+                settings.isVisible = true
+            }
+            R.id.monthFragment -> {
                 settings.isVisible = true
             }
             else -> {
