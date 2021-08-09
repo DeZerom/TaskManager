@@ -1,6 +1,7 @@
 package com.example.taskmanager
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.Menu
 import android.view.Menu.NONE
 import android.view.MenuItem
@@ -138,7 +139,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         navButtonsVisibilityHandler(it.itemId)
-        main_drawerLayout.close()
+        main_drawerLayout.closeDrawer(GravityCompat.START)
 
         return@OnNavigationItemSelectedListener false
     }

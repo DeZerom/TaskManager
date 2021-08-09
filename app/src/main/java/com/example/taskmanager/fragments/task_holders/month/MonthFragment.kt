@@ -21,8 +21,7 @@ class MonthFragment : Fragment() {
         val calendar = view.monthFragment_calendar
         val text = view.textView
         calendar.setOnDateChangeListener { _, year, month, dayOfMonth ->
-            val date = LocalDate.of(year, month, dayOfMonth)
-            LocalDate.of(year, month, dayOfMonth)
+            val date = LocalDate.of(year, month + 1, dayOfMonth)
             text.text = date.toString()
         }
 
