@@ -4,17 +4,22 @@ import android.content.Context
 import androidx.room.*
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.example.taskmanager.data.day.DayOfMonth
+import com.example.taskmanager.data.day.DayOfMonthDAO
 import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.data.project.ProjectDAO
 import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.data.task.TaskDAO
+import java.time.MonthDay
 
-@Database(entities = [Project::class, Task::class], version = 5)
+@Database(entities = [Project::class, Task::class, DayOfMonth::class], version = 6)
 abstract class TheDatabase: RoomDatabase() {
 
     abstract fun getProjectDao(): ProjectDAO
 
     abstract fun getTaskDao(): TaskDAO
+
+    abstract fun getDayOfMonthDao(): DayOfMonthDAO
 
     companion object {
         @Volatile private var instance: TheDatabase? = null
@@ -69,6 +74,14 @@ abstract class TheDatabase: RoomDatabase() {
             }
         }
 
+        private val MIGRATION_5_6 = object : Migration(5, 6) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "CREATE TABLE IF NOT EXISTS DayOfMonth(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, \ndate TEXT NOT NULL, \nisWeekend INTEGER NOT NULL)"
+                )
+            }
+        }
+
         @Synchronized
         fun getInstance(context: Context): TheDatabase {
             var tmp = instance
@@ -76,7 +89,8 @@ abstract class TheDatabase: RoomDatabase() {
                 tmp
             } else {
                 tmp = Room.databaseBuilder(context, TheDatabase::class.java, "TheDb")
-                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5,
+                    MIGRATION_5_6)
                     .build()
                 instance = tmp
                 tmp

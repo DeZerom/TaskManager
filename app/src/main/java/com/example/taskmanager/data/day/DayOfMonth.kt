@@ -3,12 +3,13 @@ package com.example.taskmanager.data.day
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
+import com.example.taskmanager.data.converters.BooleanConverter
 import com.example.taskmanager.data.converters.LocalDateConverter
 import java.time.LocalDate
 
 @Entity
-@TypeConverters(LocalDateConverter::class)
-data class MonthDay(
+@TypeConverters(LocalDateConverter::class, BooleanConverter::class)
+data class DayOfMonth(
     @PrimaryKey(autoGenerate = true) val id: Int,
     val date: LocalDate,
     val isWeekend: Boolean
