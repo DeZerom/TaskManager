@@ -4,7 +4,7 @@ import android.os.Parcelable
 import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
 import com.example.taskmanager.data.project.Project
-import com.example.taskmanager.data.task.converters.LocalDateConverter
+import com.example.taskmanager.data.converters.LocalDateConverter
 import kotlinx.android.parcel.Parcelize
 import java.time.LocalDate
 
