@@ -105,43 +105,44 @@ class MainActivity : AppCompatActivity() {
      */
     private val onNavigationItemSelectedListener = NavigationView.OnNavigationItemSelectedListener {
         val navController = findNavController(R.id.nav_host_fragment)
+        var result = false
 
         when (it.itemId) {
             R.id.homeFragment -> {
                 navController.navigate(R.id.homeFragment)
-                return@OnNavigationItemSelectedListener true
+                result = true
             }
             R.id.settingsFragment -> {
                 navController.navigate(R.id.settingsFragment)
-                return@OnNavigationItemSelectedListener true
+                result = true
             }
             in mProjectsMenuItemIds -> {
-                it.isChecked = true
                 mLastNavigatedProject = mProjects[mProjectsMenuItemIds.indexOf(it.itemId)]
                 val a = NavGraphDirections.actionGlobalProjectFragment(mLastNavigatedProject)
                 navController.navigate(a)
-                return@OnNavigationItemSelectedListener true
+                it.isChecked = true
+                result = true
             }
             R.id.editProjectFragment -> {
                 val a = ProjectFragmentDirections.actionProjectFragmentToEditProjectFragment(
                     mLastNavigatedProject)
                 navController.navigate(a)
-                return@OnNavigationItemSelectedListener true
+                result = true
             }
             R.id.dayFragment -> {
                 navController.navigate(R.id.dayFragment)
-                return@OnNavigationItemSelectedListener true
+                result = true
             }
             R.id.monthFragment -> {
                 navController.navigate(R.id.monthFragment)
-                return@OnNavigationItemSelectedListener true
+                result = true
             }
         }
 
         navButtonsVisibilityHandler(it.itemId)
         main_drawerLayout.closeDrawer(GravityCompat.START)
 
-        return@OnNavigationItemSelectedListener false
+        return@OnNavigationItemSelectedListener result
     }
 
     /**
