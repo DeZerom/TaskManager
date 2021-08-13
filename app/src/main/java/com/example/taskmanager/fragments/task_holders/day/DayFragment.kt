@@ -1,21 +1,16 @@
 package com.example.taskmanager.fragments.task_holders.day
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.taskmanager.R
 import com.example.taskmanager.data.task.Task
-import com.example.taskmanager.fragments.home.ProjectRecyclerAdapter
 import com.example.taskmanager.fragments.task_holders.TaskRecyclerAdapter
 import com.example.taskmanager.viewmodels.ProjectViewModel
 import com.example.taskmanager.viewmodels.TaskViewModel
@@ -64,26 +59,35 @@ class DayFragment : Fragment() {
         //addTask btn
         //addTaskFragment asks for a Project to set default parent project for task in spinner view,
         //so we can provide null. AddTaskFragment will handle it
-        val addTaskBtn = view.dayFragment_floatingActionButton
+        val addTaskBtn = view.dayFragment_addTaskFloatingButton
         addTaskBtn.setOnClickListener {
             val a = DayFragmentDirections.actionDayFragmentToAddTaskFragment(null)
             findNavController().navigate(a)
         }
 
+        //calendarButton. Shows bottom sheet
+        val calendarButton = view.dayFragment_calendarFloatingButton
+        val bottom = view.dayFragment_bottomSheet //bottom sheet view
+        val bottomBehavior = BottomSheetBehavior.from(bottom) //bottom sheet behavior
+        calendarButton.setOnClickListener {
+            bottomBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+
         //bottom sheet listener. Hide buttons and show them
-        val bottom = view.dayFragment_bottomSheet
-        val bottomBehavior = BottomSheetBehavior.from(bottom)
         bottomBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when (newState) {
                     BottomSheetBehavior.STATE_COLLAPSED -> {
                         addTaskBtn.isVisible = true
+                        calendarButton.isVisible = true
                     }
                     BottomSheetBehavior.STATE_HIDDEN -> {
                         addTaskBtn.isVisible = true
+                        calendarButton.isVisible = true
                     }
                     else -> {
                         addTaskBtn.isVisible = false
+                        calendarButton.isVisible = false
                     }
                 }
             }

@@ -5,36 +5,41 @@
     android:id="@+id/dayFragment_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingTop="?actionBarSize"
     tools:context=".fragments.task_holders.day.DayFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingTop="?actionBarSize">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/dayFragment_recycler"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/dayFragment_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/dayFragment_floatingActionButton"
+        android:id="@+id/dayFragment_addTaskFloatingButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        android:src="@drawable/ic_baseline_add_circle_outline_24"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="24dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/ic_baseline_add_circle_outline_24"
         app:layout_anchor="@id/dayFragment_bottomSheet"
         app:layout_anchorGravity="top|end"
-        tools:ignore="ContentDescription"
-        android:focusable="true" />
+        tools:ignore="ContentDescription" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/dayFragment_calendarFloatingButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="24dp"
+        android:src="@drawable/ic_baseline_calendar_today_24"
+        app:layout_anchor="@id/dayFragment_bottomSheet"
+        app:layout_anchorGravity="top|start"
+        tools:ignore="ContentDescription" />
 
     <include
         android:id="@+id/dayFragment_bottomSheet"
