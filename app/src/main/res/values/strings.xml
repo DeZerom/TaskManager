@@ -37,5 +37,5 @@
     <string name="taskNameInput_blankName">Please, enter a name of the task</string>
     <string name="taskDateInput_incorrectDate">Please, enter a date in format YYYY-MM_DD</string>
     <string name="localDate_pattern">YYYY-MM-DD</string>
-    <string name="dayFragment_today_label">Today</string>
+    <string name="dayFragment_today_label">All tasks</string>
 </resources>

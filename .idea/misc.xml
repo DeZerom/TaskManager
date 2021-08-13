@@ -3,10 +3,14 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Projects/TaskManager/app/src/main/res/layout/bottom_choose_date.xml" value="0.23324275362318841" />
         <entry key="..\:/Projects/TaskManager/app/src/main/res/layout/fragment_add_task.xml" value="0.21693840579710144" />
         <entry key="..\:/Projects/TaskManager/app/src/main/res/layout/fragment_day.xml" value="0.18297101449275363" />
         <entry key="..\:/Projects/TaskManager/app/src/main/res/layout/fragment_edit_project.xml" value="0.12360688956433637" />
         <entry key="..\:/Projects/TaskManager/app/src/main/res/layout/fragment_edit_task.xml" value="0.2006340579710145" />
+        <entry key="..\:/Projects/TaskManager/app/src/main/res/layout/fragment_item_list_dialog_list_dialog.xml" value="0.23324275362318841" />
+        <entry key="..\:/Projects/TaskManager/app/src/main/res/layout/fragment_item_list_dialog_list_dialog_item.xml" value="0.23324275362318841" />
+        <entry key="..\:/Projects/TaskManager/app/src/main/res/layout/fragment_month.xml" value="0.25" />
         <entry key="..\:/Projects/TaskManager/app/src/main/res/layout/project_row.xml" value="0.2006340579710145" />
         <entry key="..\:/Projects/TaskManager/app/src/main/res/layout/project_view.xml" value="0.2006340579710145" />
         <entry key="..\:/Projects/TaskManager/app/src/main/res/layout/task_row.xml" value="0.25" />

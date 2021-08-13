@@ -1,6 +1,7 @@
 package com.example.taskmanager
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.Menu
 import android.view.Menu.NONE
 import android.view.MenuItem
@@ -102,34 +103,40 @@ class MainActivity : AppCompatActivity() {
      */
     private val onNavigationItemSelectedListener = NavigationView.OnNavigationItemSelectedListener {
         val navController = findNavController(R.id.nav_host_fragment)
+        var result = false
 
         when (it.itemId) {
             R.id.homeFragment -> {
                 navController.navigate(R.id.homeFragment)
+                result = true
             }
             R.id.settingsFragment -> {
                 navController.navigate(R.id.settingsFragment)
+                result = true
             }
             in mProjectsMenuItemIds -> {
-                it.isChecked = true
                 mLastNavigatedProject = mProjects[mProjectsMenuItemIds.indexOf(it.itemId)]
                 val a = NavGraphDirections.actionGlobalProjectFragment(mLastNavigatedProject)
                 navController.navigate(a)
+                it.isChecked = true
+                result = true
             }
             R.id.editProjectFragment -> {
                 val a = ProjectFragmentDirections.actionProjectFragmentToEditProjectFragment(
                     mLastNavigatedProject)
                 navController.navigate(a)
+                result = true
             }
             R.id.dayFragment -> {
                 navController.navigate(R.id.dayFragment)
+                result = true
             }
         }
 
         navButtonsVisibilityHandler(it.itemId)
-        main_drawerLayout.close()
+        main_drawerLayout.closeDrawer(GravityCompat.START)
 
-        return@OnNavigationItemSelectedListener false
+        return@OnNavigationItemSelectedListener result
     }
 
     /**
