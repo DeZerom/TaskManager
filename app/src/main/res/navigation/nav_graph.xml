@@ -87,9 +87,4 @@
     <action
         android:id="@+id/action_global_editTask"
         app:destination="@id/editTask" />
-    <fragment
-        android:id="@+id/monthFragment"
-        android:name="com.example.taskmanager.fragments.task_holders.month.MonthFragment"
-        android:label="fragment_month"
-        tools:layout="@layout/fragment_month" />
 </navigation>
