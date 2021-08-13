@@ -31,4 +31,8 @@ class TaskViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
+    fun completeTask(task: Task) {
+        deleteTask(task)
+    }
+
 }

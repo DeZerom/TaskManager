@@ -1,10 +1,13 @@
 package com.example.taskmanager.fragments.task_holders
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.taskmanager.NavGraphDirections
@@ -12,14 +15,35 @@ import com.example.taskmanager.R
 import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.fragments.task_holders.project.ProjectFragmentDirections
+import com.example.taskmanager.viewmodels.TaskViewModel
 import kotlinx.android.synthetic.main.task_row.view.*
 import java.util.ArrayList
 
+/**
+ * An [RecyclerView.Adapter] for recyclers that handle task. Works with [R.layout.task_row]
+ */
 class TaskRecyclerAdapter(context: Context): RecyclerView.Adapter<TaskRecyclerAdapter.RowHolder>() {
     private var mTasks = emptyList<Task>()
     private var mProjects = emptyList<Project>()
+    private val LOG_TAG = "1234"
+
+    /**
+     * [TaskViewModel] for accessing db
+     */
+    private lateinit var mTaskViewModel: TaskViewModel
+
+    /**
+     * An [ArrayAdapter] for spinner in [R.layout.task_row]
+     */
     private val mSpinnerAdapter = ArrayAdapter<Project>(context,
         R.layout.support_simple_spinner_dropdown_item)
+
+    /**
+     * [TaskViewModel] for accessing db
+     */
+    var taskViewModel: TaskViewModel
+    get() = mTaskViewModel
+    set(value) { mTaskViewModel = value }
 
     class RowHolder(itemView: View): RecyclerView.ViewHolder(itemView) {}
 
@@ -40,7 +64,14 @@ class TaskRecyclerAdapter(context: Context): RecyclerView.Adapter<TaskRecyclerAd
         holder.itemView.taskRow_spinner.setSelection(mSpinnerAdapter.getPosition(mProjects.find {
             return@find it.id == currentItem.projectOwnerId
         }))
+        //set check box listener
+        val chk = holder.itemView.taskRow_checkBox
+        chk.setOnCheckedChangeListener { _, _ ->
+            while (!chk.animation.hasEnded()) {/* wait */}
+            mTaskViewModel.completeTask(currentItem)
+        }
 
+        //navigate to task editing fragment
         holder.itemView.taskRow_name.setOnClickListener {
             val action = NavGraphDirections.actionGlobalEditTask(currentItem)
             holder.itemView.findNavController().navigate(action)

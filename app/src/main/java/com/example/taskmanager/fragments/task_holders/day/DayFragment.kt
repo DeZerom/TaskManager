@@ -40,6 +40,7 @@ class DayFragment : Fragment() {
 
         //recycler adapter init
         mTaskRecyclerAdapter = TaskRecyclerAdapter(requireContext())
+        mTaskRecyclerAdapter.taskViewModel = mTaskViewModel
         //set recycler adapter
         view.dayFragment_recycler.adapter = mTaskRecyclerAdapter
         //set recycler layout
