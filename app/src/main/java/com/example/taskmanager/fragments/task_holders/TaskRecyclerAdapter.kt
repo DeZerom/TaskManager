@@ -1,28 +1,24 @@
 package com.example.taskmanager.fragments.task_holders
 
 import android.content.Context
-import android.util.Log
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelStoreOwner
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.taskmanager.NavGraphDirections
 import com.example.taskmanager.R
 import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.data.task.Task
-import com.example.taskmanager.fragments.task_holders.project.ProjectFragmentDirections
 import com.example.taskmanager.viewmodels.TaskViewModel
 import kotlinx.android.synthetic.main.task_row.view.*
-import java.util.ArrayList
 
 /**
  * An [RecyclerView.Adapter] for recyclers that handle task. Works with [R.layout.task_row]
  */
-class TaskRecyclerAdapter(context: Context): RecyclerView.Adapter<TaskRecyclerAdapter.RowHolder>() {
+class TaskRecyclerAdapter(private val applicationContext: Context): RecyclerView.Adapter<TaskRecyclerAdapter.RowHolder>() {
     private var mTasks = emptyList<Task>()
     private var mProjects = emptyList<Project>()
     private val LOG_TAG = "1234"
@@ -35,7 +31,7 @@ class TaskRecyclerAdapter(context: Context): RecyclerView.Adapter<TaskRecyclerAd
     /**
      * An [ArrayAdapter] for spinner in [R.layout.task_row]
      */
-    private val mSpinnerAdapter = ArrayAdapter<Project>(context,
+    private val mSpinnerAdapter = ArrayAdapter<Project>(applicationContext,
         R.layout.support_simple_spinner_dropdown_item)
 
     /**
@@ -66,9 +62,13 @@ class TaskRecyclerAdapter(context: Context): RecyclerView.Adapter<TaskRecyclerAd
         }))
         //set check box listener
         val chk = holder.itemView.taskRow_checkBox
+        //to avoid miss checked checkboxes thar appears after checking checkbox of upper task_row
+        if (chk.isChecked) chk.isChecked = false
         chk.setOnCheckedChangeListener { _, _ ->
-            while (!chk.animation.hasEnded()) {/* wait */}
-            mTaskViewModel.completeTask(currentItem)
+            //wait for animations end
+            Handler().postDelayed({
+                mTaskViewModel.completeTask(currentItem)
+            }, 450L)
         }
 
         //navigate to task editing fragment
