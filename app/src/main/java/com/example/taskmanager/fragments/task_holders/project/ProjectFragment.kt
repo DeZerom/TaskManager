@@ -38,7 +38,7 @@ class ProjectFragment : Fragment() {
 
         //set adapter to recycler
         val recyclerView = view.projectFragment_recycler
-        mRecyclerAdapter = TaskRecyclerAdapter(requireContext())
+        mRecyclerAdapter = TaskRecyclerAdapter(requireContext(), mTaskViewModel)
         recyclerView.adapter = mRecyclerAdapter
         //set layout manager
         recyclerView.layoutManager = LinearLayoutManager(requireContext())

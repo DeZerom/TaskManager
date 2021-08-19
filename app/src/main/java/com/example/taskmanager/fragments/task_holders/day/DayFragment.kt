@@ -39,7 +39,7 @@ class DayFragment : Fragment() {
         mTaskViewModel = provider.get(TaskViewModel::class.java)
 
         //recycler adapter init
-        mTaskRecyclerAdapter = TaskRecyclerAdapter(requireContext())
+        mTaskRecyclerAdapter = TaskRecyclerAdapter(requireContext(), mTaskViewModel)
         //set recycler adapter
         view.dayFragment_recycler.adapter = mTaskRecyclerAdapter
         //set recycler layout
