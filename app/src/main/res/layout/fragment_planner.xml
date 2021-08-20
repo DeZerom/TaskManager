@@ -9,8 +9,9 @@
     tools:context=".fragments.planner.PlannerFragment">
 
     <LinearLayout
+        android:id="@+id/plannerFragment_linear"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <TextView
@@ -30,14 +31,9 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/plannerFragment_recycler"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
     </LinearLayout>
-
-    <include
-        android:id="@+id/plannerFragment_bottom"
-        layout="@layout/bottom_choose_date" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/plannerFragment_addTaskFab"
@@ -47,7 +43,8 @@
         android:layout_marginBottom="16dp"
         android:src="@drawable/ic_baseline_add_circle_outline_24"
         app:layout_anchor="@id/plannerFragment_bottom"
-        app:layout_anchorGravity="top|end" />
+        app:layout_anchorGravity="top|end"
+        tools:ignore="ContentDescription"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/plannerFragment_showCalendarFab"
@@ -57,6 +54,11 @@
         android:layout_marginBottom="16dp"
         android:src="@drawable/ic_baseline_calendar_today_24"
         app:layout_anchor="@id/plannerFragment_bottom"
-        app:layout_anchorGravity="top|start" />
+        app:layout_anchorGravity="top|start"
+        tools:ignore="ContentDescription"/>
+
+    <include
+        android:id="@+id/plannerFragment_bottom"
+        layout="@layout/bottom_choose_date" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

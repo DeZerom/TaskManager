@@ -9,8 +9,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.taskmanager.R
+import com.example.taskmanager.data.day.DayOfMonth
 import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.fragments.task_holders.TaskRecyclerAdapter
+import com.example.taskmanager.viewmodels.DayOfMonthViewModel
 import com.example.taskmanager.viewmodels.ProjectViewModel
 import com.example.taskmanager.viewmodels.TaskViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -21,9 +23,11 @@ import java.time.LocalDate
 class PlannerFragment : Fragment() {
     private lateinit var mTaskViewModel: TaskViewModel
     private lateinit var mProjectViewModel: ProjectViewModel
+    private lateinit var mDaysViewModel: DayOfMonthViewModel
     private lateinit var mRecyclerAdapter: TaskRecyclerAdapter
     private var mTasks = emptyList<Task>()
-    private var mDay = LocalDate.now()
+    private var mDays = emptyList<DayOfMonth>()
+    private var mCurrentDate = LocalDate.now()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,6 +40,7 @@ class PlannerFragment : Fragment() {
         val provider = ViewModelProvider(this)
         mTaskViewModel = provider.get(TaskViewModel::class.java)
         mProjectViewModel = provider.get(ProjectViewModel::class.java)
+        mDaysViewModel = provider.get(DayOfMonthViewModel::class.java)
 
         //recycler
         mRecyclerAdapter = TaskRecyclerAdapter(requireContext(), mTaskViewModel)
@@ -52,9 +57,14 @@ class PlannerFragment : Fragment() {
             mRecyclerAdapter.setProjects(it)
         }
 
+        //observe all days
+        mDaysViewModel.allDays.observe(viewLifecycleOwner) {
+            mDays = it
+        }
+
         //text view default state
         val textView = view.plannerFragment_textView
-        textView.text = mDay.toString()
+        textView.text = mCurrentDate.toString()
 
         //add task btn
         val addTaskBtn = view.plannerFragment_addTaskFab
@@ -72,8 +82,16 @@ class PlannerFragment : Fragment() {
 
         //bottom sheet calendar listener
         view.plannerFragment_bottom.bottomSheet_calendar.setOnDateChangeListener { _, year, month, dayOfMonth ->
-            mDay = LocalDate.of(year, month + 1, dayOfMonth)
-            textView.text = mDay.toString()
+            //get current date
+            mCurrentDate = LocalDate.of(year, month + 1, dayOfMonth)
+
+            //check if this day is in mDays
+            val d = mDays.find { return@find it.date == mCurrentDate }
+            //if not - create it
+            d ?: mDaysViewModel.addDay(DayOfMonth(0, mCurrentDate, false))
+
+            //update views
+            textView.text = mCurrentDate.toString()
             setDataToTaskRecyclerAdapter()
         }
 
@@ -105,10 +123,11 @@ class PlannerFragment : Fragment() {
     }
 
     /**
-     * Sets data to [mRecyclerAdapter]. Filters [data] to choose only proper tasks.
+     * Sets data to [mRecyclerAdapter]. Filters [mTasks] to choose only proper tasks.
      * @param data All tasks that exists
+     * @see mTasks
      */
     private fun setDataToTaskRecyclerAdapter() {
-        mRecyclerAdapter.setData(mTasks.filter { return@filter it.date == mDay })
+        mRecyclerAdapter.setData(mTasks.filter { return@filter it.date == mCurrentDate })
     }
 }
