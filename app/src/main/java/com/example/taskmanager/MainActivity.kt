@@ -82,12 +82,15 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.activity_main_menu, menu)
+
         //hide edit project button before accessing project fragment
         menu?.findItem(R.id.editProjectFragment)?.isVisible = false
         //hide home fragment button because it isn't supposed to be in overflow
         menu?.findItem(R.id.homeFragment)?.isVisible = false
         //hide today
         menu?.findItem(R.id.dayFragment)?.isVisible = false
+        //hide planner
+        menu?.findItem(R.id.plannerFragment)?.isVisible = false
 
         return true
     }
@@ -129,6 +132,10 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.dayFragment -> {
                 navController.navigate(R.id.dayFragment)
+                result = true
+            }
+            R.id.plannerFragment -> {
+                navController.navigate(R.id.plannerFragment)
                 result = true
             }
         }
@@ -173,6 +180,10 @@ class MainActivity : AppCompatActivity() {
                 settings.isVisible = true
             }
             R.id.dayFragment -> {
+                settings.isVisible = true
+            }
+            R.id.plannerFragment -> {
+                editProject.isVisible = false
                 settings.isVisible = true
             }
             else -> {
