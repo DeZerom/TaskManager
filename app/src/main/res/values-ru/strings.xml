@@ -25,4 +25,6 @@
     <string name="taskDateInput_incorrectDate">Пожалуйста, введите дату в формате ГГГГ-ММ-ДД</string>
     <string name="localDate_pattern">ГГГГ-ММ-ДД</string>
     <string name="dayFragment_today_label">Все задачи</string>
+    <string name="plannerFragment_label">Планировщик</string>
+    <string name="weekend_string">Выходной</string>
 </resources>

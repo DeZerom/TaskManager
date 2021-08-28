@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         val navView: NavigationView = findViewById(R.id.nav_view)
         val navContr = findNavController(R.id.nav_host_fragment)
         appBarConfiguration = AppBarConfiguration(setOf(R.id.homeFragment, R.id.settingsFragment,
-            R.id.projectFragment, R.id.dayFragment), drawerLayout)
+            R.id.projectFragment, R.id.dayFragment, R.id.plannerFragment), drawerLayout)
         setupActionBarWithNavController(navContr, appBarConfiguration)
         navView.setupWithNavController(navContr)
 
@@ -58,7 +58,9 @@ class MainActivity : AppCompatActivity() {
             for((j, p: Project) in it.withIndex()) {
                 //avoiding ids conflict in onOptionsItemSelected
                 while (i == R.id.settingsFragment || i == R.id.homeFragment ||
-                    i == R.id.editProjectFragment) i++
+                        i == R.id.editProjectFragment || i == R.id.addProjectFragment ||
+                        i == R.id.addTaskFragment || i == R.id.editTask ||
+                        i == R.id.plannerFragment) i++
                 //adding MenuItem to the menu
                 menu.add(R.id.projects_menu_group, i, NONE, p.name)
                 //writing item id
@@ -82,12 +84,15 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.activity_main_menu, menu)
+
         //hide edit project button before accessing project fragment
         menu?.findItem(R.id.editProjectFragment)?.isVisible = false
         //hide home fragment button because it isn't supposed to be in overflow
         menu?.findItem(R.id.homeFragment)?.isVisible = false
         //hide today
         menu?.findItem(R.id.dayFragment)?.isVisible = false
+        //hide planner
+        menu?.findItem(R.id.plannerFragment)?.isVisible = false
 
         return true
     }
@@ -129,6 +134,10 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.dayFragment -> {
                 navController.navigate(R.id.dayFragment)
+                result = true
+            }
+            R.id.plannerFragment -> {
+                navController.navigate(R.id.plannerFragment)
                 result = true
             }
         }
@@ -173,6 +182,10 @@ class MainActivity : AppCompatActivity() {
                 settings.isVisible = true
             }
             R.id.dayFragment -> {
+                settings.isVisible = true
+            }
+            R.id.plannerFragment -> {
+                editProject.isVisible = false
                 settings.isVisible = true
             }
             else -> {
