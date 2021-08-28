@@ -17,6 +17,7 @@ import com.example.taskmanager.viewmodels.ProjectViewModel
 import com.example.taskmanager.viewmodels.TaskViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_choose_date.view.*
+import kotlinx.android.synthetic.main.fragment_day.view.*
 import kotlinx.android.synthetic.main.fragment_planner.view.*
 import java.time.LocalDate
 
@@ -81,6 +82,7 @@ class PlannerFragment : Fragment() {
         }
 
         //bottom sheet calendar listener
+        val switch = view.plannerFragment_switchIsWeekend
         view.plannerFragment_bottom.bottomSheet_calendar.setOnDateChangeListener { _, year, month, dayOfMonth ->
             //get current date
             mCurrentDate = LocalDate.of(year, month + 1, dayOfMonth)
@@ -88,12 +90,27 @@ class PlannerFragment : Fragment() {
             //check if this day is in mDays
             val d = mDays.find { return@find it.date == mCurrentDate }
             //if not - create it
-            d ?: mDaysViewModel.addDay(DayOfMonth(0, mCurrentDate, false))
+            d?.let { switch.isChecked = it.isWeekend }
+                ?: mDaysViewModel.addDay(DayOfMonth(0, mCurrentDate, switch.isChecked))
 
             //update views
             textView.text = mCurrentDate.toString()
             setDataToTaskRecyclerAdapter()
         }
+
+        //switch listener
+        switch.setOnCheckedChangeListener { _, isChecked ->
+            //find day
+            val d = mDays.find { return@find it.date == mCurrentDate }
+
+            //if haven't found or nothing changed - return
+            d ?: return@setOnCheckedChangeListener
+            if (isChecked == d.isWeekend) return@setOnCheckedChangeListener
+
+            mDaysViewModel.updateDay(DayOfMonth(d.id, d.date, isChecked))
+        }
+
+        val cal = view.plannerFragment_bottom.bottomSheet_calendar
 
         //bottom sheet state listener
         bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {

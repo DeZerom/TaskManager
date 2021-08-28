@@ -18,7 +18,8 @@
             android:id="@+id/plannerFragment_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView"
+            android:paddingHorizontal="8dp"
+            android:text="@string/localDate_pattern"
             android:textColor="@color/black"
             android:textSize="36sp" />
 
@@ -26,7 +27,8 @@
             android:id="@+id/plannerFragment_switchIsWeekend"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Switch" />
+            android:paddingHorizontal="8dp"
+            android:text="@string/weekend_string" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/plannerFragment_recycler"

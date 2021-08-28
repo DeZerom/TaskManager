@@ -38,4 +38,6 @@
     <string name="taskDateInput_incorrectDate">Please, enter a date in format YYYY-MM_DD</string>
     <string name="localDate_pattern">YYYY-MM-DD</string>
     <string name="dayFragment_today_label">All tasks</string>
+    <string name="plannerFragment_label">Planner</string>
+    <string name="weekend_string">Weekend</string>
 </resources>
