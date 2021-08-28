@@ -25,7 +25,9 @@ data class Task(
 
     @ColumnInfo(name = "project_owner_id") val projectOwnerId: Int,
 
-    @ColumnInfo(defaultValue = "2000-01-01") val date: LocalDate
+    @ColumnInfo(defaultValue = "2000-01-01") val date: LocalDate,
+
+    @ColumnInfo(defaultValue = "-1") val amount: Int = -1
 ): Parcelable
 {
     override fun toString(): String {
