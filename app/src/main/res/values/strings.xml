@@ -41,4 +41,7 @@
     <string name="plannerFragment_label">Planner</string>
     <string name="weekend_string">Weekend</string>
     <string name="today_string">Today</string>
+    <string name="quantitative_string">Quantitative</string>
+    <string name="amount_string">Amount</string>
+    <string name="badAmountForTask_toast">Please, enter a correct amount of iterations of the task</string>
 </resources>

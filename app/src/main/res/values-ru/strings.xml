@@ -28,4 +28,7 @@
     <string name="plannerFragment_label">Планировщик</string>
     <string name="weekend_string">Выходной</string>
     <string name="today_string">Сегодня</string>
+    <string name="quantitative_string">Количественная</string>
+    <string name="amount_string">Количество</string>
+    <string name="badAmountForTask_toast">Пожалуйста, введите корректное количество повторений задачи</string>
 </resources>

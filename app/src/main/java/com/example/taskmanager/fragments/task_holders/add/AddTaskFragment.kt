@@ -205,7 +205,7 @@ class AddTaskFragment : Fragment() {
      */
     private fun checkAmount(amount: String): Int? {
         val toast = Toast.makeText(context,
-            "Please, enter a correct amount of iterations of the task", Toast.LENGTH_SHORT)
+            R.string.badAmountForTask_toast, Toast.LENGTH_SHORT)
 
         //if it's single task
         if (view?.addTaskFragment_isQTask?.isChecked == false) return -1
