@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.core.view.isVisible
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.taskmanager.NavGraphDirections
@@ -69,6 +70,11 @@ class TaskRecyclerAdapter(
         holder.itemView.taskRow_name.text = currentItem.name
         //set date field
         holder.itemView.taskRow_date.text = currentItem.date.toString()
+        //set amount field or hide it if it's single task
+        holder.itemView.taskRow_amount.isVisible = currentItem.amount > 0
+        if (currentItem.amount > 0) {
+            holder.itemView.taskRow_amount.text = currentItem.amount.toString()
+        }
         //set spinner adapter and default selection
         holder.itemView.taskRow_spinner.adapter = mSpinnerAdapter
         holder.itemView.taskRow_spinner.setSelection(mSpinnerAdapter.getPosition(mProjects.find {
