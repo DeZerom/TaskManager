@@ -42,8 +42,9 @@ class AddTaskFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_add_task, container, false)
 
         //view models
-        mTaskModel = ViewModelProvider(this).get(TaskViewModel::class.java)
-        mProjectViewModel = ViewModelProvider(this).get((ProjectViewModel::class.java))
+        val provider = ViewModelProvider(this)
+        mTaskModel = provider.get(TaskViewModel::class.java)
+        mProjectViewModel = provider.get((ProjectViewModel::class.java))
 
         //get parent project
         mParentProject = arguments?.let { AddTaskFragmentArgs.fromBundle(it).item }
@@ -65,22 +66,9 @@ class AddTaskFragment : Fragment() {
             }
         }
 
-        //add new task
-        val btn = view.addTaskFragment_button
-        val editName = view.addTaskFragment_editName
-        val editDate = view.addTaskFragment_editDate
-        btn.setOnClickListener {
-            val projectOwnerId = (spinner.selectedItem as Project).id
-            val task = createTask(editName.text.toString(), projectOwnerId, editDate.text.toString())
-            task?.let {
-                mTaskModel.addTask(it)
-                //navigate back
-                findNavController().popBackStack()
-            }
-        }
-
-        //chk box logic
+        //is today chk box logic
         val chk = view.addTask_chkBoxToday
+        val editDate = view.addTaskFragment_editDate
         chk.setOnClickListener {
             if (chk.isChecked) {
                 editDate.setText(LocalDate.now().toString())
@@ -122,25 +110,60 @@ class AddTaskFragment : Fragment() {
             }
         })
 
+        //is quantitative chk box logic
+        val isQuantitative = view.addTaskFragment_isQTask
+        val editAmount = view.addTaskFragment_editAmount
+        isQuantitative.setOnCheckedChangeListener { _, isChecked ->
+            editAmount.isEnabled = isChecked
+        }
+
+        //add new task
+        val btn = view.addTaskFragment_button
+        val editName = view.addTaskFragment_editName
+        btn.setOnClickListener {
+            val projectOwnerId = (spinner.selectedItem as Project).id
+            val amount = editAmount.text.toString()
+
+            //try to create task
+            val task = createTask(editName.text.toString(), projectOwnerId,
+                editDate.text.toString(), amount)
+
+            //add it to the db if it's not null
+            task?.let {
+                mTaskModel.addTask(it)
+                //navigate back
+                findNavController().popBackStack()
+            }
+        }
+
         return view
     }
 
     /**
-     * Creates a new [Task] with given [name], [parentProjectId], [date]. If name is incorrect,
-     * it will return null. If date is incorrect, it will return null.
+     * Creates a new [Task] with given [name], [parentProjectId], [date], [amount]. If at least one
+     * of params is incorrect returns null.
      * @param name for [Task.name]
      * @param parentProjectId for [Task.projectOwnerId]
      * @param date for [Task.date]
-     * @return [Task] if [name] and [date] is correct. Null otherwise.
+     * @param amount for [Task.amount]
+     * @return [Task] if [name], [date] and [amount] is correct. Null otherwise.
      * @see checkName
      * @see checkDate
+     * @see checkAmount
      */
-    private fun createTask(name: String, parentProjectId: Int, date: String): Task? {
+    private fun createTask(name: String, parentProjectId: Int, date: String, amount: String): Task? {
+        //name
         if (!checkName(name)) return null
+
+        //date
         val localDate = checkDate(date)
         localDate?: return null
 
-        return Task(0, name, parentProjectId, localDate)
+        //amount
+        val intAmount = checkAmount(amount)
+        intAmount ?: return null
+
+        return Task(0, name, parentProjectId, localDate, intAmount)
     }
 
     /**
@@ -170,5 +193,37 @@ class AddTaskFragment : Fragment() {
             Toast.makeText(context, R.string.taskDateInput_incorrectDate, Toast.LENGTH_SHORT).show()
             null
         }
+    }
+
+    /**
+     * Checks [amount]. If [R.id.addTaskFragment_isQTask] is not checked returns -1. Otherwise tries
+     * to transform [amount] to [Int]. If [amount] <= 0 or [amount] is not transformable to [Int]
+     * returns null.
+     * @param amount amount to check
+     * @return null, [amount] transformed to [Int] that bigger than 0 or -1
+     * @see toIntOrNull
+     */
+    private fun checkAmount(amount: String): Int? {
+        val toast = Toast.makeText(context,
+            "Please, enter a correct amount of iterations of the task", Toast.LENGTH_SHORT)
+
+        //if it's single task
+        if (view?.addTaskFragment_isQTask?.isChecked == false) return -1
+
+        //try to transform
+        val intAmount = amount.toIntOrNull()
+        //check amount
+        intAmount?.let {
+            if (it <= 0) {
+                toast.show()
+                return null
+            }
+        } ?: run {
+            toast.show()
+            return null
+        }
+
+        //if everything is OK
+        return intAmount
     }
 }

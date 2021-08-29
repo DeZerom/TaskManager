@@ -40,4 +40,5 @@
     <string name="dayFragment_today_label">All tasks</string>
     <string name="plannerFragment_label">Planner</string>
     <string name="weekend_string">Weekend</string>
+    <string name="today_string">Today</string>
 </resources>

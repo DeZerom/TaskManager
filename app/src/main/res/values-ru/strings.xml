@@ -27,4 +27,5 @@
     <string name="dayFragment_today_label">Все задачи</string>
     <string name="plannerFragment_label">Планировщик</string>
     <string name="weekend_string">Выходной</string>
+    <string name="today_string">Сегодня</string>
 </resources>
