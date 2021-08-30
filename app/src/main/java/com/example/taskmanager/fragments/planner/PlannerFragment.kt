@@ -95,7 +95,11 @@ class PlannerFragment : Fragment() {
 
             //update views
             textView.text = mCurrentDate.toString()
-            setDataToTaskRecyclerAdapter()
+
+            //observe tasks for the mCurrentDate
+            mTaskViewModel.getTasksByDate(mCurrentDate).observe(viewLifecycleOwner) {
+                setDataToTaskRecyclerAdapter(it)
+            }
         }
 
         //switch listener
@@ -109,8 +113,6 @@ class PlannerFragment : Fragment() {
 
             mDaysViewModel.updateDay(DayOfMonth(d.id, d.date, isChecked))
         }
-
-        val cal = view.plannerFragment_bottom.bottomSheet_calendar
 
         //bottom sheet state listener
         bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
@@ -144,7 +146,7 @@ class PlannerFragment : Fragment() {
      * @param data All tasks that exists
      * @see mTasks
      */
-    private fun setDataToTaskRecyclerAdapter() {
-        mRecyclerAdapter.setData(mTasks.filter { return@filter it.date == mCurrentDate })
+    private fun setDataToTaskRecyclerAdapter(tasks: List<Task> = mTasks) {
+        mRecyclerAdapter.setData(tasks.filter { return@filter it.date == mCurrentDate })
     }
 }

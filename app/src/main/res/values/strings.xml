@@ -44,4 +44,5 @@
     <string name="quantitative_string">Quantitative</string>
     <string name="amount_string">Amount</string>
     <string name="badAmountForTask_toast">Please, enter a correct amount of iterations of the task</string>
+    <string name="repeatEveryDay">Repeat every day</string>
 </resources>

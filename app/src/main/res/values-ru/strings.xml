@@ -31,4 +31,5 @@
     <string name="quantitative_string">Количественная</string>
     <string name="amount_string">Количество</string>
     <string name="badAmountForTask_toast">Пожалуйста, введите корректное количество повторений задачи</string>
+    <string name="repeatEveryDay">Повторять каждый день</string>
 </resources>

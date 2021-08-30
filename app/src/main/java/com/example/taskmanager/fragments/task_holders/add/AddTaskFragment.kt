@@ -120,13 +120,14 @@ class AddTaskFragment : Fragment() {
         //add new task
         val btn = view.addTaskFragment_button
         val editName = view.addTaskFragment_editName
+        val repeatChkBtn = view.addTaskFragment_isRepeatable
         btn.setOnClickListener {
             val projectOwnerId = (spinner.selectedItem as Project).id
             val amount = editAmount.text.toString()
 
             //try to create task
             val task = createTask(editName.text.toString(), projectOwnerId,
-                editDate.text.toString(), amount)
+                editDate.text.toString(), amount, repeatChkBtn.isChecked)
 
             //add it to the db if it's not null
             task?.let {
@@ -151,7 +152,12 @@ class AddTaskFragment : Fragment() {
      * @see checkDate
      * @see checkAmount
      */
-    private fun createTask(name: String, parentProjectId: Int, date: String, amount: String): Task? {
+    private fun createTask(name: String,
+                           parentProjectId: Int,
+                           date: String,
+                           amount: String,
+                           isRepeatable: Boolean): Task?
+    {
         //name
         if (!checkName(name)) return null
 
@@ -163,7 +169,10 @@ class AddTaskFragment : Fragment() {
         val intAmount = checkAmount(amount)
         intAmount ?: return null
 
-        return Task(0, name, parentProjectId, localDate, intAmount)
+        //repeat
+        val repeat = if (isRepeatable) Task.REPEAT_EVERY_DAY else Task.REPEAT_NEVER
+
+        return Task(0, name, parentProjectId, localDate, intAmount, repeat)
     }
 
     /**
