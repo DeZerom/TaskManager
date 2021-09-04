@@ -9,6 +9,9 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.view.isVisible
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.taskmanager.NavGraphDirections
@@ -26,7 +29,8 @@ class TaskRecyclerAdapter(
     /**
      * [TaskViewModel] for accessing db
      */
-    private val mTaskViewModel: TaskViewModel
+    private val mTaskViewModel: TaskViewModel,
+    lifecycle: LifecycleOwner
     ) : RecyclerView.Adapter<TaskRecyclerAdapter.RowHolder>() {
 
     /**
@@ -51,10 +55,32 @@ class TaskRecyclerAdapter(
         R.layout.support_simple_spinner_dropdown_item)
 
     /**
+     * Filter for filtering [List] of [Task] from [TaskViewModel.allTasks]
+     */
+    private lateinit var mFilter: (Task) -> Boolean
+
+    /**
      * [TaskViewModel] for accessing db
      */
     val taskViewModel: TaskViewModel
-    get() = mTaskViewModel
+        get() = mTaskViewModel
+
+    /**
+     * Filter for filtering [List] of [Task] from [TaskViewModel.allTasks]
+     */
+    var customFilter: (Task) -> Boolean
+        get() { return mFilter }
+        set(value) {
+            mFilter = value
+            mTaskViewModel.allTasks.value?.let { setData(it) }
+        }
+
+
+    init {
+        mTaskViewModel.allTasks.observe(lifecycle) {
+            setData(it)
+        }
+    }
 
     class RowHolder(itemView: View): RecyclerView.ViewHolder(itemView) {}
 
@@ -125,8 +151,12 @@ class TaskRecyclerAdapter(
         return mTasks.size
     }
 
-    fun setData(tasks: List<Task>) {
-        mTasks = tasks
+    private fun setData() {
+
+    }
+
+    fun setData(tasks: List<Task> = mTasks) {
+        mTasks = tasks.filter(mFilter)
         notifyDataSetChanged()
     }
 

@@ -1,6 +1,7 @@
 package com.example.taskmanager.fragments.planner
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +23,7 @@ import kotlinx.android.synthetic.main.fragment_planner.view.*
 import java.time.LocalDate
 
 class PlannerFragment : Fragment() {
+    private val LOG_TAG = "1234"
     private lateinit var mTaskViewModel: TaskViewModel
     private lateinit var mProjectViewModel: ProjectViewModel
     private lateinit var mDaysViewModel: DayOfMonthViewModel
@@ -36,6 +38,7 @@ class PlannerFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_planner, container, false)
+        Log.i("1234", "Planner created")
 
         //view models
         val provider = ViewModelProvider(this)
@@ -44,14 +47,9 @@ class PlannerFragment : Fragment() {
         mDaysViewModel = provider.get(DayOfMonthViewModel::class.java)
 
         //recycler
-        mRecyclerAdapter = TaskRecyclerAdapter(requireContext(), mTaskViewModel)
+        mRecyclerAdapter = TaskRecyclerAdapter(requireContext(), mTaskViewModel, viewLifecycleOwner)
+        mRecyclerAdapter.customFilter = { t: Task -> t.date == mCurrentDate }
         view.plannerFragment_recycler.adapter = mRecyclerAdapter
-
-        //observe all tasks
-        mTaskViewModel.allTasks.observe(viewLifecycleOwner) {
-            mTasks = it
-            setDataToTaskRecyclerAdapter()
-        }
 
         //observe all projects
         mProjectViewModel.allProjects.observe(viewLifecycleOwner) {
@@ -96,10 +94,8 @@ class PlannerFragment : Fragment() {
             //update views
             textView.text = mCurrentDate.toString()
 
-            //observe tasks for the mCurrentDate
-            mTaskViewModel.getTasksByDate(mCurrentDate).observe(viewLifecycleOwner) {
-                setDataToTaskRecyclerAdapter(it)
-            }
+            //change filter in adapter
+            mRecyclerAdapter.customFilter = { t: Task -> t.date == mCurrentDate }
         }
 
         //switch listener
@@ -141,12 +137,16 @@ class PlannerFragment : Fragment() {
         return view
     }
 
+    override fun onDestroyView() {
+        Log.i("1234", "Planner destrooyed")
+        super.onDestroyView()
+    }
+
     /**
-     * Sets data to [mRecyclerAdapter]. Filters [mTasks] to choose only proper tasks.
-     * @param data All tasks that exists
-     * @see mTasks
+     * Sets data to [mRecyclerAdapter].
+     * @param tasks [List] of [Task] to set to [mRecyclerAdapter]
      */
     private fun setDataToTaskRecyclerAdapter(tasks: List<Task> = mTasks) {
-        mRecyclerAdapter.setData(tasks.filter { return@filter it.date == mCurrentDate })
+        mRecyclerAdapter.setData(tasks)
     }
 }
