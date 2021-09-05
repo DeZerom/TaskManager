@@ -31,6 +31,7 @@ class PlannerFragment : Fragment() {
     private var mTasks = emptyList<Task>()
     private var mDays = emptyList<DayOfMonth>()
     private var mCurrentDate = LocalDate.now()
+    private var mCurrentDayOfMonth = DayOfMonth(0, LocalDate.now(), false)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,7 +49,9 @@ class PlannerFragment : Fragment() {
 
         //recycler
         mRecyclerAdapter = TaskRecyclerAdapter(requireContext(), mTaskViewModel, viewLifecycleOwner)
-        mRecyclerAdapter.customFilter = { t: Task -> t.date == mCurrentDate }
+        //filtering strategy and init condition
+        mRecyclerAdapter.filteringStrategy = TaskRecyclerAdapter.FILTER_BY_DAY
+        mRecyclerAdapter.filter.setCondition(mCurrentDayOfMonth)
         view.plannerFragment_recycler.adapter = mRecyclerAdapter
 
         //observe all projects
@@ -57,13 +60,14 @@ class PlannerFragment : Fragment() {
         }
 
         //observe all days
+        val textView = view.plannerFragment_textView
         mDaysViewModel.allDays.observe(viewLifecycleOwner) {
             mDays = it
+            textView.text = mCurrentDayOfMonth.toString()
         }
 
         //text view default state
-        val textView = view.plannerFragment_textView
-        textView.text = mCurrentDate.toString()
+        textView.text = mCurrentDayOfMonth.toString()
 
         //add task btn
         val addTaskBtn = view.plannerFragment_addTaskFab
@@ -88,14 +92,21 @@ class PlannerFragment : Fragment() {
             //check if this day is in mDays
             val d = mDays.find { return@find it.date == mCurrentDate }
             //if not - create it
-            d?.let { switch.isChecked = it.isWeekend }
-                ?: mDaysViewModel.addDay(DayOfMonth(0, mCurrentDate, switch.isChecked))
+            d?.let {
+                mCurrentDayOfMonth = it
+            } ?: run {
+                mCurrentDayOfMonth = DayOfMonth(0, mCurrentDate, false)
+                mDaysViewModel.addDay(mCurrentDayOfMonth)
+            }
+
+            //change switch state
+            switch.isChecked = mCurrentDayOfMonth.isWeekend
 
             //update views
-            textView.text = mCurrentDate.toString()
+            textView.text = mCurrentDayOfMonth.toString()
 
-            //change filter in adapter
-            mRecyclerAdapter.customFilter = { t: Task -> t.date == mCurrentDate }
+            //change filtering condition
+            mRecyclerAdapter.filter.setCondition(mCurrentDayOfMonth)
         }
 
         //switch listener
@@ -107,7 +118,8 @@ class PlannerFragment : Fragment() {
             d ?: return@setOnCheckedChangeListener
             if (isChecked == d.isWeekend) return@setOnCheckedChangeListener
 
-            mDaysViewModel.updateDay(DayOfMonth(d.id, d.date, isChecked))
+            mCurrentDayOfMonth = DayOfMonth(d.id, d.date, isChecked)
+            mDaysViewModel.updateDay(mCurrentDayOfMonth)
         }
 
         //bottom sheet state listener
@@ -135,18 +147,5 @@ class PlannerFragment : Fragment() {
         })
 
         return view
-    }
-
-    override fun onDestroyView() {
-        Log.i("1234", "Planner destrooyed")
-        super.onDestroyView()
-    }
-
-    /**
-     * Sets data to [mRecyclerAdapter].
-     * @param tasks [List] of [Task] to set to [mRecyclerAdapter]
-     */
-    private fun setDataToTaskRecyclerAdapter(tasks: List<Task> = mTasks) {
-        mRecyclerAdapter.setData(tasks)
     }
 }

@@ -39,6 +39,8 @@ class ProjectFragment : Fragment() {
         //set adapter to recycler
         val recyclerView = view.projectFragment_recycler
         mRecyclerAdapter = TaskRecyclerAdapter(requireContext(), mTaskViewModel, viewLifecycleOwner)
+        mRecyclerAdapter.filteringStrategy = TaskRecyclerAdapter.FILTER_BY_PROJECT
+        //condition will be set in onResume
         recyclerView.adapter = mRecyclerAdapter
         //set layout manager
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -61,9 +63,10 @@ class ProjectFragment : Fragment() {
             R.string.errorToast_arguments_providing_nullError, Toast.LENGTH_LONG).show()
 
         //set toolbar title
-        activity?.toolbar?.title = mProject.name
-        //make editProject button in toolbar visible
-        activity?.toolbar?.menu?.findItem(R.id.editProjectFragment)?.isVisible = true
+        activity?.toolbar?.title = mProject.name    
+
+        //change filtering condition
+        mRecyclerAdapter.filter.setCondition(mProject)
 
         //add task button
         val btn = view?.projectFragment_floatingActionButton
@@ -72,21 +75,6 @@ class ProjectFragment : Fragment() {
             findNavController().navigate(action)
         }
 
-        //observe tasks and set them to recycler
-        mTaskViewModel.allTasks.observe(viewLifecycleOwner) {
-            //set to recycler tasks which is owned by mProject
-            mRecyclerAdapter.setData(it.filter { t ->
-                return@filter t.projectOwnerId == mProject.id
-            })
-        }
-
         super.onResume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        //hide edit project button
-        activity?.toolbar?.menu?.findItem(R.id.editProjectFragment)?.isVisible = false
     }
 }

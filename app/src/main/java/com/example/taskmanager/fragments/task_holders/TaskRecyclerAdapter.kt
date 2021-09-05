@@ -2,7 +2,6 @@ package com.example.taskmanager.fragments.task_holders
 
 import android.content.Context
 import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,16 +9,18 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.taskmanager.NavGraphDirections
 import com.example.taskmanager.R
+import com.example.taskmanager.data.UsableForFilteringTasks
+import com.example.taskmanager.data.day.DayOfMonth
 import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.viewmodels.TaskViewModel
 import kotlinx.android.synthetic.main.task_row.view.*
+import java.time.LocalDate
+import kotlin.reflect.KClass
 
 /**
  * An [RecyclerView.Adapter] for recyclers that handle task. Works with [R.layout.task_row]
@@ -57,18 +58,26 @@ class TaskRecyclerAdapter(
     /**
      * Filter for filtering [List] of [Task] from [TaskViewModel.allTasks]
      */
-    private lateinit var mFilter: (Task) -> Boolean
+    private lateinit var mFilter: Filter
 
     /**
-     * [TaskViewModel] for accessing db
+     * Sets filtering strategy. One of default filters ill be used depends on it.
+     * @see FILTER_BY_DAY
+     * @see FILTER_BY_PROJECT
      */
-    val taskViewModel: TaskViewModel
-        get() = mTaskViewModel
+    var filteringStrategy = -1
+        set(value) {
+            field = value
+            when (value) {
+                FILTER_BY_DAY -> { mFilter = ByDateFilter() }
+                FILTER_BY_PROJECT -> { mFilter = ByProjectFilter() }
+            }
+        }
 
     /**
-     * Filter for filtering [List] of [Task] from [TaskViewModel.allTasks]
+     * [Filter] object for filtering [List] of [Task] from [TaskViewModel.allTasks].
      */
-    var customFilter: (Task) -> Boolean
+    var filter: Filter
         get() { return mFilter }
         set(value) {
             mFilter = value
@@ -151,12 +160,8 @@ class TaskRecyclerAdapter(
         return mTasks.size
     }
 
-    private fun setData() {
-
-    }
-
-    fun setData(tasks: List<Task> = mTasks) {
-        mTasks = tasks.filter(mFilter)
+    private fun setData(tasks: List<Task> = mTasks) {
+        mTasks = tasks.filter(mFilter.getPredicate())
         notifyDataSetChanged()
     }
 
@@ -164,5 +169,59 @@ class TaskRecyclerAdapter(
         mSpinnerAdapter.clear()
         mProjects = projects
         mSpinnerAdapter.addAll(mProjects)
+    }
+
+
+    private interface TaskRecyclerAdapterFilter {
+        fun setCondition(cond: UsableForFilteringTasks)
+        fun getPredicate(): (Task) -> Boolean
+    }
+
+    /**
+     * Instances of this class used for filtering [List] of [Task] from [TaskViewModel.allTasks].
+     * Inherit from this class to make custom filter. See default filters for examples
+     * @see TaskRecyclerAdapterFilter
+     * @see UsableForFilteringTasks
+     * @see ByDateFilter
+     * @see ByProjectFilter
+     */
+    abstract inner class Filter: TaskRecyclerAdapterFilter {
+        protected var pred: (Task) -> Boolean = { true }
+            set(value) {
+            field = value
+            updateTasks()
+        }
+
+        override fun getPredicate(): (Task) -> Boolean {
+            return pred
+        }
+
+        private fun updateTasks() {
+            mTaskViewModel.allTasks.value?.let { setData(it) }
+        }
+    }
+
+    private inner class ByDateFilter: Filter() {
+        override fun setCondition(cond: UsableForFilteringTasks) {
+            pred = { it.date == cond.getCondition() }
+        }
+    }
+
+    private inner class ByProjectFilter: Filter() {
+        override fun setCondition(cond: UsableForFilteringTasks) {
+            pred = { it.projectOwnerId == cond.getCondition()}
+        }
+    }
+
+    companion object {
+        /**
+         * Use for filter tasks by date
+         */
+        const val FILTER_BY_DAY = 0
+
+        /**
+         * Use for filter tasks by parent project
+         */
+        const val FILTER_BY_PROJECT = 1
     }
 }

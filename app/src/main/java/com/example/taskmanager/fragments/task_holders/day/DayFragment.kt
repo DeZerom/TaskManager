@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.taskmanager.R
+import com.example.taskmanager.data.day.DayOfMonth
 import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.fragments.task_holders.TaskRecyclerAdapter
 import com.example.taskmanager.viewmodels.ProjectViewModel
@@ -41,15 +42,11 @@ class DayFragment : Fragment() {
         //recycler adapter init
         mTaskRecyclerAdapter = TaskRecyclerAdapter(requireContext(), mTaskViewModel, viewLifecycleOwner)
         //set recycler adapter
+        mTaskRecyclerAdapter.filteringStrategy = TaskRecyclerAdapter.FILTER_BY_DAY
+        mTaskRecyclerAdapter.filter.setCondition(DayOfMonth(0, mDay, false))
         view.dayFragment_recycler.adapter = mTaskRecyclerAdapter
         //set recycler layout
         view.dayFragment_recycler.layoutManager = LinearLayoutManager(requireContext())
-
-        //Observe tasks. Will set data to mTaskRecyclerAdapter as soon as it is possible
-        mTaskViewModel.allTasks.observe(viewLifecycleOwner) {
-            setDataToTaskRecycler(it)
-            mTasks = it
-        }
 
         //observe projects to put them into task_row's spinner
         mProjectViewModel.allProjects.observe(viewLifecycleOwner) {
@@ -101,23 +98,12 @@ class DayFragment : Fragment() {
         bottom.bottomSheet_calendar.setOnDateChangeListener { _, year, month, dayOfMonth ->
             //month numerating starts from 0
             mDay = LocalDate.of(year, month + 1, dayOfMonth)
-            //mTasks is already initialized here, so we can provide them
-            setDataToTaskRecycler()
+
+            //change filtering condition
+            mTaskRecyclerAdapter.filter.setCondition(DayOfMonth(0, mDay, false))
         }
 
         return view
-    }
-
-    /**
-     * Sets data to [mTaskRecyclerAdapter]. Filters [tasks] to choose ones that's [Task.date] is
-     * equal to [mDay]
-     * @param tasks [List] of [Task]
-     * @see LocalDate.equals
-     */
-    private fun setDataToTaskRecycler(tasks: List<Task> = mTasks) {
-        mTaskRecyclerAdapter.setData(tasks.filter {
-            return@filter it.date == mDay
-        })
     }
 
 }
