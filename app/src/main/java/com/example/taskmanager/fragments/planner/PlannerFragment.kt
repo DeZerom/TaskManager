@@ -48,16 +48,12 @@ class PlannerFragment : Fragment() {
         mDaysViewModel = provider.get(DayOfMonthViewModel::class.java)
 
         //recycler
-        mRecyclerAdapter = TaskRecyclerAdapter(requireContext(), mTaskViewModel, viewLifecycleOwner)
+        mRecyclerAdapter = TaskRecyclerAdapter(requireContext(), mTaskViewModel, mProjectViewModel,
+            viewLifecycleOwner)
         //filtering strategy and init condition
         mRecyclerAdapter.filteringStrategy = TaskRecyclerAdapter.FILTER_BY_DAY
         mRecyclerAdapter.filter.setCondition(mCurrentDayOfMonth)
         view.plannerFragment_recycler.adapter = mRecyclerAdapter
-
-        //observe all projects
-        mProjectViewModel.allProjects.observe(viewLifecycleOwner) {
-            mRecyclerAdapter.setProjects(it)
-        }
 
         //observe all days
         val textView = view.plannerFragment_textView

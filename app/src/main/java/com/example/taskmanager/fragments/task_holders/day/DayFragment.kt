@@ -40,18 +40,14 @@ class DayFragment : Fragment() {
         mTaskViewModel = provider.get(TaskViewModel::class.java)
 
         //recycler adapter init
-        mTaskRecyclerAdapter = TaskRecyclerAdapter(requireContext(), mTaskViewModel, viewLifecycleOwner)
+        mTaskRecyclerAdapter = TaskRecyclerAdapter(requireContext(), mTaskViewModel, mProjectViewModel,
+            viewLifecycleOwner)
         //set recycler adapter
         mTaskRecyclerAdapter.filteringStrategy = TaskRecyclerAdapter.FILTER_BY_DAY
         mTaskRecyclerAdapter.filter.setCondition(DayOfMonth(0, mDay, false))
         view.dayFragment_recycler.adapter = mTaskRecyclerAdapter
         //set recycler layout
         view.dayFragment_recycler.layoutManager = LinearLayoutManager(requireContext())
-
-        //observe projects to put them into task_row's spinner
-        mProjectViewModel.allProjects.observe(viewLifecycleOwner) {
-            mTaskRecyclerAdapter.setProjects(it)
-        }
 
         //addTask btn
         //addTaskFragment asks for a Project to set default parent project for task in spinner view,

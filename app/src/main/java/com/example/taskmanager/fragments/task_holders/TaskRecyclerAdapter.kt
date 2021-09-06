@@ -17,6 +17,7 @@ import com.example.taskmanager.data.UsableForFilteringTasks
 import com.example.taskmanager.data.day.DayOfMonth
 import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.data.task.Task
+import com.example.taskmanager.viewmodels.ProjectViewModel
 import com.example.taskmanager.viewmodels.TaskViewModel
 import kotlinx.android.synthetic.main.task_row.view.*
 import java.time.LocalDate
@@ -31,6 +32,7 @@ class TaskRecyclerAdapter(
      * [TaskViewModel] for accessing db
      */
     private val mTaskViewModel: TaskViewModel,
+    private val mProjectViewModel: ProjectViewModel,
     lifecycle: LifecycleOwner
     ) : RecyclerView.Adapter<TaskRecyclerAdapter.RowHolder>() {
 
@@ -88,6 +90,9 @@ class TaskRecyclerAdapter(
     init {
         mTaskViewModel.allTasks.observe(lifecycle) {
             setData(it)
+        }
+        mProjectViewModel.allProjects.observe(lifecycle) {
+            setProjects(it)
         }
     }
 
@@ -209,7 +214,7 @@ class TaskRecyclerAdapter(
 
     private inner class ByProjectFilter: Filter() {
         override fun setCondition(cond: UsableForFilteringTasks) {
-            pred = { it.projectOwnerId == cond.getCondition()}
+            pred = { it.projectOwnerId == cond.getCondition() }
         }
     }
 

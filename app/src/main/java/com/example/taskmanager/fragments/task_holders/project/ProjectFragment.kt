@@ -38,17 +38,13 @@ class ProjectFragment : Fragment() {
 
         //set adapter to recycler
         val recyclerView = view.projectFragment_recycler
-        mRecyclerAdapter = TaskRecyclerAdapter(requireContext(), mTaskViewModel, viewLifecycleOwner)
+        mRecyclerAdapter = TaskRecyclerAdapter(requireContext(), mTaskViewModel, mProjectViewModel,
+            viewLifecycleOwner)
         mRecyclerAdapter.filteringStrategy = TaskRecyclerAdapter.FILTER_BY_PROJECT
         //condition will be set in onResume
         recyclerView.adapter = mRecyclerAdapter
         //set layout manager
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-
-        //observe projects
-        mProjectViewModel.allProjects.observe(viewLifecycleOwner) {
-            mRecyclerAdapter.setProjects(it)
-        }
 
         return view
     }
@@ -63,7 +59,7 @@ class ProjectFragment : Fragment() {
             R.string.errorToast_arguments_providing_nullError, Toast.LENGTH_LONG).show()
 
         //set toolbar title
-        activity?.toolbar?.title = mProject.name    
+        activity?.toolbar?.title = mProject.name
 
         //change filtering condition
         mRecyclerAdapter.filter.setCondition(mProject)
