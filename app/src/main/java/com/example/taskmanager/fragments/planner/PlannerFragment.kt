@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.taskmanager.R
 import com.example.taskmanager.data.day.DayOfMonth
+import com.example.taskmanager.data.day.DaysHandler
 import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.fragments.task_holders.TaskRecyclerAdapter
 import com.example.taskmanager.viewmodels.DayOfMonthViewModel
@@ -28,6 +29,7 @@ class PlannerFragment : Fragment() {
     private lateinit var mProjectViewModel: ProjectViewModel
     private lateinit var mDaysViewModel: DayOfMonthViewModel
     private lateinit var mRecyclerAdapter: TaskRecyclerAdapter
+    private lateinit var mDaysHandler: DaysHandler
     private var mTasks = emptyList<Task>()
     private var mDays = emptyList<DayOfMonth>()
     private var mCurrentDate = LocalDate.now()
@@ -47,6 +49,12 @@ class PlannerFragment : Fragment() {
         mProjectViewModel = provider.get(ProjectViewModel::class.java)
         mDaysViewModel = provider.get(DayOfMonthViewModel::class.java)
 
+        //days handler
+        mDaysHandler = DaysHandler(mDaysViewModel, viewLifecycleOwner)
+        //TODO it's tmp solution
+        mDaysHandler.deleteExcept()
+        if (!mDaysHandler.isMonthExists()) mDaysHandler.createMonth()
+        
         //recycler
         mRecyclerAdapter = TaskRecyclerAdapter(requireContext(), mTaskViewModel, mProjectViewModel,
             viewLifecycleOwner)
