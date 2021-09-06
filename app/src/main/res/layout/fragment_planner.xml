@@ -23,6 +23,12 @@
             android:textColor="@color/black"
             android:textSize="36sp" />
 
+        <Button
+            android:id="@+id/plannerFragment_makePlanBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Make plan" />
+
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/plannerFragment_switchIsWeekend"
             android:layout_width="match_parent"

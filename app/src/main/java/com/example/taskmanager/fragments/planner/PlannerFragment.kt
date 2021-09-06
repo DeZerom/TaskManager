@@ -51,10 +51,7 @@ class PlannerFragment : Fragment() {
 
         //days handler
         mDaysHandler = DaysHandler(mDaysViewModel, viewLifecycleOwner)
-        //TODO it's tmp solution
-        mDaysHandler.deleteExcept()
-        if (!mDaysHandler.isMonthExists()) mDaysHandler.createMonth()
-        
+
         //recycler
         mRecyclerAdapter = TaskRecyclerAdapter(requireContext(), mTaskViewModel, mProjectViewModel,
             viewLifecycleOwner)
@@ -149,6 +146,13 @@ class PlannerFragment : Fragment() {
                 // do nothing
             }
         })
+
+        val makePlanBtn = view.plannerFragment_makePlanBtn
+        makePlanBtn.setOnClickListener {
+            mDaysHandler.deleteExcept()
+            mDaysHandler.deleteDuplicates()
+            if (!mDaysHandler.isMonthExists()) mDaysHandler.createMonth()
+        }
 
         return view
     }
