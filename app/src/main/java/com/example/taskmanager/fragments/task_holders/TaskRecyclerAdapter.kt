@@ -208,7 +208,7 @@ class TaskRecyclerAdapter(
 
     private inner class ByDateFilter: Filter() {
         override fun setCondition(cond: UsableForFilteringTasks) {
-            pred = { it.date == cond.getCondition() }
+            pred = { it.date == cond.getCondition() || it.repeat == Task.REPEAT_EVERY_DAY }
         }
     }
 
