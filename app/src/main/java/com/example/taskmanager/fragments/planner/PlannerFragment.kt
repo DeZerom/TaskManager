@@ -1,5 +1,6 @@
 package com.example.taskmanager.fragments.planner
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -41,8 +42,7 @@ class PlannerFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_planner, container, false)
-        Log.i("1234", "Planner created")
-
+        
         //view models
         val provider = ViewModelProvider(this)
         mTaskViewModel = provider.get(TaskViewModel::class.java)
@@ -152,6 +152,14 @@ class PlannerFragment : Fragment() {
             mDaysHandler.deleteExcept()
             mDaysHandler.deleteDuplicates()
             if (!mDaysHandler.isMonthExists()) mDaysHandler.createMonth()
+
+            val builder = AlertDialog.Builder(requireContext())
+
+            builder.setTitle("Add holidays")
+            builder.setMessage("It is recommended to add holidays by switching 'weekend'")
+            builder.setNeutralButton("Ok") {_, _ ->}
+
+            builder.create().show()
         }
 
         return view
