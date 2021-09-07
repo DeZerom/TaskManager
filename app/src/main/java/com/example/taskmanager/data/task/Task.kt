@@ -33,6 +33,13 @@ data class Task(
     @ColumnInfo(defaultValue = "1") val repeat: Int = 1
 ): Parcelable
 {
+
+    constructor(task: Task, date: LocalDate): this(task.id, task.name, task.projectOwnerId, date,
+    task.amount, task.repeat)
+
+    constructor(task: Task, amount: Int): this(task.id, task.name, task.projectOwnerId, task.date,
+    amount, task.repeat)
+
     override fun toString(): String {
         return name
     }

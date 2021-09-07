@@ -51,10 +51,7 @@ class TaskViewModel(application: Application): AndroidViewModel(application) {
 
     fun completeTask(task: Task) {
         //decrease amount or delete task
-        if (task.amount > 1) updateTask(
-            Task(task.id, task.name, task.projectOwnerId,
-            task.date, task.amount - 1)
-        )
+        if (task.amount > 1) updateTask(Task(task, task.amount - 1))
         else deleteTask(task)
     }
 
