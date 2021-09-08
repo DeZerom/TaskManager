@@ -145,8 +145,8 @@ class TaskRecyclerAdapter(
                 if (currentItem.projectOwnerId == proj.id) return
 
                 //update task
-                mTaskViewModel.updateTask(
-                    Task(currentItem.id, currentItem.name, proj.id, currentItem.date))
+                currentItem.projectOwnerId = proj.id
+                mTaskViewModel.updateTask(currentItem)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {

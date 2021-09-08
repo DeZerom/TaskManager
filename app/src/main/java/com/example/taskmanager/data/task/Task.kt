@@ -22,15 +22,15 @@ import java.time.LocalDate
 data class Task(
     @PrimaryKey(autoGenerate = true) val id: Int,
 
-    @ColumnInfo val name: String,
+    @ColumnInfo var name: String,
 
-    @ColumnInfo(name = "project_owner_id") val projectOwnerId: Int,
+    @ColumnInfo(name = "project_owner_id") var projectOwnerId: Int,
 
-    @ColumnInfo(defaultValue = "2000-01-01") val date: LocalDate,
+    @ColumnInfo(defaultValue = "2000-01-01") var date: LocalDate,
 
-    @ColumnInfo(defaultValue = "-1") val amount: Int = -1,
+    @ColumnInfo(defaultValue = "-1") var amount: Int = -1,
 
-    @ColumnInfo(defaultValue = "1") val repeat: Int = 1
+    @ColumnInfo(defaultValue = "1") var repeat: Int = 1
 ): Parcelable
 {
 

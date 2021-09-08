@@ -16,21 +16,6 @@ class TaskViewModel(application: Application): AndroidViewModel(application) {
 
     val allTasks = repository.allTasks
 
-    fun getTasksByDate(date: LocalDate): LiveData<List<Task>> {
-        //get all?
-        val tasks = allTasks.value
-        tasks ?: return object : LiveData<List<Task>>() {}
-
-        val mutList = LinkedList<Task>()
-        for (t: Task in tasks) {
-            if (t.date == date) mutList.add(t)
-            if (t.repeat == Task.REPEAT_EVERY_DAY) mutList.add(Task(t.id, t.name, t.projectOwnerId,
-                date, t.amount, t.repeat))
-        }
-
-        return object : LiveData<List<Task>>(mutList) {}
-    }
-
     fun addTask(task: Task) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.addTask(task)
@@ -51,7 +36,10 @@ class TaskViewModel(application: Application): AndroidViewModel(application) {
 
     fun completeTask(task: Task) {
         //decrease amount or delete task
-        if (task.amount > 1) updateTask(Task(task, task.amount - 1))
+        if (task.amount > 1) {
+            task.amount--
+            updateTask(task)
+        }
         else deleteTask(task)
     }
 

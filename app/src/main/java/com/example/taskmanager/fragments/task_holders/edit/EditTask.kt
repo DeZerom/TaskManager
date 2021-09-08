@@ -46,8 +46,9 @@ class EditTask : Fragment() {
         tmp?.let { mTask = it }
 
         //get view models
-        mTaskViewModel = ViewModelProvider(this).get(TaskViewModel::class.java)
-        mProjectViewModel = ViewModelProvider(this).get(ProjectViewModel::class.java)
+        val provider = ViewModelProvider(this)
+        mTaskViewModel = provider.get(TaskViewModel::class.java)
+        mProjectViewModel = provider.get(ProjectViewModel::class.java)
 
         //set text to edit fields
         val tv = view.editTask_editName
