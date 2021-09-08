@@ -73,8 +73,11 @@ class PlannerFragment : Fragment() {
         //add task btn
         val addTaskBtn = view.plannerFragment_addTaskFab
         addTaskBtn.setOnClickListener {
-            val a = PlannerFragmentDirections.actionPlannerFragmentToAddTaskFragment(null)
-            findNavController().navigate(a)
+            val beh = BottomSheetBehavior.from(view.plannerFragment_bottomAddEditTask)
+            beh.state = BottomSheetBehavior.STATE_EXPANDED
+
+            //            val a = PlannerFragmentDirections.actionPlannerFragmentToAddTaskFragment(null)
+            //            findNavController().navigate(a)
         }
 
         //show calendar btn

@@ -69,4 +69,8 @@
         android:id="@+id/plannerFragment_bottom"
         layout="@layout/bottom_choose_date" />
 
+    <include
+        android:id="@+id/plannerFragment_bottomAddEditTask"
+        layout="@layout/bottom_add_edit_task" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
