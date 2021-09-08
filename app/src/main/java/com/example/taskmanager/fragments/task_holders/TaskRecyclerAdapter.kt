@@ -125,11 +125,13 @@ class TaskRecyclerAdapter(
         //to avoid miss checked checkboxes thar appears after checking checkbox of upper task_row
         if (chk.isChecked) chk.isChecked = false
         //set check box listener
-        chk.setOnCheckedChangeListener { _, _ ->
+        chk.setOnCheckedChangeListener { _, isChecked ->
             //wait for animation's end
-            Handler().postDelayed({
-                mTaskViewModel.completeTask(currentItem)
-            }, 450L)
+            if (isChecked) {
+                Handler().postDelayed({
+                    mTaskViewModel.completeTask(currentItem)
+                }, 450L)
+            }
         }
 
         //set spinner listener for changing parent project of task

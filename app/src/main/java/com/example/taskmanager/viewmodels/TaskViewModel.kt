@@ -1,6 +1,7 @@
 package com.example.taskmanager.viewmodels
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
@@ -36,6 +37,7 @@ class TaskViewModel(application: Application): AndroidViewModel(application) {
 
     fun completeTask(task: Task) {
         //decrease amount or delete task
+        Log.i("1234", "$task; ${task.amount}")
         if (task.amount > 1) {
             task.amount--
             updateTask(task)
