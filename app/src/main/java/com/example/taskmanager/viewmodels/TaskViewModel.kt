@@ -37,7 +37,6 @@ class TaskViewModel(application: Application): AndroidViewModel(application) {
 
     fun completeTask(task: Task) {
         //decrease amount or delete task
-        Log.i("1234", "$task; ${task.amount}")
         if (task.amount > 1) {
             task.amount--
             updateTask(task)
