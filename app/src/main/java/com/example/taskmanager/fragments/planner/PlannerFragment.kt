@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import com.example.taskmanager.R
 import com.example.taskmanager.data.day.DayOfMonth
 import com.example.taskmanager.data.day.DaysHandler
@@ -31,7 +30,6 @@ class PlannerFragment : Fragment() {
     private lateinit var mDaysViewModel: DayOfMonthViewModel
     private lateinit var mRecyclerAdapter: TaskRecyclerAdapter
     private lateinit var mDaysHandler: DaysHandler
-    private var mTasks = emptyList<Task>()
     private var mDays = emptyList<DayOfMonth>()
     private var mCurrentDate = LocalDate.now()
     private var mCurrentDayOfMonth = DayOfMonth(0, LocalDate.now(), false)
@@ -72,22 +70,25 @@ class PlannerFragment : Fragment() {
 
         //add task btn
         val addTaskBtn = view.plannerFragment_addTaskFab
+        val addEditBottomSheet = view.plannerFragment_bottomAddEditTask
+        val addEditBottomSheetBehavior = BottomSheetBehavior.from(addEditBottomSheet)
         addTaskBtn.setOnClickListener {
-            val beh = BottomSheetBehavior.from(view.plannerFragment_bottomAddEditTask)
-            beh.state = BottomSheetBehavior.STATE_EXPANDED
-
-            //            val a = PlannerFragmentDirections.actionPlannerFragmentToAddTaskFragment(null)
-            //            findNavController().navigate(a)
+            addEditBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
 
         //show calendar btn
         val showCalendarBtn = view.plannerFragment_showCalendarFab
-        val bottomSheetBehavior = BottomSheetBehavior.from(view.plannerFragment_bottom)
+        val calendarBottomSheet = view.plannerFragment_bottom
+        val calendarBottomSheetBehavior = BottomSheetBehavior.from(calendarBottomSheet)
         showCalendarBtn.setOnClickListener {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            calendarBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
 
-        //bottom sheet calendar listener
+        //bottom sheets state listener
+        calendarBottomSheetBehavior.addBottomSheetCallback(bottomsSheetsCallback)
+        addEditBottomSheetBehavior.addBottomSheetCallback(bottomsSheetsCallback)
+
+        //choose date bottom sheet calendar listener
         val switch = view.plannerFragment_switchIsWeekend
         view.plannerFragment_bottom.bottomSheet_calendar.setOnDateChangeListener { _, year, month, dayOfMonth ->
             //get current date
@@ -126,30 +127,7 @@ class PlannerFragment : Fragment() {
             mDaysViewModel.updateDay(mCurrentDayOfMonth)
         }
 
-        //bottom sheet state listener
-        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                when(newState) {
-                    BottomSheetBehavior.STATE_COLLAPSED -> {
-                        addTaskBtn.isVisible = true
-                        showCalendarBtn.isVisible = true
-                    }
-                    BottomSheetBehavior.STATE_HIDDEN -> {
-                        addTaskBtn.isVisible = true
-                        showCalendarBtn.isVisible = true
-                    }
-                    else -> {
-                        addTaskBtn.isVisible = false
-                        showCalendarBtn.isVisible = false
-                    }
-                }
-            }
-
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                // do nothing
-            }
-        })
-
+        //make plan button
         val makePlanBtn = view.plannerFragment_makePlanBtn
         makePlanBtn.setOnClickListener {
             mDaysHandler.deleteExcept()
@@ -166,5 +144,34 @@ class PlannerFragment : Fragment() {
         }
 
         return view
+    }
+
+    /**
+     * [BottomSheetBehavior.BottomSheetCallback] for bottom sheets
+     */
+    private val bottomsSheetsCallback = object : BottomSheetBehavior.BottomSheetCallback() {
+        override fun onStateChanged(bottomSheet: View, newState: Int) {
+            val addTaskBtn = view?.plannerFragment_addTaskFab
+            val showCalendarBtn = view?.plannerFragment_showCalendarFab
+
+            when (newState) {
+                BottomSheetBehavior.STATE_COLLAPSED -> {
+                    addTaskBtn?.isVisible = true
+                    showCalendarBtn?.isVisible = true
+                }
+                BottomSheetBehavior.STATE_HIDDEN -> {
+                    addTaskBtn?.isVisible = true
+                    showCalendarBtn?.isVisible = true
+                }
+                else -> {
+                    addTaskBtn?.isVisible = false
+                    showCalendarBtn?.isVisible = false
+                }
+            }
+        }
+
+        override fun onSlide(bottomSheet: View, slideOffset: Float) {
+            //do nothing
+        }
     }
 }
