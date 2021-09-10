@@ -15,7 +15,7 @@
         android:background="@color/cardview_dark_background" />
 
     <EditText
-        android:id="@+id/addEditTaskFragment_editName"
+        android:id="@+id/addEditTask_editName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -43,7 +43,7 @@
         android:text="@string/today_string" />
 
     <EditText
-        android:id="@+id/addEditTaskFragment_editDate"
+        android:id="@+id/addEditTask_editDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -52,7 +52,7 @@
         android:textAlignment="center" />
 
     <CheckBox
-        android:id="@+id/addEditTaskFragment_isQTask"
+        android:id="@+id/addEditTask_isQTask"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -60,7 +60,7 @@
         android:text="@string/quantitative_string" />
 
     <EditText
-        android:id="@+id/addEditTaskFragment_editAmount"
+        android:id="@+id/addEditTask_editAmount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -70,7 +70,7 @@
         android:textAlignment="center" />
 
     <CheckBox
-        android:id="@+id/addEditTaskFragment_isRepeatable"
+        android:id="@+id/addEditTask_isRepeatable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -78,7 +78,7 @@
         android:text="@string/repeatEveryDay" />
 
     <Button
-        android:id="@+id/addEditTaskFragment_button"
+        android:id="@+id/addEditTask_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"

@@ -33,6 +33,11 @@ data class Task(
     @ColumnInfo(defaultValue = "1") var repeat: Int = 1
 ): Parcelable
 {
+    val isQuantitative: Boolean
+        get() = amount >= 0
+
+    val isRepeatable: Boolean
+        get() = repeat > REPEAT_NEVER
 
     constructor(task: Task, date: LocalDate): this(task.id, task.name, task.projectOwnerId, date,
     task.amount, task.repeat)
