@@ -11,6 +11,7 @@ import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.viewmodels.ProjectViewModel
 import com.example.taskmanager.viewmodels.TaskViewModel
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_add_edit_task.view.*
 import kotlinx.android.synthetic.main.fragment_add_task.view.*
 import java.time.LocalDate
@@ -20,7 +21,6 @@ class AddEditTaskBottomSheetAdapter(
     private val mBottomSheet: View,
     private val mTaskViewModel: TaskViewModel,
     projectViewModel: ProjectViewModel,
-    private var mTask: Task? = null,
     private val mParentProjectId: Int? = null)
 {
     /**
@@ -34,8 +34,26 @@ class AddEditTaskBottomSheetAdapter(
     private val mSpinnerAdapter = ArrayAdapter<Project>(mBottomSheet.context,
         R.layout.support_simple_spinner_dropdown_item)
 
+    /**
+     * [Task] for editing mode
+     */
+    private var mTask: Task? = null
+
+    /**
+     * [Task] to edit
+     */
+    var task: Task?
+        get() = mTask
+        set(value) {
+            mTask = value
+            mIsEditingMode = true
+            mIsAddingMode = false
+        }
+
     private var mIsAddingMode = false
     private var mIsEditingMode = false
+
+    private val mBottomSheetBehavior = BottomSheetBehavior.from(mBottomSheet)
 
     init {
         //get all projects
@@ -116,10 +134,22 @@ class AddEditTaskBottomSheetAdapter(
             }
         }
 
-        //determine if bottomSheet was called for adding tasks or for editing it
-        mTask?.let { editingTaskMode() }
-            ?: run { addingTask() }
+        //bottom sheet callbacks
+        mBottomSheetBehavior.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when(newState) {
+                    BottomSheetBehavior.STATE_EXPANDED -> {
+                        if (mIsEditingMode) editingTaskMode()
+                        else addingTaskMode()
+                    }
+                }
+            }
 
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                //do nothing
+            }
+        })
     }
 
     /**
@@ -149,7 +179,7 @@ class AddEditTaskBottomSheetAdapter(
     /**
      * Sets default selection for spinner and [mIsAddingMode] to true, [mIsEditingMode] to false.
      */
-    private fun addingTask() {
+    private fun addingTaskMode() {
         mIsAddingMode = true
         mIsEditingMode = false
 
@@ -183,7 +213,6 @@ class AddEditTaskBottomSheetAdapter(
         if (!checkName(name)) return null
 
         //there is no need to check parentProjectId. It takes from spinner
-
         //date
         val d = checkDate(date)
         d?: return null

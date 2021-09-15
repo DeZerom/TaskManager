@@ -13,6 +13,7 @@ import com.example.taskmanager.R
 import com.example.taskmanager.data.day.DayOfMonth
 import com.example.taskmanager.data.day.DaysHandler
 import com.example.taskmanager.data.task.Task
+import com.example.taskmanager.fragments.AddEditTaskBottomSheetAdapter
 import com.example.taskmanager.fragments.task_holders.TaskRecyclerAdapter
 import com.example.taskmanager.viewmodels.DayOfMonthViewModel
 import com.example.taskmanager.viewmodels.ProjectViewModel
@@ -33,6 +34,7 @@ class PlannerFragment : Fragment() {
     private var mDays = emptyList<DayOfMonth>()
     private var mCurrentDate = LocalDate.now()
     private var mCurrentDayOfMonth = DayOfMonth(0, LocalDate.now(), false)
+    private lateinit var mAddEditTaskBottomSheetAdapter: AddEditTaskBottomSheetAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -65,13 +67,18 @@ class PlannerFragment : Fragment() {
             textView.text = mCurrentDayOfMonth.toString()
         }
 
+        //addEditTaskAdapter
+        val addEditBottomSheet = view.plannerFragment_bottomAddEditTask
+        val addEditBottomSheetBehavior = BottomSheetBehavior.from(addEditBottomSheet)
+        mAddEditTaskBottomSheetAdapter = AddEditTaskBottomSheetAdapter(addEditBottomSheet,
+            mTaskViewModel, mProjectViewModel)
+
+
         //text view default state
         textView.text = mCurrentDayOfMonth.toString()
 
         //add task btn
         val addTaskBtn = view.plannerFragment_addTaskFab
-        val addEditBottomSheet = view.plannerFragment_bottomAddEditTask
-        val addEditBottomSheetBehavior = BottomSheetBehavior.from(addEditBottomSheet)
         addTaskBtn.setOnClickListener {
             addEditBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
