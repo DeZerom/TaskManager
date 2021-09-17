@@ -120,21 +120,22 @@ class AddEditTaskBottomSheetAdapter(
         //listener for button
         val editName = mBottomSheet.addEditTask_editName
         val isRepeatableChkBox = mBottomSheet.addEditTask_isRepeatable
+        val isQTackChkBox = mBottomSheet.addEditTask_isQTask
         mBottomSheet.addEditTask_button.setOnClickListener {
             //get parent project id. There are only Project instances in mSpinnerAdapter, so it will
             //convert correctly
             val parentProjectId = (spinner.selectedItem as Project).id
             //Try to create task
             val task = createTask(editName.text.toString(), parentProjectId,
-                editDate.text.toString(), editAmount.text.toString(), isRepeatableChkBox.isChecked)
+                editDate.text.toString(), isQTackChkBox.isChecked, editAmount.text.toString(),
+                isRepeatableChkBox.isChecked)
 
             //add or edit task if it exists
             task?.let {
                 if (mIsAddingMode) mTaskViewModel.addTask(it)
                 else mTaskViewModel.updateTask(it)
+                clearAllViews()
             }
-
-            clearAllViews()
         }
 
         //bottom sheet callbacks
@@ -209,6 +210,7 @@ class AddEditTaskBottomSheetAdapter(
         name: String,
         parentProjectId: Int,
         date: String,
+        isQuantitative: Boolean,
         amount: String,
         isRepeatable: Boolean
     ): Task? {
@@ -221,7 +223,8 @@ class AddEditTaskBottomSheetAdapter(
         d?: return null
 
         //amount
-        val a = checkAmount(amount)
+        var a: Int? = -1
+        if (isQuantitative) a = checkAmount(amount)
         a?: return null
 
         //repeat
