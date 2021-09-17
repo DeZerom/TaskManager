@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.core.view.allViews
 import com.example.taskmanager.R
 import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.data.task.Task
@@ -132,6 +133,8 @@ class AddEditTaskBottomSheetAdapter(
                 if (mIsAddingMode) mTaskViewModel.addTask(it)
                 else mTaskViewModel.updateTask(it)
             }
+
+            clearAllViews()
         }
 
         //bottom sheet callbacks
@@ -288,5 +291,16 @@ class AddEditTaskBottomSheetAdapter(
 
         //if everything is OK
         return intAmount
+    }
+
+    private fun clearAllViews() {
+        with(mBottomSheet) {
+            this.addEditTask_editName.text.clear()
+            this.addEditTask_chkBoxToday.isChecked = false
+            this.addEditTask_editDate.text.clear()
+            this.addEditTask_isQTask.isChecked = false
+            this.addEditTask_editAmount.text.clear()
+            this.addEditTask_isRepeatable.isChecked = false
+        }
     }
 }
