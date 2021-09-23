@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.core.view.allViews
 import com.example.taskmanager.R
 import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.data.task.Task
@@ -132,9 +131,17 @@ class AddEditTaskBottomSheetAdapter(
 
             //add or edit task if it exists
             task?.let {
-                if (mIsAddingMode) mTaskViewModel.addTask(it)
-                else mTaskViewModel.updateTask(it)
-                clearAllViews()
+                if (mIsAddingMode) {
+                    mTaskViewModel.addTask(it)
+                    clearAllViews()
+                }
+                else {
+                    mTaskViewModel.updateTask(it)
+                    mTask = null
+                    mIsAddingMode = false
+                    mIsEditingMode = true
+                    clearAllViews()
+                }
             }
         }
 
@@ -296,6 +303,9 @@ class AddEditTaskBottomSheetAdapter(
         return intAmount
     }
 
+    /**
+     * Clears all views. All user inputted data will be cleared
+     */
     private fun clearAllViews() {
         with(mBottomSheet) {
             this.addEditTask_editName.text.clear()
