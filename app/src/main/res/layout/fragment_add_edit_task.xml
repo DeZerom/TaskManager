@@ -1,21 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/addEditTaskFragment_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".fragments.task_holders.AddEditTaskFragment">
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    app:behavior_hideable="true"
+    app:behavior_peekHeight="40dp">
 
     <TextView
-        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/cardview_dark_background" />
+
+    <EditText
+        android:id="@+id/addEditTaskFragment_editName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:autofillHints="name"
+        android:hint="@string/adding_new_task_its_name"
+        android:inputType="textPersonName"
+        android:minHeight="48dp"
+        android:textAlignment="center" />
+
+    <Spinner
+        android:id="@+id/addEditTaskFragment_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:minWidth="60dp"
+        android:minHeight="48dp"
+        android:textAlignment="center" />
+
+    <CheckBox
+        android:id="@+id/addEditTaskFragment_chkBoxToday"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="@string/hello_blank_fragment"
-        android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:text="@string/today_string" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <EditText
+        android:id="@+id/addEditTaskFragment_editDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="@string/localDate_pattern"
+        android:inputType="date"
+        android:textAlignment="center" />
+
+    <CheckBox
+        android:id="@+id/addEditTaskFragment_isQTask"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:text="@string/quantitative_string" />
+
+    <EditText
+        android:id="@+id/addEditTaskFragment_editAmount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:enabled="false"
+        android:hint="@string/amount_string"
+        android:inputType="number"
+        android:textAlignment="center" />
+
+    <CheckBox
+        android:id="@+id/addEditTaskFragment_isRepeatable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:text="@string/repeatEveryDay" />
+
+    <Button
+        android:id="@+id/addEditTaskFragment_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/add_task" />
+
+</LinearLayout>

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.taskmanager.R
 import com.example.taskmanager.data.day.DayOfMonth
 import com.example.taskmanager.data.task.Task
+import com.example.taskmanager.fragments.task_holders.AddEditTaskFragment
 import com.example.taskmanager.fragments.task_holders.TaskRecyclerAdapter
 import com.example.taskmanager.viewmodels.ProjectViewModel
 import com.example.taskmanager.viewmodels.TaskViewModel
@@ -54,8 +55,10 @@ class DayFragment : Fragment() {
         //so we can provide null. AddTaskFragment will handle it
         val addTaskBtn = view.dayFragment_addTaskFloatingButton
         addTaskBtn.setOnClickListener {
-            val a = DayFragmentDirections.actionDayFragmentToAddTaskFragment(null)
-            findNavController().navigate(a)
+            val fr = AddEditTaskFragment()
+            fr.show(parentFragmentManager, fr.tag)
+//            val a = DayFragmentDirections.actionDayFragmentToAddTaskFragment(null)
+//            findNavController().navigate(a)
         }
 
         //calendarButton. Shows bottom sheet
