@@ -55,10 +55,8 @@ class DayFragment : Fragment() {
         //so we can provide null. AddTaskFragment will handle it
         val addTaskBtn = view.dayFragment_addTaskFloatingButton
         addTaskBtn.setOnClickListener {
-            val fr = AddEditTaskFragment()
+            val fr = AddEditTaskFragment.addingMode()
             fr.show(parentFragmentManager, fr.tag)
-//            val a = DayFragmentDirections.actionDayFragmentToAddTaskFragment(null)
-//            findNavController().navigate(a)
         }
 
         //calendarButton. Shows bottom sheet
