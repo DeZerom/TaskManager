@@ -43,8 +43,14 @@ class DayFragment : Fragment() {
         //recycler adapter init
         mTaskRecyclerAdapter = TaskRecyclerAdapter(requireContext(), mTaskViewModel, mProjectViewModel,
             viewLifecycleOwner)
-        //set recycler adapter
         mTaskRecyclerAdapter.filteringStrategy = TaskRecyclerAdapter.FILTER_BY_DAY
+        mTaskRecyclerAdapter.registerCallback(object : TaskRecyclerAdapter.Callback() {
+            override fun taskWantToBeEdited(task: Task) {
+                val fr = AddEditTaskFragment.editingMode(task)
+                fr.show(parentFragmentManager, "AddEditTaskFragment_EDIT_MODE")
+            }
+        })
+        //set recycler adapter
         mTaskRecyclerAdapter.filter.setCondition(DayOfMonth(0, mDay, false))
         view.dayFragment_recycler.adapter = mTaskRecyclerAdapter
         //set recycler layout
@@ -56,7 +62,7 @@ class DayFragment : Fragment() {
         val addTaskBtn = view.dayFragment_addTaskFloatingButton
         addTaskBtn.setOnClickListener {
             val fr = AddEditTaskFragment.addingMode()
-            fr.show(parentFragmentManager, fr.tag)
+            fr.show(parentFragmentManager, "AddEditTaskFragment_ADD_MODE")
         }
 
         //calendarButton. Shows bottom sheet
