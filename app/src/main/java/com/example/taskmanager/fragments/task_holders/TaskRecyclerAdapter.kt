@@ -86,6 +86,12 @@ class TaskRecyclerAdapter(
             mTaskViewModel.allTasks.value?.let { setData(it) }
         }
 
+    /**
+     * List of all [Callback] that was registered via [registerCallback].
+     * All of them will be notified if key event happens
+     */
+    private var mCallbacks = mutableListOf<Callback>()
+
 
     init {
         mTaskViewModel.allTasks.observe(lifecycle) {
@@ -120,6 +126,9 @@ class TaskRecyclerAdapter(
         holder.itemView.taskRow_spinner.setSelection(mSpinnerAdapter.getPosition(mProjects.find {
             return@find it.id == currentItem.projectOwnerId
         }))
+
+        //give callback on task editing intention
+        holder.itemView.taskRow_name.setOnClickListener { notifyTaskWantToBeEdited(currentItem) }
 
         val chk = holder.itemView.taskRow_checkBox
         //to avoid miss checked checkboxes thar appears after checking checkbox of upper task_row
@@ -178,6 +187,15 @@ class TaskRecyclerAdapter(
         mSpinnerAdapter.addAll(mProjects)
     }
 
+    fun registerCallback(c: Callback) {
+        mCallbacks.add(c)
+    }
+
+    private fun notifyTaskWantToBeEdited(task: Task) {
+        mCallbacks.forEach {
+            it.taskWantToBeEdited(task)
+        }
+    }
 
     private interface TaskRecyclerAdapterFilter {
         fun setCondition(cond: UsableForFilteringTasks)
@@ -218,6 +236,10 @@ class TaskRecyclerAdapter(
         override fun setCondition(cond: UsableForFilteringTasks) {
             pred = { it.projectOwnerId == cond.getCondition() }
         }
+    }
+
+    abstract class Callback {
+        abstract fun taskWantToBeEdited(task: Task)
     }
 
     companion object {
