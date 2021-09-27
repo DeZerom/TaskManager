@@ -11,6 +11,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.taskmanager.R
 import com.example.taskmanager.data.project.Project
+import com.example.taskmanager.data.task.Task
+import com.example.taskmanager.fragments.task_holders.AddEditTaskFragment
 import com.example.taskmanager.fragments.task_holders.TaskRecyclerAdapter
 import com.example.taskmanager.viewmodels.ProjectViewModel
 import com.example.taskmanager.viewmodels.TaskViewModel
@@ -41,6 +43,12 @@ class ProjectFragment : Fragment() {
         mRecyclerAdapter = TaskRecyclerAdapter(requireContext(), mTaskViewModel, mProjectViewModel,
             viewLifecycleOwner)
         mRecyclerAdapter.filteringStrategy = TaskRecyclerAdapter.FILTER_BY_PROJECT
+        mRecyclerAdapter.registerCallback(object : TaskRecyclerAdapter.Callback() {
+            override fun taskWantToBeEdited(task: Task) {
+                val f = AddEditTaskFragment.editingMode(task)
+                f.show(parentFragmentManager, f.tag)
+            }
+        })
         //condition will be set in onResume
         recyclerView.adapter = mRecyclerAdapter
         //set layout manager

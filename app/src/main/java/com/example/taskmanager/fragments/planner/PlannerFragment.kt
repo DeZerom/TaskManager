@@ -14,6 +14,7 @@ import com.example.taskmanager.data.day.DayOfMonth
 import com.example.taskmanager.data.day.DaysHandler
 import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.fragments.AddEditTaskBottomSheetAdapter
+import com.example.taskmanager.fragments.task_holders.AddEditTaskFragment
 import com.example.taskmanager.fragments.task_holders.TaskRecyclerAdapter
 import com.example.taskmanager.viewmodels.DayOfMonthViewModel
 import com.example.taskmanager.viewmodels.ProjectViewModel
@@ -34,7 +35,6 @@ class PlannerFragment : Fragment() {
     private var mDays = emptyList<DayOfMonth>()
     private var mCurrentDate = LocalDate.now()
     private var mCurrentDayOfMonth = DayOfMonth(0, LocalDate.now(), false)
-    private lateinit var mAddEditTaskBottomSheetAdapter: AddEditTaskBottomSheetAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,6 +58,12 @@ class PlannerFragment : Fragment() {
         //filtering strategy and init condition
         mRecyclerAdapter.filteringStrategy = TaskRecyclerAdapter.FILTER_BY_DAY
         mRecyclerAdapter.filter.setCondition(mCurrentDayOfMonth)
+        mRecyclerAdapter.registerCallback(object : TaskRecyclerAdapter.Callback() {
+            override fun taskWantToBeEdited(task: Task) {
+                val f = AddEditTaskFragment.editingMode(task)
+                f.show(parentFragmentManager, f.tag)
+            }
+        })
         view.plannerFragment_recycler.adapter = mRecyclerAdapter
 
         //observe all days
@@ -67,20 +73,14 @@ class PlannerFragment : Fragment() {
             textView.text = mCurrentDayOfMonth.toString()
         }
 
-        //addEditTaskAdapter
-        val addEditBottomSheet = view.plannerFragment_bottomAddEditTask
-        val addEditBottomSheetBehavior = BottomSheetBehavior.from(addEditBottomSheet)
-        mAddEditTaskBottomSheetAdapter = AddEditTaskBottomSheetAdapter(addEditBottomSheet,
-            mTaskViewModel, mProjectViewModel)
-
-
         //text view default state
         textView.text = mCurrentDayOfMonth.toString()
 
         //add task btn
         val addTaskBtn = view.plannerFragment_addTaskFab
         addTaskBtn.setOnClickListener {
-            addEditBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            val f = AddEditTaskFragment.addingMode()
+            f.show(parentFragmentManager, f.tag)
         }
 
         //show calendar btn
@@ -93,7 +93,6 @@ class PlannerFragment : Fragment() {
 
         //bottom sheets state listener
         calendarBottomSheetBehavior.addBottomSheetCallback(bottomsSheetsCallback)
-        addEditBottomSheetBehavior.addBottomSheetCallback(bottomsSheetsCallback)
 
         //choose date bottom sheet calendar listener
         val switch = view.plannerFragment_switchIsWeekend
