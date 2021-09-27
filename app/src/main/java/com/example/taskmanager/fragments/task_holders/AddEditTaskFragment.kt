@@ -1,20 +1,26 @@
 package com.example.taskmanager.fragments.task_holders
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.taskmanager.R
 import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.viewmodels.ProjectViewModel
 import com.example.taskmanager.viewmodels.TaskViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import kotlinx.android.synthetic.main.add_task_buttons.*
+import kotlinx.android.synthetic.main.add_task_buttons.view.*
+import kotlinx.android.synthetic.main.edit_task_buttons.view.*
 import kotlinx.android.synthetic.main.fragment_add_edit_task.view.*
 import java.time.LocalDate
 import java.time.format.DateTimeParseException
@@ -40,6 +46,8 @@ class AddEditTaskFragment(
 
     private var mProjects = emptyList<Project>()
 
+    private lateinit var mAttachedButtons: View
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -60,8 +68,18 @@ class AddEditTaskFragment(
             mSpinnerAdapter.addAll(mProjects)
         }
 
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_edit_task, container, false)
+        val view = inflater.inflate(R.layout.fragment_add_edit_task, container, false)
+
+        mTask?.let {
+            mAttachedButtons = inflater.inflate(R.layout.edit_task_buttons, null)
+        } ?: run {
+            mAttachedButtons = inflater.inflate(R.layout.add_task_buttons, null)
+        }
+        view.addEditTaskFragment_layout.addView(mAttachedButtons)
+
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -75,7 +93,6 @@ class AddEditTaskFragment(
         val isQTaskChkBox = view.addEditTaskFragment_isQTask
         val editAmount = view.addEditTaskFragment_editAmount
         val isRepeatableChkBox = view.addEditTaskFragment_chkBoxToday
-        val button = view.addEditTaskFragment_button
 
         spinner.adapter = mSpinnerAdapter
 
@@ -88,7 +105,7 @@ class AddEditTaskFragment(
                 isTodayChkBox.isChecked = it.date == LocalDate.now()
                 editDate.setText(it.date.toString())
                 isQTaskChkBox.isChecked = it.isQuantitative
-                editAmount.setText(it.amount)
+                editAmount.setText(it.amount.toString()) //must be toString or it'll try to find id == amount
                 isRepeatableChkBox.isChecked = it.isRepeatable
             }
         } else {
@@ -112,26 +129,12 @@ class AddEditTaskFragment(
             editAmount.isEnabled = isChecked
         }
 
-        //Creates new task
-        button.setOnClickListener {
-            //get parent project id. There are only Project instances in mSpinnerAdapter, so it will
-            //convert correctly
-            val parentProjectId = (spinner.selectedItem as Project).id
-            //Try to create task
-            val task = createTask(editName.text.toString(), parentProjectId,
-                editDate.text.toString(), isQTaskChkBox.isChecked, editAmount.text.toString(),
-                isRepeatableChkBox.isChecked)
-
-            //add or edit task if it exists
-            task?.let {
-                if (mIsAddingMode) {
-                    mTaskViewModel.addTask(it)
-                }
-                else {
-                    mTaskViewModel.updateTask(it)
-                }
-                this.dismiss()
-            }
+        //Buttons listener
+        if (mAttachedButtons.id == R.id.addTaskButtons_layout) {
+            view.addTaskButtons_button.setOnClickListener(mButtonOnClickListener)
+        } else {
+            view.editTaskButtons_apply.setOnClickListener(mButtonOnClickListener)
+            view.editTaskButtons_delete.setOnClickListener(mButtonOnClickListener)
         }
     }
 
@@ -216,7 +219,7 @@ class AddEditTaskFragment(
         val repeat = if (isRepeatable) Task.REPEAT_EVERY_DAY else Task.REPEAT_NEVER
 
         //if everything is ok, return task
-        return Task(0, name, parentProjectId, d, a, repeat)
+        return Task(id, name, parentProjectId, d, a, repeat)
     }
 
     /**
@@ -276,5 +279,65 @@ class AddEditTaskFragment(
 
         //if everything is OK
         return intAmount
+    }
+
+    private val mButtonOnClickListener = object : View.OnClickListener {
+        override fun onClick(v: View?) {
+            v ?: return
+
+            val spinner = view?.addEditTaskFragment_spinner
+            val editName = view?.addEditTaskFragment_editName
+            val editDate = view?.addEditTaskFragment_editDate
+            val isQTaskChkBox = view?.addEditTaskFragment_isQTask
+            val editAmount = view?.addEditTaskFragment_editAmount
+            val isRepeatableChkBox = view?.addEditTaskFragment_isRepeatable
+            when (v.id) {
+                R.id.addTaskButtons_button, R.id.editTaskButtons_apply -> {
+                    //get parent project id. There are only Project instances in mSpinnerAdapter, so it will
+                    //convert correctly
+                    val parentProjectId = (spinner?.selectedItem as Project).id
+                    //Try to create task
+                    val task = createTask(
+                        editName?.text.toString(), parentProjectId,
+                        editDate?.text.toString(), isQTaskChkBox?.isChecked ?: false,
+                        editAmount?.text.toString(),
+                        isRepeatableChkBox?.isChecked ?: false
+                    )
+                    //add or edit task if it exists
+                    task?.let {
+                        if (mIsAddingMode) {
+                            mTaskViewModel.addTask(it)
+                        } else {
+                            mTask?.let { task.id = mTask.id }
+                            mTaskViewModel.updateTask(it)
+                        }
+                        this@AddEditTaskFragment.dismiss()
+                    }
+                }
+                R.id.editTaskButtons_delete -> {
+                    //alert builder
+                    val builder = AlertDialog.Builder(requireContext())
+
+                    //title
+                    var tmp1 = getString(R.string.deleting_alert_title)
+                    tmp1 += " ${mTask?.name}?"
+                    builder.setTitle(tmp1)
+
+                    //message
+                    tmp1 = getString(R.string.deleting_alert_message)
+                    tmp1 += " ${mTask?.name}?"
+                    builder.setMessage(tmp1)
+
+                    //buttons
+                    builder.setPositiveButton(R.string.deleting_alert_pos_btn) {_, _ ->
+                        mTask?.let { mTaskViewModel.deleteTask(it) }
+                        this@AddEditTaskFragment.dismiss()
+                    }
+                    builder.setNegativeButton(R.string.deleting_alert_neg_btn) {_, _ ->}
+
+                    builder.create().show()
+                }
+            }
+        }
     }
 }

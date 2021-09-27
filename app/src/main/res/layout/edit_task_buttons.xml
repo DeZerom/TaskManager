@@ -20,10 +20,10 @@
         android:layout_height="wrap_content" />
 
     <Button
-        android:layout_weight="1"
         android:id="@+id/editTaskButtons_delete"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:text="@string/editProject_deleteBtn"
         android:textSize="24sp" />
 

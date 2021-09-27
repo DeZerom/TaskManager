@@ -166,10 +166,10 @@ class TaskRecyclerAdapter(
         }
 
         //navigate to task editing fragment
-        holder.itemView.taskRow_name.setOnClickListener {
-            val action = NavGraphDirections.actionGlobalEditTask(currentItem)
-            holder.itemView.findNavController().navigate(action)
-        }
+//        holder.itemView.taskRow_name.setOnClickListener {
+//            val action = NavGraphDirections.actionGlobalEditTask(currentItem)
+//            holder.itemView.findNavController().navigate(action)
+//        }
     }
 
     override fun getItemCount(): Int {

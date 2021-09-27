@@ -20,7 +20,7 @@ import java.time.LocalDate
 )
 @TypeConverters(LocalDateConverter::class)
 data class Task(
-    @PrimaryKey(autoGenerate = true) val id: Int,
+    @PrimaryKey(autoGenerate = true) var id: Int,
 
     @ColumnInfo var name: String,
 
