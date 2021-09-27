@@ -75,8 +75,8 @@ class ProjectFragment : Fragment() {
         //add task button
         val btn = view?.projectFragment_floatingActionButton
         btn?.setOnClickListener {
-            val action = ProjectFragmentDirections.actionProjectFragmentToAddTaskFragment(mProject)
-            findNavController().navigate(action)
+            val f = AddEditTaskFragment.addingMode(mProject)
+            f.show(parentFragmentManager, f.tag)
         }
 
         super.onResume()
