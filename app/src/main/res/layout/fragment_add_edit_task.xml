@@ -77,4 +77,29 @@
         android:layout_marginTop="16dp"
         android:text="@string/repeatEveryDay" />
 
+    <RadioGroup
+        android:id="@+id/addEditTaskFragment_radioButtonGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <RadioButton
+            android:id="@+id/addEditTaskFragment_repeatNever"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/repeatNever"
+            android:checked="true"/>
+
+        <RadioButton
+            android:id="@+id/addEditTaskFragment_repeatEveryDay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/repeatEveryDay" />
+
+        <RadioButton
+            android:id="@+id/addEditTaskFragment_repeatExceptHolidays"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/repeatEveryDay_exceptHolidays" />
+    </RadioGroup>
+
 </LinearLayout>

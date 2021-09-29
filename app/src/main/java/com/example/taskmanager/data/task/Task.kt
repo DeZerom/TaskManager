@@ -52,5 +52,6 @@ data class Task(
     companion object {
         const val REPEAT_NEVER = 1
         const val REPEAT_EVERY_DAY = 2
+        const val REPEAT_EVERY_DAY_EXCEPT_HOLIDAYS = 3
     }
 }

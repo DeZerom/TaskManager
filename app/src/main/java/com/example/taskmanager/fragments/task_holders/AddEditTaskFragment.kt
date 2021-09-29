@@ -36,6 +36,10 @@ class AddEditTaskFragment(
     private val mParentProject: Project? = null
 ) : BottomSheetDialogFragment() {
 
+    /**
+     * Val for representing mode in which this fragment was called. This val always equals
+     * ![mIsAddingMode].
+     */
     private val mIsEditingMode: Boolean
         get() = !mIsAddingMode
 
@@ -44,9 +48,25 @@ class AddEditTaskFragment(
     private lateinit var mTaskViewModel: TaskViewModel
     private lateinit var mProjectViewModel: ProjectViewModel
 
+    /**
+     * List of all projects from [ProjectViewModel.allProjects].
+     * @see [mProjectViewModel]
+     */
     private var mProjects = emptyList<Project>()
 
+    /**
+     * View that holds [R.layout.add_task_buttons] or [R.layout.edit_task_buttons] depends on
+     * [mIsAddingMode]
+     */
     private lateinit var mAttachedButtons: View
+
+    /**
+     * Represents [Task] repeating mode. See [Task.REPEAT_NEVER] or [Task.REPEAT_EVERY_DAY], for
+     * example.
+     * @see Task.REPEAT_NEVER
+     * @see Task.REPEAT_EVERY_DAY
+     */
+    private var mTaskRepeatingMode = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -93,6 +113,7 @@ class AddEditTaskFragment(
         val isQTaskChkBox = view.addEditTaskFragment_isQTask
         val editAmount = view.addEditTaskFragment_editAmount
         val isRepeatableChkBox = view.addEditTaskFragment_chkBoxToday
+        val radioGroup = view.addEditTaskFragment_radioButtonGroup
 
         spinner.adapter = mSpinnerAdapter
 
@@ -128,6 +149,21 @@ class AddEditTaskFragment(
         //Enables or disables editAmount
         isQTaskChkBox.setOnCheckedChangeListener { _, isChecked ->
             editAmount.isEnabled = isChecked
+        }
+
+        //Radio buttons group listener. Finds which radio button clicked
+        radioGroup.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
+                R.id.addEditTaskFragment_repeatNever -> {
+                    mTaskRepeatingMode = Task.REPEAT_NEVER
+                }
+                R.id.addEditTaskFragment_repeatEveryDay -> {
+                    mTaskRepeatingMode = Task.REPEAT_EVERY_DAY
+                }
+                R.id.addEditTaskFragment_repeatExceptHolidays -> {
+                    mTaskRepeatingMode = Task.REPEAT_EVERY_DAY_EXCEPT_HOLIDAYS
+                }
+            }
         }
 
         //Buttons listener
@@ -217,7 +253,7 @@ class AddEditTaskFragment(
         a?: return null
 
         //repeat
-        val repeat = if (isRepeatable) Task.REPEAT_EVERY_DAY else Task.REPEAT_NEVER
+        val repeat = mTaskRepeatingMode
 
         //if everything is ok, return task
         return Task(id, name, parentProjectId, d, a, repeat)

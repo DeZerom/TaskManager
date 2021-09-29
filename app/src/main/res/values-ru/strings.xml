@@ -36,4 +36,6 @@
     <string name="alertDialog_recomendToAddWeekends_message">Рекомендуется добавить выходные, используя переключатель \"Выходной\"</string>
     <string name="ok_string">Ок</string>
     <string name="make_plan">Спланировать</string>
+    <string name="repeatEveryDay_exceptHolidays">Повторять каждый день, кроме выходных</string>
+    <string name="repeatNever">Никогда не повторять</string>
 </resources>

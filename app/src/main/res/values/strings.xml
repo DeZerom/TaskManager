@@ -49,4 +49,6 @@
     <string name="alertDialog_recomendToAddWeekends_message">It is recommended to add holidays by switching \'weekend\'</string>
     <string name="ok_string">Ok</string>
     <string name="make_plan">Make plan</string>
+    <string name="repeatEveryDay_exceptHolidays">Repeat every day except holidays</string>
+    <string name="repeatNever">Repeat never</string>
 </resources>
