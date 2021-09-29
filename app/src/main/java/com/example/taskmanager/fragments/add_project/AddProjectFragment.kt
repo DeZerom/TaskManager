@@ -11,7 +11,6 @@ import com.example.taskmanager.R
 import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.viewmodels.ProjectViewModel
 import kotlinx.android.synthetic.main.fragment_add_project.view.*
-import kotlinx.android.synthetic.main.fragment_add_task.view.*
 import java.time.LocalDate
 
 class AddProjectFragment : Fragment() {

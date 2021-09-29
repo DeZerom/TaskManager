@@ -59,8 +59,7 @@ class MainActivity : AppCompatActivity() {
                 //avoiding ids conflict in onOptionsItemSelected
                 while (i == R.id.settingsFragment || i == R.id.homeFragment ||
                         i == R.id.editProjectFragment || i == R.id.addProjectFragment ||
-                        i == R.id.addTaskFragment || i == R.id.editTask ||
-                        i == R.id.plannerFragment) i++
+                        i == R.id.dayFragment || i == R.id.plannerFragment) i++
                 //adding MenuItem to the menu
                 menu.add(R.id.projects_menu_group, i, NONE, p.name)
                 //writing item id
