@@ -27,7 +27,7 @@
             android:id="@+id/plannerFragment_makePlanBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Make plan" />
+            android:text="@string/make_plan" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/plannerFragment_switchIsWeekend"

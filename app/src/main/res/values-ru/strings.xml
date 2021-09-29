@@ -35,4 +35,5 @@
     <string name="alertDialog_recomendToAddWeekends">Добавте выходные</string>
     <string name="alertDialog_recomendToAddWeekends_message">Рекомендуется добавить выходные, используя переключатель \"Выходной\"</string>
     <string name="ok_string">Ок</string>
+    <string name="make_plan">Спланировать</string>
 </resources>
