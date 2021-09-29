@@ -110,7 +110,8 @@ class AddEditTaskFragment(
             }
         } else {
             mParentProject?.let {
-                spinner.setSelection(mSpinnerAdapter.getPosition(mParentProject))
+                spinner.setSelection(mSpinnerAdapter.getPosition(mProjects.find {
+                    return@find it.id == mParentProject.id }))
             }
         }
 
