@@ -32,4 +32,7 @@
     <string name="amount_string">Количество</string>
     <string name="badAmountForTask_toast">Пожалуйста, введите корректное количество повторений задачи</string>
     <string name="repeatEveryDay">Повторять каждый день</string>
+    <string name="alertDialog_recomendToAddWeekends">Добавте выходные</string>
+    <string name="alertDialog_recomendToAddWeekends_message">Рекомендуется добавить выходные, используя переключатель \"Выходной\"</string>
+    <string name="ok_string">Ок</string>
 </resources>

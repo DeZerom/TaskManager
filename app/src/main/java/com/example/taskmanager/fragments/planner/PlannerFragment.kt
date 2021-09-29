@@ -140,9 +140,9 @@ class PlannerFragment : Fragment() {
 
             val builder = AlertDialog.Builder(requireContext())
 
-            builder.setTitle("Add holidays")
-            builder.setMessage("It is recommended to add holidays by switching 'weekend'")
-            builder.setNeutralButton("Ok") {_, _ ->}
+            builder.setTitle(R.string.alertDialog_recomendToAddWeekends)
+            builder.setMessage(R.string.alertDialog_recomendToAddWeekends_message)
+            builder.setNeutralButton(R.string.ok_string) {_, _ ->}
 
             builder.create().show()
         }
