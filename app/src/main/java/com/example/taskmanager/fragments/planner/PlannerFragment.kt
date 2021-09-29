@@ -2,7 +2,6 @@ package com.example.taskmanager.fragments.planner
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +12,6 @@ import com.example.taskmanager.R
 import com.example.taskmanager.data.day.DayOfMonth
 import com.example.taskmanager.data.day.DaysHandler
 import com.example.taskmanager.data.task.Task
-import com.example.taskmanager.fragments.AddEditTaskBottomSheetAdapter
 import com.example.taskmanager.fragments.task_holders.AddEditTaskFragment
 import com.example.taskmanager.fragments.task_holders.TaskRecyclerAdapter
 import com.example.taskmanager.viewmodels.DayOfMonthViewModel
