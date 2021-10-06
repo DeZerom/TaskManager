@@ -236,8 +236,7 @@ class AddEditTaskFragment(
         parentProjectId: Int,
         date: String,
         isQuantitative: Boolean,
-        amount: String,
-        isRepeatable: Boolean
+        amount: String
     ): Task? {
         //name
         if (!checkName(name)) return null
@@ -327,7 +326,6 @@ class AddEditTaskFragment(
             val editDate = view?.addEditTaskFragment_editDate
             val isQTaskChkBox = view?.addEditTaskFragment_isQTask
             val editAmount = view?.addEditTaskFragment_editAmount
-            val isRepeatableChkBox = view?.addEditTaskFragment_isRepeatable
             when (v.id) {
                 R.id.addTaskButtons_button, R.id.editTaskButtons_apply -> {
                     //get parent project id. There are only Project instances in mSpinnerAdapter, so it will
@@ -337,8 +335,7 @@ class AddEditTaskFragment(
                     val task = createTask(
                         editName?.text.toString(), parentProjectId,
                         editDate?.text.toString(), isQTaskChkBox?.isChecked ?: false,
-                        editAmount?.text.toString(),
-                        isRepeatableChkBox?.isChecked ?: false
+                        editAmount?.text.toString()
                     )
                     //add or edit task if it exists
                     task?.let {
