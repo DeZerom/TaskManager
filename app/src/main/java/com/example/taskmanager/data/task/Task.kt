@@ -30,7 +30,9 @@ data class Task(
 
     @ColumnInfo(defaultValue = "-1") var amount: Int = -1,
 
-    @ColumnInfo(defaultValue = "1") var repeat: Int = 1
+    @ColumnInfo(defaultValue = "1") var repeat: Int = 1,
+
+    @Ignore var isGenerated: Boolean = false
 ): Parcelable
 {
     val isQuantitative: Boolean
