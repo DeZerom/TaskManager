@@ -8,7 +8,10 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.whenResumed
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.taskmanager.NavGraphDirections
@@ -35,7 +38,7 @@ class TaskRecyclerAdapter(
      */
     private val mTaskViewModel: TaskViewModel,
     projectViewModel: ProjectViewModel,
-    lifecycle: LifecycleOwner
+    private val lifecycle: LifecycleOwner
     ) : RecyclerView.Adapter<TaskRecyclerAdapter.RowHolder>() {
 
     /**
@@ -126,6 +129,7 @@ class TaskRecyclerAdapter(
             return@find it.id == currentItem.projectOwnerId
         }))
 
+
         //give callback on task editing intention
         holder.itemView.taskRow_name.setOnClickListener { notifyTaskWantToBeEdited(currentItem) }
 
@@ -174,7 +178,7 @@ class TaskRecyclerAdapter(
         notifyDataSetChanged()
     }
 
-    fun setProjects(projects: List<Project>) {
+    private fun setProjects(projects: List<Project>) {
         mSpinnerAdapter.clear()
         mProjects = projects
         mSpinnerAdapter.addAll(mProjects)

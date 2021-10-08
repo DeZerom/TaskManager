@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.taskmanager.R
 import com.example.taskmanager.data.project.Project
@@ -121,8 +122,10 @@ class AddEditTaskFragment(
         if (mIsEditingMode) {
             mTask?.let {
                 editName.setText(it.name)
-                spinner.setSelection(mSpinnerAdapter.getPosition(mProjects.find { p ->
-                    return@find p.id == it.projectOwnerId }))
+                lifecycleScope.launchWhenResumed {
+                    spinner.setSelection(mSpinnerAdapter.getPosition(mProjects.find { p ->
+                        return@find p.id == it.projectOwnerId }))
+                }
                 isTodayChkBox.isChecked = it.date == LocalDate.now()
                 editDate.setText(it.date.toString())
                 isQTaskChkBox.isChecked = it.isQuantitative
@@ -131,8 +134,10 @@ class AddEditTaskFragment(
             }
         } else {
             mParentProject?.let {
-                spinner.setSelection(mSpinnerAdapter.getPosition(mProjects.find {
-                    return@find it.id == mParentProject.id }))
+                lifecycleScope.launchWhenResumed {
+                    spinner.setSelection(mSpinnerAdapter.getPosition(mProjects.find {
+                        return@find it.id == mParentProject.id }))
+                }
             }
         }
 
