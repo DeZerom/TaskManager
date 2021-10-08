@@ -31,24 +31,23 @@ data class Task(
     @ColumnInfo(defaultValue = "-1") var amount: Int = -1,
 
     @ColumnInfo(defaultValue = "1") var repeat: Int = 1,
-
-    @Ignore var isGenerated: Boolean = false
 ): Parcelable
 {
+    @Ignore var isGenerated = false
     val isQuantitative: Boolean
         get() = amount >= 0
 
     val isRepeatable: Boolean
         get() = repeat > REPEAT_NEVER
 
-    constructor(task: Task, date: LocalDate): this(task.id, task.name, task.projectOwnerId, date,
-    task.amount, task.repeat)
+    @Ignore constructor(task: Task, date: LocalDate): this(task.id, task.name, task.projectOwnerId,
+        date, task.amount, task.repeat)
 
-    constructor(task: Task, amount: Int): this(task.id, task.name, task.projectOwnerId, task.date,
-    amount, task.repeat)
+    @Ignore constructor(task: Task, amount: Int): this(task.id, task.name, task.projectOwnerId,
+        task.date, amount, task.repeat)
 
     override fun toString(): String {
-        return name
+        return "$id $name $isGenerated"
     }
 
     companion object {

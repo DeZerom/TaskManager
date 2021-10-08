@@ -23,6 +23,6 @@ data class Project(
     }
 
     override fun getCondition(): Any {
-        return id
+        return this
     }
 }

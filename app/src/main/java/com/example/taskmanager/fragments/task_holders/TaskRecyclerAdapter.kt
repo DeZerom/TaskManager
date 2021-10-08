@@ -18,6 +18,7 @@ import com.example.taskmanager.data.day.DayOfMonth
 import com.example.taskmanager.data.day.DaysHandler
 import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.data.task.Task
+import com.example.taskmanager.data.task.generator.TaskGenerator
 import com.example.taskmanager.viewmodels.ProjectViewModel
 import com.example.taskmanager.viewmodels.TaskViewModel
 import kotlinx.android.synthetic.main.task_row.view.*
@@ -33,7 +34,7 @@ class TaskRecyclerAdapter(
      * [TaskViewModel] for accessing db
      */
     private val mTaskViewModel: TaskViewModel,
-    private val mProjectViewModel: ProjectViewModel,
+    projectViewModel: ProjectViewModel,
     lifecycle: LifecycleOwner
     ) : RecyclerView.Adapter<TaskRecyclerAdapter.RowHolder>() {
 
@@ -48,23 +49,18 @@ class TaskRecyclerAdapter(
     private var mProjects = emptyList<Project>()
 
     /**
-     * Log tag for logging something
-     */
-    private val LOG_TAG = "1234"
-
-    /**
      * An [ArrayAdapter] for spinner in [R.layout.task_row]
      */
     private val mSpinnerAdapter = ArrayAdapter<Project>(context,
         R.layout.support_simple_spinner_dropdown_item)
 
     /**
-     * Filter for filtering [List] of [Task] from [TaskViewModel.allTasks]
+     * Internal var for [filter]
      */
     private lateinit var mFilter: Filter
 
     /**
-     * Sets filtering strategy. One of default filters ill be used depends on it.
+     * Sets filtering strategy. One of default filters will be used depends on it.
      * @see FILTER_BY_DAY
      * @see FILTER_BY_PROJECT
      */
@@ -78,13 +74,14 @@ class TaskRecyclerAdapter(
         }
 
     /**
-     * [Filter] object for filtering [List] of [Task] from [TaskViewModel.allTasks].
+     * [Filter] for getting from [TaskGenerator] [List] of [Task] containing only needed tasks.
+     * It is necessary to call [Filter.setCondition] to change this list.
+     * @see Filter.setCondition
      */
     var filter: Filter
         get() { return mFilter }
         set(value) {
             mFilter = value
-            mTaskViewModel.allTasks.value?.let { setData(it) }
         }
 
     /**
@@ -93,12 +90,13 @@ class TaskRecyclerAdapter(
      */
     private var mCallbacks = mutableListOf<Callback>()
 
+    private val mTaskGenerator = TaskGenerator(lifecycle, mTaskViewModel)
 
     init {
-        mTaskViewModel.allTasks.observe(lifecycle) {
+        mTaskGenerator.result.observe(lifecycle) {
             setData(it)
         }
-        mProjectViewModel.allProjects.observe(lifecycle) {
+        projectViewModel.allProjects.observe(lifecycle) {
             setProjects(it)
         }
     }
@@ -171,8 +169,8 @@ class TaskRecyclerAdapter(
         return mTasks.size
     }
 
-    private fun setData(tasks: List<Task> = mTasks) {
-        mTasks = tasks.filter(mFilter.getPredicate())
+    private fun setData(tasks: List<Task>) {
+        mTasks = tasks
         notifyDataSetChanged()
     }
 
@@ -192,44 +190,34 @@ class TaskRecyclerAdapter(
         }
     }
 
-    private interface TaskRecyclerAdapterFilter {
-        fun setCondition(cond: UsableForFilteringTasks)
-        fun getPredicate(): (Task) -> Boolean
-    }
-
     /**
-     * Instances of this class used for filtering [List] of [Task] from [TaskViewModel.allTasks].
-     * Inherit from this class to make custom filter. See default filters for examples
-     * @see TaskRecyclerAdapterFilter
+     * Instances of this class used for getting [List] of [Task] containing only needed tasks
+     * from [TaskGenerator]. Inherit from this class to make custom filter. See default filters
+     * for examples.
      * @see UsableForFilteringTasks
      * @see ByDateFilter
      * @see ByProjectFilter
      */
-    abstract inner class Filter: TaskRecyclerAdapterFilter {
-        protected var pred: (Task) -> Boolean = { true }
-            set(value) {
-            field = value
-            updateTasks()
-        }
-
-        override fun getPredicate(): (Task) -> Boolean {
-            return pred
-        }
-
-        private fun updateTasks() {
-            mTaskViewModel.allTasks.value?.let { setData(it) }
-        }
+    abstract inner class Filter {
+        abstract fun setCondition(cond: UsableForFilteringTasks)
     }
 
     private inner class ByDateFilter: Filter() {
         override fun setCondition(cond: UsableForFilteringTasks) {
-            pred = { it.date == cond.getCondition() || it.repeat == Task.REPEAT_EVERY_DAY }
+            if (cond.getCondition() !is DayOfMonth)
+                throw IllegalArgumentException("cond is not instance of ${DayOfMonth::class}")
+            val d = cond.getCondition() as DayOfMonth
+            mTaskGenerator.generateForDay(d)
         }
     }
 
     private inner class ByProjectFilter: Filter() {
         override fun setCondition(cond: UsableForFilteringTasks) {
-            pred = { it.projectOwnerId == cond.getCondition() }
+            if (cond.getCondition() !is Project) {
+                throw IllegalArgumentException("cond is not instance of ${Project::class}")
+            }
+            val p = cond.getCondition() as Project
+            mTaskGenerator.generateForProjectExceptGenerated(p)
         }
     }
 

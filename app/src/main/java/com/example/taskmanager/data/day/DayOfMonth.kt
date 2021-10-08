@@ -25,6 +25,6 @@ data class DayOfMonth(
     }
 
     override fun getCondition(): Any {
-        return date
+        return this
     }
 }
