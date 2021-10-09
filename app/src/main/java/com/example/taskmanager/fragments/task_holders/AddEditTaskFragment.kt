@@ -4,15 +4,13 @@ import android.app.AlertDialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import com.example.taskmanager.R
 import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.data.task.Task
@@ -54,6 +52,7 @@ class AddEditTaskFragment(
      * @see [mProjectViewModel]
      */
     private var mProjects = emptyList<Project>()
+    private var mProjectsHaventSet = true //to set default selection in spinner
 
     /**
      * View that holds [R.layout.add_task_buttons] or [R.layout.edit_task_buttons] depends on
@@ -73,6 +72,9 @@ class AddEditTaskFragment(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // Inflate the layout for this fragment
+        val view = inflater.inflate(R.layout.fragment_add_edit_task, container, false)
+
         //spinner adapter
         mSpinnerAdapter = ArrayAdapter(requireContext(),
             R.layout.support_simple_spinner_dropdown_item)
@@ -87,11 +89,16 @@ class AddEditTaskFragment(
             mProjects = it
             mSpinnerAdapter.clear()
             mSpinnerAdapter.addAll(mProjects)
+            if (mProjectsHaventSet) { //setting default selection in spinner
+                if (mTask != null) setDefaultSelection(view.addEditTaskFragment_spinner,
+                    mTask.projectOwnerId) //task given => editing mode, so we provide its parentProjectId
+                else if (mParentProject != null) setDefaultSelection(view.addEditTaskFragment_spinner,
+                    mParentProject.id) //parentProject given => adding mode, so we provide its id
+                //Neither task nor parentProject may be given, but in this case we shouldn't set
+                // default selection
+                mProjectsHaventSet = false
+            }
         }
-
-
-        // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_add_edit_task, container, false)
 
         mTask?.let {
             mAttachedButtons = inflater.inflate(R.layout.edit_task_buttons, null)
@@ -122,22 +129,11 @@ class AddEditTaskFragment(
         if (mIsEditingMode) {
             mTask?.let {
                 editName.setText(it.name)
-                lifecycleScope.launchWhenResumed {
-                    spinner.setSelection(mSpinnerAdapter.getPosition(mProjects.find { p ->
-                        return@find p.id == it.projectOwnerId }))
-                }
                 isTodayChkBox.isChecked = it.date == LocalDate.now()
                 editDate.setText(it.date.toString())
                 isQTaskChkBox.isChecked = it.isQuantitative
                 editAmount.setText(it.amount.toString()) //must be toString or it'll try to find id == amount
                 isRepeatableChkBox.isChecked = it.isRepeatable
-            }
-        } else {
-            mParentProject?.let {
-                lifecycleScope.launchWhenResumed {
-                    spinner.setSelection(mSpinnerAdapter.getPosition(mProjects.find {
-                        return@find it.id == mParentProject.id }))
-                }
             }
         }
 
@@ -320,6 +316,12 @@ class AddEditTaskFragment(
 
         //if everything is OK
         return intAmount
+    }
+
+    private fun setDefaultSelection(spinner: Spinner, idToFind: Int) {
+        spinner.setSelection(mSpinnerAdapter.getPosition(mProjects.find {
+            return@find it.id == idToFind
+        }))
     }
 
     private val mButtonOnClickListener = object : View.OnClickListener {
