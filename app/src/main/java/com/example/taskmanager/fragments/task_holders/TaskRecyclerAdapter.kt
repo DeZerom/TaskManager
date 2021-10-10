@@ -8,25 +8,18 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.view.isVisible
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.whenResumed
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import com.example.taskmanager.NavGraphDirections
 import com.example.taskmanager.R
+import com.example.taskmanager.data.DatabaseController
 import com.example.taskmanager.data.UsableForFilteringTasks
 import com.example.taskmanager.data.day.DayOfMonth
-import com.example.taskmanager.data.day.DaysHandler
 import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.data.task.generator.TaskGenerator
-import com.example.taskmanager.viewmodels.ProjectViewModel
-import com.example.taskmanager.viewmodels.TaskViewModel
+import com.example.taskmanager.data.viewmodels.ProjectViewModel
+import com.example.taskmanager.data.viewmodels.TaskViewModel
 import kotlinx.android.synthetic.main.task_row.view.*
-import java.time.LocalDate
-import kotlin.reflect.KClass
 
 /**
  * An [RecyclerView.Adapter] for recyclers that handle task. Works with [R.layout.task_row]
@@ -40,6 +33,10 @@ class TaskRecyclerAdapter(
     projectViewModel: ProjectViewModel,
     private val lifecycle: LifecycleOwner
     ) : RecyclerView.Adapter<TaskRecyclerAdapter.RowHolder>() {
+
+    constructor(context: Context, databaseController: DatabaseController, lifecycle: LifecycleOwner):
+            this(context, databaseController.taskViewModel,
+                databaseController.projectViewModel, lifecycle)
 
     /**
      * Current list of tasks

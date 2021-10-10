@@ -1,4 +1,4 @@
-package com.example.taskmanager.repositories
+package com.example.taskmanager.data.repositories
 
 import android.content.Context
 import com.example.taskmanager.data.TheDatabase

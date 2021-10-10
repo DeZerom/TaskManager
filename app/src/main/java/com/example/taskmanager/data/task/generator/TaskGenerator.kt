@@ -7,10 +7,9 @@ import com.example.taskmanager.data.UsableForFilteringTasks
 import com.example.taskmanager.data.day.DayOfMonth
 import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.data.task.Task
-import com.example.taskmanager.viewmodels.TaskViewModel
+import com.example.taskmanager.data.viewmodels.TaskViewModel
 import java.time.LocalDate
 import java.util.*
-import kotlin.reflect.KFunction
 
 class TaskGenerator(lifecycle: LifecycleOwner, taskViewModel: TaskViewModel) {
     /**

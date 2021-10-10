@@ -27,4 +27,10 @@ data class DayOfMonth(
     override fun getCondition(): Any {
         return this
     }
+
+    companion object {
+        fun createWithAnotherIsWeekend(d: DayOfMonth, isWeekend: Boolean): DayOfMonth {
+            return DayOfMonth(d.id, d.date, isWeekend)
+        }
+    }
 }

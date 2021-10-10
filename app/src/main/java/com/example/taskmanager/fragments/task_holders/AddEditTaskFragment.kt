@@ -14,8 +14,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.taskmanager.R
 import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.data.task.Task
-import com.example.taskmanager.viewmodels.ProjectViewModel
-import com.example.taskmanager.viewmodels.TaskViewModel
+import com.example.taskmanager.data.viewmodels.ProjectViewModel
+import com.example.taskmanager.data.viewmodels.TaskViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.add_task_buttons.*
 import kotlinx.android.synthetic.main.add_task_buttons.view.*

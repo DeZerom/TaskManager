@@ -7,15 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.taskmanager.R
 import com.example.taskmanager.data.day.DayOfMonth
 import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.fragments.task_holders.AddEditTaskFragment
 import com.example.taskmanager.fragments.task_holders.TaskRecyclerAdapter
-import com.example.taskmanager.viewmodels.ProjectViewModel
-import com.example.taskmanager.viewmodels.TaskViewModel
+import com.example.taskmanager.data.viewmodels.ProjectViewModel
+import com.example.taskmanager.data.viewmodels.TaskViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_choose_date.view.*
 import kotlinx.android.synthetic.main.fragment_day.view.*

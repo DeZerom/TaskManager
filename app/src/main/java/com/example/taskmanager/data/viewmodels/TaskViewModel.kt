@@ -1,16 +1,12 @@
-package com.example.taskmanager.viewmodels
+package com.example.taskmanager.data.viewmodels
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.taskmanager.data.task.Task
-import com.example.taskmanager.repositories.TaskRepository
+import com.example.taskmanager.data.repositories.TaskRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.time.LocalDate
-import java.util.*
 
 class TaskViewModel(application: Application): AndroidViewModel(application) {
     private val repository = TaskRepository(application.applicationContext)
@@ -40,8 +36,11 @@ class TaskViewModel(application: Application): AndroidViewModel(application) {
         if (task.amount > 1) {
             task.amount--
             updateTask(task)
+        } else deleteTask(task)
+        if (task.repeat == Task.REPEAT_EVERY_DAY) {
+            task.date.plusDays(1)
+            updateTask(task)
         }
-        else deleteTask(task)
     }
 
 }

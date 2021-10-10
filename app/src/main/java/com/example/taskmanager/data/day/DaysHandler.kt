@@ -3,10 +3,8 @@ package com.example.taskmanager.data.day
 import androidx.annotation.IntRange
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import com.example.taskmanager.viewmodels.DayOfMonthViewModel
-import java.lang.NullPointerException
+import com.example.taskmanager.data.viewmodels.DayOfMonthViewModel
 import java.time.*
-import java.time.temporal.TemporalAccessor
 
 /**
  * Will work properly only if [Lifecycle.State] is at least [Lifecycle.State.RESUMED]

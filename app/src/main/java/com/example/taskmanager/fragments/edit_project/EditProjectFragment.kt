@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.taskmanager.R
 import com.example.taskmanager.data.project.Project
-import com.example.taskmanager.viewmodels.ProjectViewModel
+import com.example.taskmanager.data.viewmodels.ProjectViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_edit_project.view.*
 

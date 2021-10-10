@@ -2,6 +2,7 @@ package com.example.taskmanager.fragments.planner
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,14 +10,15 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.taskmanager.R
+import com.example.taskmanager.data.DatabaseController
 import com.example.taskmanager.data.day.DayOfMonth
 import com.example.taskmanager.data.day.DaysHandler
 import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.fragments.task_holders.AddEditTaskFragment
 import com.example.taskmanager.fragments.task_holders.TaskRecyclerAdapter
-import com.example.taskmanager.viewmodels.DayOfMonthViewModel
-import com.example.taskmanager.viewmodels.ProjectViewModel
-import com.example.taskmanager.viewmodels.TaskViewModel
+import com.example.taskmanager.data.viewmodels.DayOfMonthViewModel
+import com.example.taskmanager.data.viewmodels.ProjectViewModel
+import com.example.taskmanager.data.viewmodels.TaskViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_choose_date.view.*
 import kotlinx.android.synthetic.main.fragment_day.view.*
@@ -25,14 +27,10 @@ import java.time.LocalDate
 
 class PlannerFragment : Fragment() {
     private val LOG_TAG = "1234"
-    private lateinit var mTaskViewModel: TaskViewModel
-    private lateinit var mProjectViewModel: ProjectViewModel
-    private lateinit var mDaysViewModel: DayOfMonthViewModel
+    private lateinit var mDatabaseController: DatabaseController
     private lateinit var mRecyclerAdapter: TaskRecyclerAdapter
-    private lateinit var mDaysHandler: DaysHandler
-    private var mDays = emptyList<DayOfMonth>()
     private var mCurrentDate = LocalDate.now()
-    private var mCurrentDayOfMonth = DayOfMonth(0, LocalDate.now(), false)
+    private var mCurrentDayOfMonth = DayOfMonth(0, mCurrentDate, false)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,19 +38,11 @@ class PlannerFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_planner, container, false)
-        
-        //view models
-        val provider = ViewModelProvider(this)
-        mTaskViewModel = provider.get(TaskViewModel::class.java)
-        mProjectViewModel = provider.get(ProjectViewModel::class.java)
-        mDaysViewModel = provider.get(DayOfMonthViewModel::class.java)
 
-        //days handler
-        mDaysHandler = DaysHandler(mDaysViewModel, viewLifecycleOwner)
+        mDatabaseController = DatabaseController(this)
 
         //recycler
-        mRecyclerAdapter = TaskRecyclerAdapter(requireContext(), mTaskViewModel, mProjectViewModel,
-            viewLifecycleOwner)
+        mRecyclerAdapter = TaskRecyclerAdapter(requireContext(), mDatabaseController, viewLifecycleOwner)
         //filtering strategy and init condition
         mRecyclerAdapter.filteringStrategy = TaskRecyclerAdapter.FILTER_BY_DAY
         mRecyclerAdapter.filter.setCondition(mCurrentDayOfMonth)
@@ -66,13 +56,10 @@ class PlannerFragment : Fragment() {
 
         //observe all days
         val textView = view.plannerFragment_textView
-        mDaysViewModel.allDays.observe(viewLifecycleOwner) {
-            mDays = it
+        mDatabaseController.daysViewModel.allDays.observe(viewLifecycleOwner) {
+            mCurrentDayOfMonth = mDatabaseController.getDay(mCurrentDate)
             textView.text = mCurrentDayOfMonth.toString()
         }
-
-        //text view default state
-        textView.text = mCurrentDayOfMonth.toString()
 
         //add task btn
         val addTaskBtn = view.plannerFragment_addTaskFab
@@ -98,15 +85,8 @@ class PlannerFragment : Fragment() {
             //get current date
             mCurrentDate = LocalDate.of(year, month + 1, dayOfMonth)
 
-            //check if this day is in mDays
-            val d = mDays.find { return@find it.date == mCurrentDate }
-            //if not - create it
-            d?.let {
-                mCurrentDayOfMonth = it
-            } ?: run {
-                mCurrentDayOfMonth = DayOfMonth(0, mCurrentDate, false)
-                mDaysViewModel.addDay(mCurrentDayOfMonth)
-            }
+            //get current DayOfMonth
+            mCurrentDayOfMonth = mDatabaseController.getDay(mCurrentDate)
 
             //change switch state
             switch.isChecked = mCurrentDayOfMonth.isWeekend
@@ -120,23 +100,21 @@ class PlannerFragment : Fragment() {
 
         //switch listener
         switch.setOnCheckedChangeListener { _, isChecked ->
-            //find day
-            val d = mDays.find { return@find it.date == mCurrentDate }
+            //if nothing changed - return
+            if (isChecked == mCurrentDayOfMonth.isWeekend) return@setOnCheckedChangeListener
 
-            //if haven't found or nothing changed - return
-            d ?: return@setOnCheckedChangeListener
-            if (isChecked == d.isWeekend) return@setOnCheckedChangeListener
-
-            mCurrentDayOfMonth = DayOfMonth(d.id, d.date, isChecked)
-            mDaysViewModel.updateDay(mCurrentDayOfMonth)
+            Log.i("1234", "$isChecked ${mCurrentDayOfMonth.date} ${mCurrentDayOfMonth.isWeekend}")
+            mCurrentDayOfMonth = DayOfMonth.createWithAnotherIsWeekend(mCurrentDayOfMonth, isChecked)
+            mDatabaseController.updateDay(mCurrentDayOfMonth)
         }
 
         //make plan button
         val makePlanBtn = view.plannerFragment_makePlanBtn
         makePlanBtn.setOnClickListener {
-            mDaysHandler.deleteExcept()
-            mDaysHandler.deleteDuplicates()
-            if (!mDaysHandler.isMonthExists()) mDaysHandler.createMonth()
+            mDatabaseController.deleteMonthsExcept(mCurrentDate.month)
+            mDatabaseController.deleteDuplicatedDays()
+            if (!mDatabaseController.isMonthExists(mCurrentDate.month))
+                mDatabaseController.createMonth(mCurrentDate.month)
 
             val builder = AlertDialog.Builder(requireContext())
 

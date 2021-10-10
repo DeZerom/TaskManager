@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.taskmanager.R
-import com.example.taskmanager.viewmodels.ProjectViewModel
+import com.example.taskmanager.data.viewmodels.ProjectViewModel
 import kotlinx.android.synthetic.main.home_fragment.view.*
 
 class HomeFragment : Fragment() {
