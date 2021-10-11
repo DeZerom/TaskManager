@@ -9,6 +9,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.taskmanager.R
+import com.example.taskmanager.data.DatabaseController
 import com.example.taskmanager.data.day.DayOfMonth
 import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.fragments.task_holders.AddEditTaskFragment
@@ -21,11 +22,9 @@ import kotlinx.android.synthetic.main.fragment_day.view.*
 import java.time.LocalDate
 
 class DayFragment : Fragment() {
-    private lateinit var mProjectViewModel: ProjectViewModel
-    private lateinit var mTaskViewModel: TaskViewModel
+    private lateinit var mDatabaseController: DatabaseController
     private var mDay = LocalDate.now()
     private lateinit var mTaskRecyclerAdapter: TaskRecyclerAdapter
-    private lateinit var mTasks: List<Task>
     private val LOG_TAG = "1234"
 
     override fun onCreateView(
@@ -35,12 +34,10 @@ class DayFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_day, container, false)
 
         //view models
-        val provider = ViewModelProvider(this)
-        mProjectViewModel = provider.get(ProjectViewModel::class.java)
-        mTaskViewModel = provider.get(TaskViewModel::class.java)
+        mDatabaseController = DatabaseController(this)
 
         //recycler adapter init
-        mTaskRecyclerAdapter = TaskRecyclerAdapter(requireContext(), mTaskViewModel, mProjectViewModel,
+        mTaskRecyclerAdapter = TaskRecyclerAdapter(requireContext(), mDatabaseController,
             viewLifecycleOwner)
         mTaskRecyclerAdapter.filteringStrategy = TaskRecyclerAdapter.FILTER_BY_DAY
         mTaskRecyclerAdapter.registerCallback(object : TaskRecyclerAdapter.Callback() {
