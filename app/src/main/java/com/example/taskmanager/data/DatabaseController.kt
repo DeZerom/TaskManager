@@ -42,8 +42,6 @@ class DatabaseController(fragment: Fragment) {
     val daysHandler: DaysHandler
         get() = mDaysHandler
 
-    private val mLifecycleScope = fragment.lifecycleScope
-
     init {
         val provider = ViewModelProvider(fragment)
         mTaskViewModel = provider.get(TaskViewModel::class.java)
@@ -117,5 +115,4 @@ class DatabaseController(fragment: Fragment) {
     fun generateForProjectExceptGenerated(project: Project) {
         mTaskGenerator.generateForProjectExceptGenerated(project)
     }
-
 }
