@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.taskmanager.R
+import com.example.taskmanager.data.DatabaseController
 import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.fragments.task_holders.AddEditTaskFragment
@@ -20,8 +21,7 @@ import kotlinx.android.synthetic.main.fragment_project.view.*
 
 class ProjectFragment : Fragment() {
     private lateinit var mProject: Project
-    private lateinit var mTaskViewModel: TaskViewModel
-    private lateinit var mProjectViewModel: ProjectViewModel
+    private lateinit var mDatabaseController: DatabaseController
     private lateinit var mRecyclerAdapter: TaskRecyclerAdapter
     private val LOG_TAG = "1234"
 
@@ -32,14 +32,11 @@ class ProjectFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_project, container, false)
 
-        //get view models
-        val provider = ViewModelProvider(this)
-        mTaskViewModel = provider.get(TaskViewModel::class.java)
-        mProjectViewModel = provider.get(ProjectViewModel::class.java)
+        mDatabaseController = DatabaseController(this)
 
         //set adapter to recycler
         val recyclerView = view.projectFragment_recycler
-        mRecyclerAdapter = TaskRecyclerAdapter(requireContext(), mTaskViewModel, mProjectViewModel,
+        mRecyclerAdapter = TaskRecyclerAdapter(requireContext(), mDatabaseController,
             viewLifecycleOwner)
         mRecyclerAdapter.filteringStrategy = TaskRecyclerAdapter.FILTER_BY_PROJECT
         mRecyclerAdapter.registerCallback(object : TaskRecyclerAdapter.Callback() {
