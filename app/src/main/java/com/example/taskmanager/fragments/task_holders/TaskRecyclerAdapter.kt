@@ -26,17 +26,9 @@ import kotlinx.android.synthetic.main.task_row.view.*
  */
 class TaskRecyclerAdapter(
     context: Context,
-    /**
-     * [TaskViewModel] for accessing db
-     */
-    private val mTaskViewModel: TaskViewModel,
-    projectViewModel: ProjectViewModel,
-    private val lifecycle: LifecycleOwner
+    private val mDatabaseController: DatabaseController,
+    lifecycle: LifecycleOwner
     ) : RecyclerView.Adapter<TaskRecyclerAdapter.RowHolder>() {
-
-    constructor(context: Context, databaseController: DatabaseController, lifecycle: LifecycleOwner):
-            this(context, databaseController.taskViewModel,
-                databaseController.projectViewModel, lifecycle)
 
     /**
      * Current list of tasks
@@ -90,13 +82,11 @@ class TaskRecyclerAdapter(
      */
     private var mCallbacks = mutableListOf<Callback>()
 
-    private val mTaskGenerator = TaskGenerator(lifecycle, mTaskViewModel)
-
     init {
-        mTaskGenerator.result.observe(lifecycle) {
+        mDatabaseController.taskGenerator.result.observe(lifecycle) {
             setData(it)
         }
-        projectViewModel.allProjects.observe(lifecycle) {
+        mDatabaseController.projectViewModel.allProjects.observe(lifecycle) {
             setProjects(it)
         }
     }
@@ -138,7 +128,7 @@ class TaskRecyclerAdapter(
             //wait for animation's end
             if (isChecked) {
                 Handler().postDelayed({
-                    mTaskViewModel.completeTask(currentItem)
+                    mDatabaseController.completeTask(currentItem)
                 }, 450L)
             }
         }
@@ -157,7 +147,7 @@ class TaskRecyclerAdapter(
 
                 //update task
                 currentItem.projectOwnerId = proj.id
-                mTaskViewModel.updateTask(currentItem)
+                mDatabaseController.updateTask(currentItem)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -208,7 +198,7 @@ class TaskRecyclerAdapter(
             if (cond.getCondition() !is DayOfMonth)
                 throw IllegalArgumentException("cond is not instance of ${DayOfMonth::class}")
             val d = cond.getCondition() as DayOfMonth
-            mTaskGenerator.generateForDay(d)
+            mDatabaseController.generateForDay(d)
         }
     }
 
@@ -218,7 +208,7 @@ class TaskRecyclerAdapter(
                 throw IllegalArgumentException("cond is not instance of ${Project::class}")
             }
             val p = cond.getCondition() as Project
-            mTaskGenerator.generateForProjectExceptGenerated(p)
+            mDatabaseController.generateForProjectExceptGenerated(p)
         }
     }
 

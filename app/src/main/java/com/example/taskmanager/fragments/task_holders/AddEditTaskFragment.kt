@@ -12,6 +12,7 @@ import android.widget.Spinner
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.example.taskmanager.R
+import com.example.taskmanager.data.DatabaseController
 import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.data.viewmodels.ProjectViewModel
@@ -44,8 +45,7 @@ class AddEditTaskFragment(
 
     private lateinit var mSpinnerAdapter: ArrayAdapter<Project>
 
-    private lateinit var mTaskViewModel: TaskViewModel
-    private lateinit var mProjectViewModel: ProjectViewModel
+    private lateinit var mDatabaseController: DatabaseController
 
     /**
      * List of all projects from [ProjectViewModel.allProjects].
@@ -79,13 +79,10 @@ class AddEditTaskFragment(
         mSpinnerAdapter = ArrayAdapter(requireContext(),
             R.layout.support_simple_spinner_dropdown_item)
 
-        //view models
-        val provider = ViewModelProvider(this)
-        mTaskViewModel = provider.get(TaskViewModel::class.java)
-        mProjectViewModel = provider.get(ProjectViewModel::class.java)
+        mDatabaseController = DatabaseController(this)
 
         //observe ProjectViewModel.allProjects to know about changes in list of all projects
-        mProjectViewModel.allProjects.observe(viewLifecycleOwner) {
+        mDatabaseController.projectViewModel.allProjects.observe(viewLifecycleOwner) {
             mProjects = it
             mSpinnerAdapter.clear()
             mSpinnerAdapter.addAll(mProjects)
@@ -347,10 +344,10 @@ class AddEditTaskFragment(
                     //add or edit task if it exists
                     task?.let {
                         if (mIsAddingMode) {
-                            mTaskViewModel.addTask(it)
+                            mDatabaseController.addTask(it)
                         } else {
                             mTask?.let { task.id = mTask.id }
-                            mTaskViewModel.updateTask(it)
+                            mDatabaseController.updateTask(it)
                         }
                         this@AddEditTaskFragment.dismiss()
                     }
@@ -371,7 +368,7 @@ class AddEditTaskFragment(
 
                     //buttons
                     builder.setPositiveButton(R.string.deleting_alert_pos_btn) {_, _ ->
-                        mTask?.let { mTaskViewModel.deleteTask(it) }
+                        mTask?.let { mDatabaseController.deleteTask(it) }
                         this@AddEditTaskFragment.dismiss()
                     }
                     builder.setNegativeButton(R.string.deleting_alert_neg_btn) {_, _ ->}

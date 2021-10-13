@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.taskmanager.data.day.DayOfMonth
 import com.example.taskmanager.data.day.DaysHandler
+import com.example.taskmanager.data.project.Project
+import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.data.viewmodels.*
 import com.example.taskmanager.data.task.generator.TaskGenerator
 import java.time.LocalDate
@@ -33,6 +35,8 @@ class DatabaseController(fragment: Fragment) {
         get() = mDayOfMonthViewModel
 
     private val mTaskGenerator: TaskGenerator
+    val taskGenerator: TaskGenerator
+        get() = mTaskGenerator
 
     private val mDaysHandler: DaysHandler
     val daysHandler: DaysHandler
@@ -88,6 +92,30 @@ class DatabaseController(fragment: Fragment) {
             return dayNotNull
         }
         return d
+    }
+
+    fun addTask(task: Task) {
+        mTaskViewModel.addTask(task)
+    }
+
+    fun updateTask(task: Task) {
+        mTaskViewModel.updateTask(task)
+    }
+
+    fun deleteTask(task: Task) {
+        mTaskViewModel.deleteTask(task)
+    }
+
+    fun completeTask(task: Task) {
+        mTaskViewModel.completeTask(task)
+    }
+
+    fun generateForDay(day: DayOfMonth) {
+        mTaskGenerator.generateForDay(day)
+    }
+
+    fun generateForProjectExceptGenerated(project: Project) {
+        mTaskGenerator.generateForProjectExceptGenerated(project)
     }
 
 }
