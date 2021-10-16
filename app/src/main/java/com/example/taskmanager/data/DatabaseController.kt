@@ -101,7 +101,12 @@ class DatabaseController(fragment: Fragment) {
     }
 
     fun deleteTask(task: Task) {
-        mTaskViewModel.deleteTask(task)
+        if (task.repeat == Task.REPEAT_NEVER) mTaskViewModel.deleteTask(task)
+        else {
+            //todo temp decision. Do it in adequate way
+            val t = Task.createTaskWithAnotherDate(task, task.date.plusDays(1))
+            updateTask(task)
+        }
     }
 
     fun completeTask(task: Task) {

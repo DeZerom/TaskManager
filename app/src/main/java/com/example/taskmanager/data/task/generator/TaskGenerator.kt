@@ -39,7 +39,7 @@ class TaskGenerator(lifecycle: LifecycleOwner, taskViewModel: TaskViewModel) {
 
     init {
         taskViewModel.allTasks.observe(lifecycle) {
-            mTasks = it
+            mTasks = it as MutableList<Task>
             lastArgument?.let { a -> lastFunc?.getFunc(this)?.invoke(a) }
         }
     }
@@ -53,10 +53,16 @@ class TaskGenerator(lifecycle: LifecycleOwner, taskViewModel: TaskViewModel) {
         val res = LinkedList<Task>()
         mTasks.forEach {
             if (it.date == day.date) res.add(it)
-            else if (it.repeat == Task.REPEAT_EVERY_DAY) res.add(generateTaskWithNewDate(it, day.date))
-            else if (it.repeat == Task.REPEAT_EVERY_DAY_EXCEPT_HOLIDAYS && !day.isWeekend) res.add(
-                generateTaskWithNewDate(it, day.date)
-            )
+            else if (it.repeat == Task.REPEAT_EVERY_DAY) {
+                val t = generateTaskWithNewDate(it, day.date)
+                mTasks.add(t) //todo
+                res.add(t)
+            }
+            else if (it.repeat == Task.REPEAT_EVERY_DAY_EXCEPT_HOLIDAYS && !day.isWeekend) {
+                val t = generateTaskWithNewDate(it, day.date)
+                mTasks.add(t)
+                res.add(t)
+            }
         }
         mResult.value = res
     }
