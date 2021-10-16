@@ -105,7 +105,12 @@ class DatabaseController(fragment: Fragment) {
     }
 
     fun completeTask(task: Task) {
-        mTaskViewModel.completeTask(task)
+        if (task.amount > 1) {
+            val t = Task.createTaskWithAnotherAmount(task, task.amount - 1)
+            mTaskViewModel.updateTask(t)
+        } else {
+            mTaskViewModel.deleteTask(task)
+        }
     }
 
     fun generateForDay(day: DayOfMonth) {

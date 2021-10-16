@@ -31,16 +31,4 @@ class TaskViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    fun completeTask(task: Task) {
-        //decrease amount or delete task
-        if (task.amount > 1) {
-            task.amount--
-            updateTask(task)
-        } else deleteTask(task)
-        if (task.repeat == Task.REPEAT_EVERY_DAY) {
-            task.date.plusDays(1)
-            updateTask(task)
-        }
-    }
-
 }

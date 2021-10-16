@@ -20,17 +20,17 @@ import java.time.LocalDate
 )
 @TypeConverters(LocalDateConverter::class)
 data class Task(
-    @PrimaryKey(autoGenerate = true) var id: Int,
+    @PrimaryKey(autoGenerate = true) val id: Int,
 
-    @ColumnInfo var name: String,
+    @ColumnInfo val name: String,
 
-    @ColumnInfo(name = "project_owner_id") var projectOwnerId: Int,
+    @ColumnInfo(name = "project_owner_id") val projectOwnerId: Int,
 
-    @ColumnInfo(defaultValue = "2000-01-01") var date: LocalDate,
+    @ColumnInfo(defaultValue = "2000-01-01") val date: LocalDate,
 
-    @ColumnInfo(defaultValue = "-1") var amount: Int = -1,
+    @ColumnInfo(defaultValue = "-1") val amount: Int = -1,
 
-    @ColumnInfo(defaultValue = "1") var repeat: Int = 1,
+    @ColumnInfo(defaultValue = "1") val repeat: Int = 1,
 ): Parcelable
 {
     @Ignore var isGenerated = false
@@ -40,12 +40,6 @@ data class Task(
     val isRepeatable: Boolean
         get() = repeat > REPEAT_NEVER
 
-    @Ignore constructor(task: Task, date: LocalDate): this(task.id, task.name, task.projectOwnerId,
-        date, task.amount, task.repeat)
-
-    @Ignore constructor(task: Task, amount: Int): this(task.id, task.name, task.projectOwnerId,
-        task.date, amount, task.repeat)
-
     override fun toString(): String {
         return "$id $name $isGenerated"
     }
@@ -54,5 +48,25 @@ data class Task(
         const val REPEAT_NEVER = 1
         const val REPEAT_EVERY_DAY = 2
         const val REPEAT_EVERY_DAY_EXCEPT_HOLIDAYS = 3
+
+        fun createTaskWithAnotherId(task: Task, newId: Int): Task {
+            return Task(newId, task.name, task.projectOwnerId, task.date, task.amount, task.repeat)
+        }
+
+        fun createTaskWithAnotherProjectOwner(task: Task, projectOwnerId: Int): Task {
+            return Task(task.id, task.name, projectOwnerId, task.date, task.amount, task.repeat)
+        }
+
+        fun createTaskWithAnotherProjectOwner(task: Task, project: Project): Task {
+            return createTaskWithAnotherProjectOwner(task, project.id)
+        }
+
+        fun createTaskWithAnotherDate(task: Task, date: LocalDate): Task {
+            return Task(task.id, task.name, task.projectOwnerId, date, task.amount, task.repeat)
+        }
+
+        fun createTaskWithAnotherAmount(task: Task, amount: Int): Task {
+            return Task(task.id, task.name, task.projectOwnerId, task.date, amount, task.repeat)
+        }
     }
 }

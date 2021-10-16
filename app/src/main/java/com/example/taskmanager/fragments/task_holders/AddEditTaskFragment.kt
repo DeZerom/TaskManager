@@ -336,7 +336,7 @@ class AddEditTaskFragment(
                     //convert correctly
                     val parentProjectId = (spinner?.selectedItem as Project).id
                     //Try to create task
-                    val task = createTask(
+                    var task = createTask(
                         editName?.text.toString(), parentProjectId,
                         editDate?.text.toString(), isQTaskChkBox?.isChecked ?: false,
                         editAmount?.text.toString()
@@ -346,7 +346,7 @@ class AddEditTaskFragment(
                         if (mIsAddingMode) {
                             mDatabaseController.addTask(it)
                         } else {
-                            mTask?.let { task.id = mTask.id }
+                            mTask?.let { task = Task.createTaskWithAnotherId(task!!, mTask.id) }
                             mDatabaseController.updateTask(it)
                         }
                         this@AddEditTaskFragment.dismiss()

@@ -146,8 +146,8 @@ class TaskRecyclerAdapter(
                 if (currentItem.projectOwnerId == proj.id) return
 
                 //update task
-                currentItem.projectOwnerId = proj.id
-                mDatabaseController.updateTask(currentItem)
+                val task = Task.Companion.createTaskWithAnotherProjectOwner(currentItem, proj)
+                mDatabaseController.updateTask(task)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {

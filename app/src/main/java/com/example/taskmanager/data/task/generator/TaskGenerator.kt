@@ -89,7 +89,7 @@ class TaskGenerator(lifecycle: LifecycleOwner, taskViewModel: TaskViewModel) {
     }
 
     private fun generateTaskWithNewDate(t: Task, d: LocalDate): Task {
-        val task = Task(t, d)
+        val task = Task.createTaskWithAnotherDate(t, d)
         task.isGenerated = true
         return task
     }
