@@ -103,9 +103,19 @@ class DatabaseController(fragment: Fragment) {
     private fun deleteTaskIfNeeded(task: Task) {
         if (task.repeat == Task.REPEAT_NEVER) mTaskViewModel.deleteTask(task)
         else {
-            //todo temp decision. Do it in adequate way
-            val t = Task.createTaskWithAnotherDate(task, task.date.plusDays(1))
-            updateTask(t)
+            if (task.isGenerated) {
+                val origin = mTaskGenerator.findOriginalTask(task)
+                origin.doneForDays.add(task.date)
+                updateTask(origin)
+            } else {
+                var d = mDaysHandler.getNextProperDate(task)
+                var t = Task.createTaskWithAnotherDate(task, d)
+                while (task.doneForDays.remove(d)) {
+                    d = mDaysHandler.getNextProperDate(t)
+                    t = Task.createTaskWithAnotherDate(t, d)
+                }
+                updateTask(t)
+            }
         }
     }
 

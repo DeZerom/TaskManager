@@ -3,7 +3,9 @@ package com.example.taskmanager.data.day
 import androidx.annotation.IntRange
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.data.viewmodels.DayOfMonthViewModel
+import java.lang.IllegalArgumentException
 import java.time.*
 
 /**
@@ -19,6 +21,40 @@ class DaysHandler(
     init {
         mDaysViewModel.allDays.observe(lifecycleOwner) {
             mDays = it
+        }
+    }
+
+    fun getNextProperDate(task: Task): LocalDate {
+        if (!task.isRepeatable) throw IllegalArgumentException("Could not get NEXT proper date for " +
+                "task with id=${task.id}, because this task is not repeatable")
+
+        return when(task.repeat) {
+            Task.REPEAT_EVERY_DAY -> {
+                task.date.plusDays(1)
+            }
+            Task.REPEAT_EVERY_DAY_EXCEPT_HOLIDAYS -> {
+                //try to find proper DayOfMonth
+                val d = mDays.find { return@find it.date == task.date.plusDays(1) }
+                //if there is no proper DayOfMonth return
+                d?: return task.date.plusDays(1)
+
+                //if there is such DayOfMonth check if it is weekend
+                var currentDayOfMonth: DayOfMonth = d
+                var i: Long = 2
+                while (currentDayOfMonth.isWeekend) {
+                    val tmp = mDays.find { return@find it.date == task.date.plusDays(i) }
+                    tmp?: return task.date.plusDays(i)
+
+                    currentDayOfMonth = tmp
+                    i++
+                }
+
+                currentDayOfMonth.date
+            }
+            else -> {
+                throw IllegalArgumentException("Task with id=${task.id} has illegal " +
+                        "Task.repeat value")
+            }
         }
     }
 

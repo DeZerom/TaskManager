@@ -2,9 +2,10 @@ package com.example.taskmanager.data.converters
 
 import androidx.room.TypeConverter
 import java.time.LocalDate
+import java.util.*
 
 class ListLocalDateConverter {
-    val ldConv = LocalDateConverter()
+    private val ldConv = LocalDateConverter()
 
     @TypeConverter
     fun fromList(list: List<LocalDate>): String {
@@ -17,10 +18,12 @@ class ListLocalDateConverter {
     }
 
     @TypeConverter
-    fun toList(s: String): List<LocalDate> {
+    fun toList(s: String): MutableList<LocalDate> {
+
         val parts = s.split(";")
-        val res = ArrayList<LocalDate>(parts.size)
+        val res = LinkedList<LocalDate>()
         parts.forEach {
+            if (it.isBlank()) return@forEach
             res.add(ldConv.toLocalDate(it))
         }
 

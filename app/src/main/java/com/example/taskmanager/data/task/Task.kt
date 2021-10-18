@@ -33,7 +33,7 @@ data class Task(
 
     @ColumnInfo(defaultValue = "1") val repeat: Int = 1,
 
-    @ColumnInfo(defaultValue = "") val doneForDays: List<LocalDate> = emptyList(),
+    @ColumnInfo(defaultValue = "") val doneForDays: MutableList<LocalDate> = mutableListOf(),
 ): Parcelable
 {
     @Ignore var isGenerated = false

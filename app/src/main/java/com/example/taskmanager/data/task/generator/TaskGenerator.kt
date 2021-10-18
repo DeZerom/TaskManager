@@ -1,5 +1,6 @@
 package com.example.taskmanager.data.task.generator
 
+import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,7 +16,7 @@ class TaskGenerator(lifecycle: LifecycleOwner, taskViewModel: TaskViewModel) {
     /**
      * List of [Task] from database
      */
-    private var mTasks: MutableList<Task> = LinkedList()
+    private var mTasks: List<Task> = emptyList()
 
     /**
      * Internal mutable live data
@@ -39,9 +40,26 @@ class TaskGenerator(lifecycle: LifecycleOwner, taskViewModel: TaskViewModel) {
 
     init {
         taskViewModel.allTasks.observe(lifecycle) {
-            mTasks = it as MutableList<Task>
+            mTasks = it
             lastArgument?.let { a -> lastFunc?.getFunc(this)?.invoke(a) }
         }
+    }
+
+    /**
+     * Finds original task for given [task]. Original task has the same id and [Task.isGenerated] value
+     * `false`. If given [task] has [Task.isGenerated] = `false`, [task] will be returned.
+     * @return [task] if its [Task.isGenerated] equals to `false` or its original task
+     */
+    fun findOriginalTask(task: Task): Task {
+        if (!task.isGenerated) return task
+
+        val res = mTasks.find {
+            return@find it.id == task.id && !it.isGenerated
+        }
+
+        res?: Log.e("TaskGenerator", "Could not find original task for task with id: " +
+                "${task.id}; name: ${task.name} isGenerated: ${task.isGenerated}")
+        return res!!
     }
 
     /**
@@ -52,15 +70,13 @@ class TaskGenerator(lifecycle: LifecycleOwner, taskViewModel: TaskViewModel) {
         lastFunc = LastFunc.FOR_DAY
         val res = LinkedList<Task>()
         mTasks.forEach {
-            if (day.date >= it.date) {
+            if (!it.doneForDays.contains(day.date) && day.date >= it.date) {
                 if (it.date == day.date) res.add(it)
                 else if (it.repeat == Task.REPEAT_EVERY_DAY) {
                     val t = generateTaskWithNewDate(it, day.date)
-                    mTasks.add(t)
                     res.add(t)
                 } else if (it.repeat == Task.REPEAT_EVERY_DAY_EXCEPT_HOLIDAYS && !day.isWeekend) {
                     val t = generateTaskWithNewDate(it, day.date)
-                    mTasks.add(t)
                     res.add(t)
                 }
             }
@@ -95,6 +111,10 @@ class TaskGenerator(lifecycle: LifecycleOwner, taskViewModel: TaskViewModel) {
         generateForProjectExceptGenerated(project.getCondition() as Project)
     }
 
+    /**
+     * Generates new [Task] with [Task.date] equal to [d] and [Task.isGenerated] equal to `true`,
+     * other fields are equal to [t] corresponding fields.
+     */
     private fun generateTaskWithNewDate(t: Task, d: LocalDate): Task {
         val task = Task.createTaskWithAnotherDate(t, d)
         task.isGenerated = true
