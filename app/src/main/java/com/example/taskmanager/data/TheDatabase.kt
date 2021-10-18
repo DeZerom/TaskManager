@@ -12,7 +12,7 @@ import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.data.task.TaskDAO
 import java.time.MonthDay
 
-@Database(entities = [Project::class, Task::class, DayOfMonth::class], version = 9)
+@Database(entities = [Project::class, Task::class, DayOfMonth::class], version = 10)
 abstract class TheDatabase: RoomDatabase() {
 
     abstract fun getProjectDao(): ProjectDAO
@@ -106,6 +106,14 @@ abstract class TheDatabase: RoomDatabase() {
             }
         }
 
+        private val MIGRATION_9_10 = object : Migration(9, 10) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "ALTER TABLE Task ADD doneForDays TEXT NOT NULL DEFAULT ''"
+                )
+            }
+        }
+
         @Synchronized
         fun getInstance(context: Context): TheDatabase {
             var tmp = instance
@@ -114,7 +122,7 @@ abstract class TheDatabase: RoomDatabase() {
             } else {
                 tmp = Room.databaseBuilder(context, TheDatabase::class.java, "TheDb")
                     .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5,
-                    MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9)
+                    MIGRATION_5_6, MIGRATION_6_7, MIGRATION_7_8, MIGRATION_8_9, MIGRATION_9_10)
                     .build()
                 instance = tmp
                 tmp

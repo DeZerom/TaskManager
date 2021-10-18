@@ -10,13 +10,11 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
 import com.example.taskmanager.R
 import com.example.taskmanager.data.DatabaseController
 import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.data.viewmodels.ProjectViewModel
-import com.example.taskmanager.data.viewmodels.TaskViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.add_task_buttons.*
 import kotlinx.android.synthetic.main.add_task_buttons.view.*
@@ -49,7 +47,6 @@ class AddEditTaskFragment(
 
     /**
      * List of all projects from [ProjectViewModel.allProjects].
-     * @see [mProjectViewModel]
      */
     private var mProjects = emptyList<Project>()
     private var mProjectsHaventSet = true //to set default selection in spinner
@@ -287,9 +284,9 @@ class AddEditTaskFragment(
     }
 
     /**
-     * Checks [amount]. If [R.id.addTaskFragment_isQTask] is not checked returns -1. Otherwise tries
-     * to transform [amount] to [Int]. If [amount] <= 0 or [amount] is not transformable to [Int]
-     * returns null.
+     * Checks [amount]. If [R.id.addEditTaskFragment_isQTask] is not checked returns -1.
+     * Otherwise tries to transform [amount] to [Int]. If [amount] <= 0 or [amount] is not
+     * transformable to [Int] returns null.
      * @param amount amount to check
      * @return null, [amount] transformed to [Int] that bigger than 0 or -1
      * @see toIntOrNull
