@@ -15,12 +15,12 @@ class TaskGenerator(lifecycle: LifecycleOwner, taskViewModel: TaskViewModel) {
     /**
      * List of [Task] from database
      */
-    private var mTasks: List<Task> = emptyList()
+    private var mTasks: MutableList<Task> = LinkedList()
 
     /**
      * Internal mutable live data
      */
-    private val mResult = MutableLiveData(mTasks)
+    private val mResult = MutableLiveData<List<Task>>()
 
     /**
      * Result of generate functions
@@ -52,16 +52,17 @@ class TaskGenerator(lifecycle: LifecycleOwner, taskViewModel: TaskViewModel) {
         lastFunc = LastFunc.FOR_DAY
         val res = LinkedList<Task>()
         mTasks.forEach {
-            if (it.date == day.date) res.add(it)
-            else if (it.repeat == Task.REPEAT_EVERY_DAY) {
-                val t = generateTaskWithNewDate(it, day.date)
-                mTasks.add(t) //todo
-                res.add(t)
-            }
-            else if (it.repeat == Task.REPEAT_EVERY_DAY_EXCEPT_HOLIDAYS && !day.isWeekend) {
-                val t = generateTaskWithNewDate(it, day.date)
-                mTasks.add(t)
-                res.add(t)
+            if (day.date >= it.date) {
+                if (it.date == day.date) res.add(it)
+                else if (it.repeat == Task.REPEAT_EVERY_DAY) {
+                    val t = generateTaskWithNewDate(it, day.date)
+                    mTasks.add(t)
+                    res.add(t)
+                } else if (it.repeat == Task.REPEAT_EVERY_DAY_EXCEPT_HOLIDAYS && !day.isWeekend) {
+                    val t = generateTaskWithNewDate(it, day.date)
+                    mTasks.add(t)
+                    res.add(t)
+                }
             }
         }
         mResult.value = res

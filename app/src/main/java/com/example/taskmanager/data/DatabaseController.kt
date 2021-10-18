@@ -100,13 +100,17 @@ class DatabaseController(fragment: Fragment) {
         mTaskViewModel.updateTask(task)
     }
 
-    fun deleteTask(task: Task) {
+    private fun deleteTaskIfNeeded(task: Task) {
         if (task.repeat == Task.REPEAT_NEVER) mTaskViewModel.deleteTask(task)
         else {
             //todo temp decision. Do it in adequate way
             val t = Task.createTaskWithAnotherDate(task, task.date.plusDays(1))
-            updateTask(task)
+            updateTask(t)
         }
+    }
+
+    fun deleteTask(task: Task) {
+        mTaskViewModel.deleteTask(task)
     }
 
     fun completeTask(task: Task) {
@@ -114,7 +118,7 @@ class DatabaseController(fragment: Fragment) {
             val t = Task.createTaskWithAnotherAmount(task, task.amount - 1)
             mTaskViewModel.updateTask(t)
         } else {
-            mTaskViewModel.deleteTask(task)
+            deleteTaskIfNeeded(task)
         }
     }
 
