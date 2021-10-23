@@ -63,7 +63,7 @@ class AddEditTaskFragment(
      * @see Task.REPEAT_NEVER
      * @see Task.REPEAT_EVERY_DAY
      */
-    private var mTaskRepeatingMode = 0
+    private var mTaskRepeatingMode = Task.REPEAT_NEVER
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -341,10 +341,30 @@ class AddEditTaskFragment(
                     //add or edit task if it exists
                     task?.let {
                         if (mIsAddingMode) {
-                            mDatabaseController.addTask(it)
+                            if (!mDatabaseController.addTask(it)) {
+                                val builder = AlertDialog.Builder(requireContext())
+
+                                //title
+                                builder.setTitle(R.string.unableToAddTaskAlertDialog_title)
+                                //message
+                                builder.setMessage(R.string.unableToAddTaskAlertDialog_message)
+                                //button
+                                builder.setNeutralButton(R.string.ok_string) { _, _ ->}
+                                builder.show()
+                            }
                         } else {
                             mTask?.let { task = Task.createTaskWithAnotherId(task!!, mTask.id) }
-                            mDatabaseController.updateTask(it)
+                            if (!mDatabaseController.updateTask(it)) {
+                                val builder = AlertDialog.Builder(requireContext())
+
+                                //title
+                                builder.setTitle(R.string.unableToUpdateTaskAlertDialog_title)
+                                //message
+                                builder.setMessage(R.string.unableToUpdateTaskAlertDialog_message)
+                                //button
+                                builder.setNeutralButton(R.string.ok_string) { _, _ ->}
+                                builder.show()
+                            }
                         }
                         this@AddEditTaskFragment.dismiss()
                     }

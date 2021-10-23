@@ -38,4 +38,8 @@
     <string name="make_plan">Спланировать</string>
     <string name="repeatEveryDay_exceptHolidays">Повторять каждый день, кроме выходных</string>
     <string name="repeatNever">Никогда не повторять</string>
+    <string name="unableToAddTaskAlertDialog_title">Невозможно добавить задачу</string>
+    <string name="unableToAddTaskAlertDialog_message">Проект этой задачи не для выходных, но вы пытаетесь добавить задачу на выходной</string>
+    <string name="unableToUpdateTaskAlertDialog_title">Невозможно обновить задачу</string>
+    <string name="unableToUpdateTaskAlertDialog_message">Проект этой задачи не для выходных, но вы пытаетесь переместить задачу на выходной</string>
 </resources>

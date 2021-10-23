@@ -104,7 +104,7 @@ class DatabaseController(fragment: Fragment) {
             return false
         }
 
-        return mDaysHandler.isCorrespondingDayOfMonthWeekend(task.date) && !p.isForWeekend
+        return !(mDaysHandler.isCorrespondingDayOfMonthWeekend(task.date) && !p.isForWeekend)
     }
 
     /**
@@ -132,8 +132,9 @@ class DatabaseController(fragment: Fragment) {
     }
 
     private fun deleteTaskIfNeeded(task: Task) {
-        if (task.repeat == Task.REPEAT_NEVER) mTaskViewModel.deleteTask(task)
-        else {
+        if (task.repeat == Task.REPEAT_NEVER) {
+            mTaskViewModel.deleteTask(task)
+        } else {
             if (task.isGenerated) {
                 val origin = mTaskGenerator.findOriginalTask(task)
                 origin.doneForDays.add(task.date)
