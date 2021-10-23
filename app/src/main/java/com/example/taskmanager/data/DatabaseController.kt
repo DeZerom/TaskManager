@@ -92,12 +92,43 @@ class DatabaseController(fragment: Fragment) {
         return d
     }
 
-    fun addTask(task: Task) {
-        mTaskViewModel.addTask(task)
+    /**
+     * If [task]'s [Task.date] is weekend and [task]'s project has [Project.isForWeekend] = `false`
+     * or if it is unable to find [task]'s project returns `false`. Otherwise returns true.
+     * @see DaysHandler.isCorrespondingDayOfMonthWeekend
+     */
+    private fun checkTaskDate(task: Task): Boolean {
+        val p = mProjectViewModel.allProjects.value?.find {return@find it.id == task.projectOwnerId}
+        p?: run {
+            Log.e("${this::class}", "Unable to find project for task with id = ${task.id}")
+            return false
+        }
+
+        return mDaysHandler.isCorrespondingDayOfMonthWeekend(task.date) && !p.isForWeekend
     }
 
-    fun updateTask(task: Task) {
+    /**
+     * Adds [task], but checks it with [checkTaskDate] before. Returns `true` and adds [task],
+     * if [checkTaskDate] returns true. If [checkTaskDate] returns `false`, it returns `false` and
+     * doesn't update [task].
+     */
+    fun addTask(task: Task): Boolean {
+        if (!checkTaskDate(task)) return false
+
+        mTaskViewModel.addTask(task)
+        return true
+    }
+
+    /**
+     * Checks [task] with [checkTaskDate]. If [checkTaskDate] returns `true`, it updates [task] and
+     * returns `true`. If [checkTaskDate] returns `false', it returns '`false` and doesn't update
+     * [task].
+     */
+    fun updateTask(task: Task): Boolean {
+        if (!checkTaskDate(task)) return false
+
         mTaskViewModel.updateTask(task)
+        return true
     }
 
     private fun deleteTaskIfNeeded(task: Task) {

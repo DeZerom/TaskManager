@@ -1,5 +1,6 @@
 package com.example.taskmanager.data.day
 
+import android.util.Log
 import androidx.annotation.IntRange
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -149,6 +150,21 @@ class DaysHandler(
                 for (d in days) mDaysViewModel.deleteDay(d)
             }
         }
+    }
+
+    /**
+     * Finds [DayOfMonth] corresponding to the given [date]. Returns true if that [DayOfMonth] have
+     * [DayOfMonth.isWeekend] equal to `true`. Otherwise returns false. If it's impossible to find
+     * corresponding [DayOfMonth] returns false
+     */
+    fun isCorrespondingDayOfMonthWeekend(date: LocalDate): Boolean {
+        val d = mDays.find { return@find it.date == date }
+        d?: run {
+            Log.i("${this::class}", "Unable to find DayOfMonth with date = $date")
+            return false
+        }
+
+        return d.isWeekend
     }
 
     /**
