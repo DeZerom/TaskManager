@@ -92,17 +92,26 @@ class DatabaseController(fragment: Fragment) {
         return d
     }
 
+    fun findParentProject(task: Task): Project {
+        return findParentProject(task.projectOwnerId)
+    }
+
+    fun findParentProject(parentProjectId: Int): Project {
+        val p = mProjectViewModel.allProjects.value?.find { return@find it.id == parentProjectId }
+        p?: run {
+            throw NullPointerException("${this::class} can't find project with id = $parentProjectId")
+        }
+
+        return p
+    }
+
     /**
      * If [task]'s [Task.date] is weekend and [task]'s project has [Project.isForWeekend] = `false`
      * or if it is unable to find [task]'s project returns `false`. Otherwise returns true.
      * @see DaysHandler.isCorrespondingDayOfMonthWeekend
      */
     private fun checkTaskDate(task: Task): Boolean {
-        val p = mProjectViewModel.allProjects.value?.find {return@find it.id == task.projectOwnerId}
-        p?: run {
-            Log.e("${this::class}", "Unable to find project for task with id = ${task.id}")
-            return false
-        }
+        val p = findParentProject(task)
 
         return !(mDaysHandler.isCorrespondingDayOfMonthWeekend(task.date) && !p.isForWeekend)
     }

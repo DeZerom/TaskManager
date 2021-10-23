@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -247,6 +248,9 @@ class AddEditTaskFragment(
         a?: return null
 
         //repeat
+        val p = mDatabaseController.findParentProject(parentProjectId)
+        if (!p.isForWeekend && mTaskRepeatingMode == Task.REPEAT_EVERY_DAY)
+            mTaskRepeatingMode = Task.REPEAT_EVERY_DAY_EXCEPT_HOLIDAYS
         val repeat = mTaskRepeatingMode
 
         //if everything is ok, return task
