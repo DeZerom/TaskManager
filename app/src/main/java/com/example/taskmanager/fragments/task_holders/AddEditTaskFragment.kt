@@ -338,7 +338,7 @@ class AddEditTaskFragment(
                     val proj = spinner?.selectedItem
                     proj?: run {
                         Toast.makeText(requireContext(),
-                            "Create some projects first", Toast.LENGTH_LONG).show()
+                            R.string.toastAddSomeProjects, Toast.LENGTH_LONG).show()
                         return
                     }
 
