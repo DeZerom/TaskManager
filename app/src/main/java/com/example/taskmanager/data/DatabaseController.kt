@@ -140,6 +140,11 @@ class DatabaseController(fragment: Fragment) {
         return true
     }
 
+    /**
+     * Deletes given [task] from the DB if it needed. Deletes only if
+     * [Task.repeat] == [Task.REPEAT_NEVER]. Otherwise finds next proper date for the [task] and
+     * updates it in the DB.
+     */
     private fun deleteTaskIfNeeded(task: Task) {
         if (task.repeat == Task.REPEAT_NEVER) {
             mTaskViewModel.deleteTask(task)
@@ -151,6 +156,7 @@ class DatabaseController(fragment: Fragment) {
             } else {
                 var d = mDaysHandler.getNextProperDate(task)
                 var t = Task.createTaskWithAnotherDate(task, d)
+                //clearing doneForDays list
                 while (task.doneForDays.remove(d)) {
                     d = mDaysHandler.getNextProperDate(t)
                     t = Task.createTaskWithAnotherDate(t, d)
