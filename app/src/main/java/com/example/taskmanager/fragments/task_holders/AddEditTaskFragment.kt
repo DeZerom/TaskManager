@@ -335,7 +335,14 @@ class AddEditTaskFragment(
                 R.id.addTaskButtons_button, R.id.editTaskButtons_apply -> {
                     //get parent project id. There are only Project instances in mSpinnerAdapter, so it will
                     //convert correctly
-                    val parentProjectId = (spinner?.selectedItem as Project).id
+                    val proj = spinner?.selectedItem
+                    proj?: run {
+                        Toast.makeText(requireContext(),
+                            "Create some projects first", Toast.LENGTH_LONG).show()
+                        return
+                    }
+
+                    val parentProjectId = (proj as Project).id
                     //Try to create task
                     var task = createTask(
                         editName?.text.toString(), parentProjectId,
