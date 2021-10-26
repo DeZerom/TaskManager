@@ -24,9 +24,9 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
-            android:background="@color/design_default_color_primary_dark"
-            app:layout_constraintTop_toTopOf="parent"
-            app:titleTextColor="@color/design_default_color_on_primary">
+            android:background="@color/orangeSoda"
+            app:titleTextColor="@color/myWhite"
+            app:layout_constraintTop_toTopOf="parent">
 
         </androidx.appcompat.widget.Toolbar>
 
