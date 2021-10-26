@@ -27,4 +27,20 @@
     <string name="dayFragment_today_label">Все задачи</string>
     <string name="plannerFragment_label">Планировщик</string>
     <string name="weekend_string">Выходной</string>
+    <string name="today_string">Сегодня</string>
+    <string name="quantitative_string">Количественная</string>
+    <string name="amount_string">Количество</string>
+    <string name="badAmountForTask_toast">Пожалуйста, введите корректное количество повторений задачи</string>
+    <string name="repeatEveryDay">Повторять каждый день</string>
+    <string name="alertDialog_recomendToAddWeekends">Добавте выходные</string>
+    <string name="alertDialog_recomendToAddWeekends_message">Рекомендуется добавить выходные, используя переключатель \"Выходной\"</string>
+    <string name="ok_string">Ок</string>
+    <string name="make_plan">Спланировать</string>
+    <string name="repeatEveryDay_exceptHolidays">Повторять каждый день, кроме выходных</string>
+    <string name="repeatNever">Никогда не повторять</string>
+    <string name="unableToAddTaskAlertDialog_title">Невозможно добавить задачу</string>
+    <string name="unableToAddTaskAlertDialog_message">Проект этой задачи не для выходных, но вы пытаетесь добавить задачу на выходной</string>
+    <string name="unableToUpdateTaskAlertDialog_title">Невозможно обновить задачу</string>
+    <string name="unableToUpdateTaskAlertDialog_message">Проект этой задачи не для выходных, но вы пытаетесь переместить задачу на выходной</string>
+    <string name="toastAddSomeProjects">Сначала создайте хотя бы один проект</string>
 </resources>

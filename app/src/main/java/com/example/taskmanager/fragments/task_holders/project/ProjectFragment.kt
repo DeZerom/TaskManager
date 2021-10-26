@@ -7,20 +7,21 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.taskmanager.R
+import com.example.taskmanager.data.DatabaseController
 import com.example.taskmanager.data.project.Project
+import com.example.taskmanager.data.task.Task
+import com.example.taskmanager.fragments.task_holders.AddEditTaskFragment
 import com.example.taskmanager.fragments.task_holders.TaskRecyclerAdapter
-import com.example.taskmanager.viewmodels.ProjectViewModel
-import com.example.taskmanager.viewmodels.TaskViewModel
+import com.example.taskmanager.data.viewmodels.ProjectViewModel
+import com.example.taskmanager.data.viewmodels.TaskViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_project.view.*
 
 class ProjectFragment : Fragment() {
     private lateinit var mProject: Project
-    private lateinit var mTaskViewModel: TaskViewModel
-    private lateinit var mProjectViewModel: ProjectViewModel
+    private lateinit var mDatabaseController: DatabaseController
     private lateinit var mRecyclerAdapter: TaskRecyclerAdapter
     private val LOG_TAG = "1234"
 
@@ -31,22 +32,23 @@ class ProjectFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_project, container, false)
 
-        //get view models
-        val provider = ViewModelProvider(this)
-        mTaskViewModel = provider.get(TaskViewModel::class.java)
-        mProjectViewModel = provider.get(ProjectViewModel::class.java)
+        mDatabaseController = DatabaseController(this)
 
         //set adapter to recycler
         val recyclerView = view.projectFragment_recycler
-        mRecyclerAdapter = TaskRecyclerAdapter(requireContext(), mTaskViewModel)
+        mRecyclerAdapter = TaskRecyclerAdapter(requireContext(), mDatabaseController,
+            viewLifecycleOwner)
+        mRecyclerAdapter.filteringStrategy = TaskRecyclerAdapter.FILTER_BY_PROJECT
+        mRecyclerAdapter.registerCallback(object : TaskRecyclerAdapter.Callback() {
+            override fun taskWantToBeEdited(task: Task) {
+                val f = AddEditTaskFragment.editingMode(task)
+                f.show(parentFragmentManager, f.tag)
+            }
+        })
+        //condition will be set in onResume
         recyclerView.adapter = mRecyclerAdapter
         //set layout manager
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-
-        //observe projects
-        mProjectViewModel.allProjects.observe(viewLifecycleOwner) {
-            mRecyclerAdapter.setProjects(it)
-        }
 
         return view
     }
@@ -62,31 +64,17 @@ class ProjectFragment : Fragment() {
 
         //set toolbar title
         activity?.toolbar?.title = mProject.name
-        //make editProject button in toolbar visible
-        activity?.toolbar?.menu?.findItem(R.id.editProjectFragment)?.isVisible = true
+
+        //change filtering condition
+        mRecyclerAdapter.filter.setCondition(mProject)
 
         //add task button
         val btn = view?.projectFragment_floatingActionButton
         btn?.setOnClickListener {
-            val action = ProjectFragmentDirections.actionProjectFragmentToAddTaskFragment(mProject)
-            findNavController().navigate(action)
-        }
-
-        //observe tasks and set them to recycler
-        mTaskViewModel.allTasks.observe(viewLifecycleOwner) {
-            //set to recycler tasks which is owned by mProject
-            mRecyclerAdapter.setData(it.filter { t ->
-                return@filter t.projectOwnerId == mProject.id
-            })
+            val f = AddEditTaskFragment.addingMode(mProject)
+            f.show(parentFragmentManager, f.tag)
         }
 
         super.onResume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        //hide edit project button
-        activity?.toolbar?.menu?.findItem(R.id.editProjectFragment)?.isVisible = false
     }
 }

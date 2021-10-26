@@ -1,10 +1,10 @@
-package com.example.taskmanager.viewmodels
+package com.example.taskmanager.data.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.taskmanager.data.task.Task
-import com.example.taskmanager.repositories.TaskRepository
+import com.example.taskmanager.data.repositories.TaskRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -29,10 +29,6 @@ class TaskViewModel(application: Application): AndroidViewModel(application) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.deleteTask(task)
         }
-    }
-
-    fun completeTask(task: Task) {
-        deleteTask(task)
     }
 
 }

@@ -40,4 +40,20 @@
     <string name="dayFragment_today_label">All tasks</string>
     <string name="plannerFragment_label">Planner</string>
     <string name="weekend_string">Weekend</string>
+    <string name="today_string">Today</string>
+    <string name="quantitative_string">Quantitative</string>
+    <string name="amount_string">Amount</string>
+    <string name="badAmountForTask_toast">Please, enter a correct amount of iterations of the task</string>
+    <string name="repeatEveryDay">Repeat every day</string>
+    <string name="alertDialog_recomendToAddWeekends">Add holidays</string>
+    <string name="alertDialog_recomendToAddWeekends_message">It is recommended to add holidays by switching \'weekend\'</string>
+    <string name="ok_string">Ok</string>
+    <string name="make_plan">Make plan</string>
+    <string name="repeatEveryDay_exceptHolidays">Repeat every day except holidays</string>
+    <string name="repeatNever">Repeat never</string>
+    <string name="unableToAddTaskAlertDialog_title">Unable to add task</string>
+    <string name="unableToAddTaskAlertDialog_message">Parent project of this task is not for weekends, but you are trying to add this task on a weekend</string>
+    <string name="unableToUpdateTaskAlertDialog_title">Unable to update task</string>
+    <string name="unableToUpdateTaskAlertDialog_message">Parent project of this task is not for weekends, but you are trying to move this task on a weekend</string>
+    <string name="toastAddSomeProjects">Create at least one project first</string>
 </resources>

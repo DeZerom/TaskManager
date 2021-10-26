@@ -1,10 +1,10 @@
-package com.example.taskmanager.viewmodels
+package com.example.taskmanager.data.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.taskmanager.data.day.DayOfMonth
-import com.example.taskmanager.repositories.DayOfMonthRepository
+import com.example.taskmanager.data.repositories.DayOfMonthRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
