@@ -53,6 +53,10 @@ class PlannerFragment : Fragment() {
                 val f = AddEditTaskFragment.editingMode(task)
                 f.show(parentFragmentManager, f.tag)
             }
+            override fun taskWantToChangeItsDate(task: Task) {
+                val f = ChooseDateFragment.changeDateInTask(task)
+                f.show(parentFragmentManager, f.tag)
+            }
         })
         view.plannerFragment_recycler.adapter = mRecyclerAdapter
 
@@ -75,7 +79,7 @@ class PlannerFragment : Fragment() {
         val switch = view.plannerFragment_switchIsWeekend
         showCalendarBtn.setOnClickListener {
             val f = ChooseDateFragment(mCurrentDate)
-            f.listener = object : ChooseDateFragment.DateChangedListener() {
+            f.listener = object : ChooseDateFragment.DateChangedListener {
                 override fun onDateChangeListener(oldDate: LocalDate, newDate: LocalDate) {
                     mCurrentDate = newDate
                     mCurrentDayOfMonth = mDatabaseController.getDay(mCurrentDate)

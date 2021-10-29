@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.taskmanager.ChooseDateFragment
 import com.example.taskmanager.R
 import com.example.taskmanager.data.DatabaseController
 import com.example.taskmanager.data.day.DayOfMonth
@@ -44,6 +45,10 @@ class DayFragment : Fragment() {
             override fun taskWantToBeEdited(task: Task) {
                 val fr = AddEditTaskFragment.editingMode(task)
                 fr.show(parentFragmentManager, "AddEditTaskFragment_EDIT_MODE")
+            }
+            override fun taskWantToChangeItsDate(task: Task) {
+                val fr = ChooseDateFragment.changeDateInTask(task)
+                fr.show(parentFragmentManager, fr.tag)
             }
         })
         //set recycler adapter

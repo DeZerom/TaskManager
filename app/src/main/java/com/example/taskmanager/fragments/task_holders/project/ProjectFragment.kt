@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.taskmanager.ChooseDateFragment
 import com.example.taskmanager.R
 import com.example.taskmanager.data.DatabaseController
 import com.example.taskmanager.data.project.Project
@@ -42,6 +43,10 @@ class ProjectFragment : Fragment() {
         mRecyclerAdapter.registerCallback(object : TaskRecyclerAdapter.Callback() {
             override fun taskWantToBeEdited(task: Task) {
                 val f = AddEditTaskFragment.editingMode(task)
+                f.show(parentFragmentManager, f.tag)
+            }
+            override fun taskWantToChangeItsDate(task: Task) {
+                val f = ChooseDateFragment.changeDateInTask(task)
                 f.show(parentFragmentManager, f.tag)
             }
         })

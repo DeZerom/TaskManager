@@ -214,6 +214,7 @@ class TaskRecyclerAdapter(
 
     abstract class Callback {
         abstract fun taskWantToBeEdited(task: Task)
+        abstract fun taskWantToChangeItsDate(task: Task)
     }
 
     companion object {
