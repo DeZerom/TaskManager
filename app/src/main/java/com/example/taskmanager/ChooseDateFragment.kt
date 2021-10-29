@@ -12,6 +12,12 @@ import java.util.*
 class ChooseDateFragment(date: LocalDate) : BottomSheetDialogFragment() {
     private var mDate = date
 
+    private var mListener: DateChangedListener? = null
+    var listener: DateChangedListener?
+        get() = mListener
+        set(value) {
+            mListener = value
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,7 +38,13 @@ class ChooseDateFragment(date: LocalDate) : BottomSheetDialogFragment() {
 
         //change date listener
         calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
-            mDate = LocalDate.of(year, month + 1, dayOfMonth)
+            val newDate = LocalDate.of(year, month + 1, dayOfMonth)
+            listener?.onDateChangeListener(mDate, newDate)
+            mDate = newDate
         }
+    }
+
+    abstract class DateChangedListener {
+        abstract fun onDateChangeListener(oldDate: LocalDate, newDate: LocalDate)
     }
 }

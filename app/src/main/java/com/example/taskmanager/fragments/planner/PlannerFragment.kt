@@ -23,6 +23,7 @@ import com.example.taskmanager.data.viewmodels.TaskViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_choose_date.view.*
 import kotlinx.android.synthetic.main.fragment_day.view.*
+import kotlinx.android.synthetic.main.fragment_planner.*
 import kotlinx.android.synthetic.main.fragment_planner.view.*
 import java.time.LocalDate
 
@@ -71,37 +72,24 @@ class PlannerFragment : Fragment() {
 
         //show calendar btn
         val showCalendarBtn = view.plannerFragment_showCalendarFab
+        val switch = view.plannerFragment_switchIsWeekend
         showCalendarBtn.setOnClickListener {
             val f = ChooseDateFragment(mCurrentDate)
+            f.listener = object : ChooseDateFragment.DateChangedListener() {
+                override fun onDateChangeListener(oldDate: LocalDate, newDate: LocalDate) {
+                    mCurrentDate = newDate
+                    mCurrentDayOfMonth = mDatabaseController.getDay(mCurrentDate)
+
+                    mRecyclerAdapter.filter.setCondition(mCurrentDayOfMonth)
+
+                    switch.isChecked = mCurrentDayOfMonth.isWeekend
+                    textView.text = mCurrentDayOfMonth.toString()
+                }
+            }
             f.show(parentFragmentManager, f.tag)
         }
-        val calendarBottomSheet = view.plannerFragment_bottom
-        val calendarBottomSheetBehavior = BottomSheetBehavior.from(calendarBottomSheet)
-//        showCalendarBtn.setOnClickListener {
-//            calendarBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-//        }
 
-        //bottom sheets state listener
-        calendarBottomSheetBehavior.addBottomSheetCallback(bottomsSheetsCallback)
 
-        //choose date bottom sheet calendar listener
-        val switch = view.plannerFragment_switchIsWeekend
-        view.plannerFragment_bottom.bottomSheet_calendar.setOnDateChangeListener { _, year, month, dayOfMonth ->
-            //get current date
-            mCurrentDate = LocalDate.of(year, month + 1, dayOfMonth)
-
-            //get current DayOfMonth
-            mCurrentDayOfMonth = mDatabaseController.getDay(mCurrentDate)
-
-            //change switch state
-            switch.isChecked = mCurrentDayOfMonth.isWeekend
-
-            //update views
-            textView.text = mCurrentDayOfMonth.toString()
-
-            //change filtering condition
-            mRecyclerAdapter.filter.setCondition(mCurrentDayOfMonth)
-        }
 
         //switch listener
         switch.setOnCheckedChangeListener { _, isChecked ->
