@@ -12,6 +12,9 @@ interface ProjectDAO {
     @Query("SELECT * FROM Project WHERE id = :id")
     fun getById(id: Int): Project
 
+    @Query("SELECT * FROM Project")
+    fun getListOfAllProjects(): List<Project>
+
     @Insert
     suspend fun addProject(p: Project)
 

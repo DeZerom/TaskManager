@@ -23,4 +23,8 @@ class ProjectRepository(context: Context) {
         pDao.deleteProject(p)
     }
 
+    suspend fun getListOfProjects(): List<Project> {
+        return pDao.getListOfAllProjects()
+    }
+
 }

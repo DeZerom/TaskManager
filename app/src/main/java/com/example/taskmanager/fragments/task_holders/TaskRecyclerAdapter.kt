@@ -119,6 +119,8 @@ class TaskRecyclerAdapter(
 
         //give callback on task editing intention
         holder.itemView.taskRow_name.setOnClickListener { notifyTaskWantToBeEdited(currentItem) }
+        //give callback on intention to change task's date
+        holder.itemView.taskRow_date.setOnClickListener { notifyTaskWantToChangeDate(currentItem) }
 
         val chk = holder.itemView.taskRow_checkBox
         //to avoid miss checked checkboxes thar appears after checking checkbox of upper task_row
@@ -178,6 +180,12 @@ class TaskRecyclerAdapter(
     private fun notifyTaskWantToBeEdited(task: Task) {
         mCallbacks.forEach {
             it.taskWantToBeEdited(task)
+        }
+    }
+
+    private fun notifyTaskWantToChangeDate(task: Task) {
+        mCallbacks.forEach{
+            it.taskWantToChangeItsDate(task)
         }
     }
 

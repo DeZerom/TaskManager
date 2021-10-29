@@ -42,6 +42,8 @@ class DatabaseController(fragment: Fragment) {
     val daysHandler: DaysHandler
         get() = mDaysHandler
 
+    private lateinit var mProjects: List<Project>
+
     init {
         val provider = ViewModelProvider(fragment)
         mTaskViewModel = provider.get(TaskViewModel::class.java)
@@ -49,6 +51,10 @@ class DatabaseController(fragment: Fragment) {
         mDayOfMonthViewModel = provider.get(DayOfMonthViewModel::class.java)
         mTaskGenerator = TaskGenerator(fragment.viewLifecycleOwner, mTaskViewModel)
         mDaysHandler = DaysHandler(mDayOfMonthViewModel, fragment.viewLifecycleOwner)
+
+        mProjectViewModel.allProjects.observe(fragment.viewLifecycleOwner) {
+            mProjects = it
+        }
     }
 
     fun addDay(day: DayOfMonth) {
@@ -97,7 +103,7 @@ class DatabaseController(fragment: Fragment) {
     }
 
     fun findParentProject(parentProjectId: Int): Project {
-        val p = mProjectViewModel.allProjects.value?.find { return@find it.id == parentProjectId }
+        val p = mProjects.find { return@find it.id == parentProjectId }
         p?: run {
             throw NullPointerException("${this::class} can't find project with id = $parentProjectId")
         }
