@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.taskmanager.ChooseDateFragment
 import com.example.taskmanager.R
 import com.example.taskmanager.data.DatabaseController
 import com.example.taskmanager.data.day.DayOfMonth
@@ -70,11 +71,15 @@ class PlannerFragment : Fragment() {
 
         //show calendar btn
         val showCalendarBtn = view.plannerFragment_showCalendarFab
+        showCalendarBtn.setOnClickListener {
+            val f = ChooseDateFragment(mCurrentDate)
+            f.show(parentFragmentManager, f.tag)
+        }
         val calendarBottomSheet = view.plannerFragment_bottom
         val calendarBottomSheetBehavior = BottomSheetBehavior.from(calendarBottomSheet)
-        showCalendarBtn.setOnClickListener {
-            calendarBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-        }
+//        showCalendarBtn.setOnClickListener {
+//            calendarBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+//        }
 
         //bottom sheets state listener
         calendarBottomSheetBehavior.addBottomSheetCallback(bottomsSheetsCallback)
