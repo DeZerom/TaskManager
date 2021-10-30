@@ -21,12 +21,19 @@ import java.time.LocalDate
 
 class DayFragment : Fragment() {
     private lateinit var mDatabaseController: DatabaseController
+
     private var mDay = LocalDate.now()
         set(value) {
             field = value
-            //to notify filter that condition has changed
-            mTaskRecyclerAdapter.filter.setCondition(mDatabaseController.getDay(mDay))
+            if (mDatabaseController.isDaysLoaded) mDayOfMonth = mDatabaseController.getDay(mDay)
         }
+
+    private var mDayOfMonth = DayOfMonth(0, mDay, false)
+        set(value) {
+            field = value
+            mTaskRecyclerAdapter.filter.setCondition(field)
+        }
+
     private lateinit var mTaskRecyclerAdapter: TaskRecyclerAdapter
 
     override fun onCreateView(
@@ -34,6 +41,9 @@ class DayFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         mDatabaseController = DatabaseController(this)
+        mDatabaseController.whenDaysLoaded = {
+            mDayOfMonth = mDatabaseController.getDay(mDay)
+        }
 
         return inflater.inflate(R.layout.fragment_day, container, false)
     }
