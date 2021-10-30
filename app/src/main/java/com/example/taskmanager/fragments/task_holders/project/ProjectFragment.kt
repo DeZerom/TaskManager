@@ -6,17 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.taskmanager.ChooseDateFragment
+import com.example.taskmanager.fragments.task_holders.ChooseDateFragment
 import com.example.taskmanager.R
 import com.example.taskmanager.data.DatabaseController
 import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.fragments.task_holders.AddEditTaskFragment
 import com.example.taskmanager.fragments.task_holders.TaskRecyclerAdapter
-import com.example.taskmanager.data.viewmodels.ProjectViewModel
-import com.example.taskmanager.data.viewmodels.TaskViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_project.view.*
 
@@ -24,19 +21,23 @@ class ProjectFragment : Fragment() {
     private lateinit var mProject: Project
     private lateinit var mDatabaseController: DatabaseController
     private lateinit var mRecyclerAdapter: TaskRecyclerAdapter
-    private val LOG_TAG = "1234"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_project, container, false)
-
         mDatabaseController = DatabaseController(this)
 
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_project, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val recycler = view.projectFragment_recycler
+
         //set adapter to recycler
-        val recyclerView = view.projectFragment_recycler
         mRecyclerAdapter = TaskRecyclerAdapter(requireContext(), mDatabaseController,
             viewLifecycleOwner)
         mRecyclerAdapter.filteringStrategy = TaskRecyclerAdapter.FILTER_BY_PROJECT
@@ -50,12 +51,12 @@ class ProjectFragment : Fragment() {
                 f.show(parentFragmentManager, f.tag)
             }
         })
-        //condition will be set in onResume
-        recyclerView.adapter = mRecyclerAdapter
-        //set layout manager
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        return view
+        //condition will be set in onResume
+        recycler.adapter = mRecyclerAdapter
+
+        //set layout manager
+        recycler.layoutManager = LinearLayoutManager(requireContext())
     }
 
     override fun onResume() {
@@ -63,8 +64,7 @@ class ProjectFragment : Fragment() {
         val tmp = arguments?.let { ProjectFragmentArgs.fromBundle(it).currentProject }
         if (tmp != null) {
             mProject = tmp
-        }
-        else Toast.makeText(requireContext(),
+        } else Toast.makeText(requireContext(),
             R.string.errorToast_arguments_providing_nullError, Toast.LENGTH_LONG).show()
 
         //set toolbar title

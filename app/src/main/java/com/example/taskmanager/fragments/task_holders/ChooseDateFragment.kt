@@ -1,10 +1,11 @@
-package com.example.taskmanager
+package com.example.taskmanager.fragments.task_holders
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CalendarView
+import com.example.taskmanager.R
 import com.example.taskmanager.data.DatabaseController
 import com.example.taskmanager.data.task.Task
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
