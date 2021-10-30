@@ -32,12 +32,4 @@ class ProjectViewModel(application: Application): AndroidViewModel(application) 
         }
     }
 
-    fun getListOfAllProjects(): List<Project> {
-        var res = emptyList<Project>()
-        viewModelScope.launch(Dispatchers.IO) {
-            res = repository.getListOfProjects()
-        }
-        return res
-    }
-
 }
