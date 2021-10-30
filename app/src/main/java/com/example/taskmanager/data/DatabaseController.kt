@@ -42,6 +42,19 @@ class DatabaseController(fragment: Fragment) {
     val daysHandler: DaysHandler
         get() = mDaysHandler
 
+    private var mWhenDaysLoaded = {}
+    private var mIsDaysLoaded = false
+    val isDaysLoaded: Boolean
+        get() = mIsDaysLoaded
+    /**
+     * Called when [List] of [DayOfMonth] firstly loaded from the DB.
+     */
+    var whenDaysLoaded: () -> Unit
+        get() = mWhenDaysLoaded
+        set(value) {
+            mWhenDaysLoaded = value
+        }
+
     private lateinit var mProjects: List<Project>
 
     init {
@@ -54,6 +67,11 @@ class DatabaseController(fragment: Fragment) {
 
         mProjectViewModel.allProjects.observe(fragment.viewLifecycleOwner) {
             mProjects = it
+        }
+
+        mDayOfMonthViewModel.allDays.observe(fragment.viewLifecycleOwner) {
+            mWhenDaysLoaded.invoke()
+            mIsDaysLoaded = true
         }
     }
 

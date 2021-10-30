@@ -26,20 +26,47 @@ class PlannerFragment : Fragment() {
     private val LOG_TAG = "1234"
     private lateinit var mDatabaseController: DatabaseController
     private lateinit var mRecyclerAdapter: TaskRecyclerAdapter
+
     private var mCurrentDate = LocalDate.now()
+        set(value) {
+            field = value
+            if (mDatabaseController.isDaysLoaded)
+                mCurrentDayOfMonth = mDatabaseController.getDay(field)
+        }
+
     private var mCurrentDayOfMonth = DayOfMonth(0, mCurrentDate, false)
+        set(value) {
+            field = value
+            view?.plannerFragment_switchIsWeekend?.isChecked = field.isWeekend
+            view?.plannerFragment_textView?.text = field.toString()
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_planner, container, false)
-
         mDatabaseController = DatabaseController(this)
+        //initialize mCurrentDayOfMonth
+        mDatabaseController.whenDaysLoaded = {
+            mCurrentDayOfMonth = mDatabaseController.getDay(mCurrentDate)
+        }
+
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_planner, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val recycler = view.plannerFragment_recycler
+        val addTaskBtn = view.plannerFragment_addTaskFab
+        val switch = view.plannerFragment_switchIsWeekend
+        val makePlanBtn = view.plannerFragment_makePlanBtn
+        val showCalendarBtn = view.plannerFragment_showCalendarFab
 
         //recycler
-        mRecyclerAdapter = TaskRecyclerAdapter(requireContext(), mDatabaseController, viewLifecycleOwner)
+        mRecyclerAdapter = TaskRecyclerAdapter(requireContext(),
+                mDatabaseController, viewLifecycleOwner)
         //filtering strategy and init condition
         mRecyclerAdapter.filteringStrategy = TaskRecyclerAdapter.FILTER_BY_DAY
         mRecyclerAdapter.filter.setCondition(mCurrentDayOfMonth)
@@ -53,55 +80,37 @@ class PlannerFragment : Fragment() {
                 f.show(parentFragmentManager, f.tag)
             }
         })
-        view.plannerFragment_recycler.adapter = mRecyclerAdapter
-
-        //observe all days
-        val textView = view.plannerFragment_textView
-        mDatabaseController.daysViewModel.allDays.observe(viewLifecycleOwner) {
-            mCurrentDayOfMonth = mDatabaseController.getDay(mCurrentDate)
-            textView.text = mCurrentDayOfMonth.toString()
-        }
+        //set adapter
+        recycler.adapter = mRecyclerAdapter
 
         //add task btn
-        val addTaskBtn = view.plannerFragment_addTaskFab
         addTaskBtn.setOnClickListener {
             val f = AddEditTaskFragment.addingMode()
             f.show(parentFragmentManager, f.tag)
         }
-
-        //show calendar btn
-        val showCalendarBtn = view.plannerFragment_showCalendarFab
-        val switch = view.plannerFragment_switchIsWeekend
-        showCalendarBtn.setOnClickListener {
-            val f = ChooseDateFragment(mCurrentDate)
-            f.listener = object : ChooseDateFragment.DateChangedListener {
-                override fun onDateChangeListener(oldDate: LocalDate, newDate: LocalDate) {
-                    mCurrentDate = newDate
-                    mCurrentDayOfMonth = mDatabaseController.getDay(mCurrentDate)
-
-                    mRecyclerAdapter.filter.setCondition(mCurrentDayOfMonth)
-
-                    switch.isChecked = mCurrentDayOfMonth.isWeekend
-                    textView.text = mCurrentDayOfMonth.toString()
-                }
-            }
-            f.show(parentFragmentManager, f.tag)
-        }
-
-
 
         //switch listener
         switch.setOnCheckedChangeListener { _, isChecked ->
             //if nothing changed - return
             if (isChecked == mCurrentDayOfMonth.isWeekend) return@setOnCheckedChangeListener
 
-            Log.i("1234", "$isChecked ${mCurrentDayOfMonth.date} ${mCurrentDayOfMonth.isWeekend}")
-            mCurrentDayOfMonth = DayOfMonth.createWithAnotherIsWeekend(mCurrentDayOfMonth, isChecked)
+            mCurrentDayOfMonth = DayOfMonth
+                .createWithAnotherIsWeekend(mCurrentDayOfMonth, isChecked)
             mDatabaseController.updateDay(mCurrentDayOfMonth)
         }
 
+        //show calendar btn
+        showCalendarBtn.setOnClickListener {
+            val f = ChooseDateFragment.chooseDate(mCurrentDate)
+            f.listener = object : ChooseDateFragment.DateChangedListener {
+                override fun onDateChangeListener(oldDate: LocalDate, newDate: LocalDate) {
+                    mCurrentDate = newDate
+                }
+            }
+            f.show(parentFragmentManager, f.tag)
+        }
+
         //make plan button
-        val makePlanBtn = view.plannerFragment_makePlanBtn
         makePlanBtn.setOnClickListener {
             mDatabaseController.deleteMonthsExcept(mCurrentDate.month)
             mDatabaseController.deleteDuplicatedDays()
@@ -115,37 +124,6 @@ class PlannerFragment : Fragment() {
             builder.setNeutralButton(R.string.ok_string) {_, _ ->}
 
             builder.create().show()
-        }
-
-        return view
-    }
-
-    /**
-     * [BottomSheetBehavior.BottomSheetCallback] for bottom sheets
-     */
-    private val bottomsSheetsCallback = object : BottomSheetBehavior.BottomSheetCallback() {
-        override fun onStateChanged(bottomSheet: View, newState: Int) {
-            val addTaskBtn = view?.plannerFragment_addTaskFab
-            val showCalendarBtn = view?.plannerFragment_showCalendarFab
-
-            when (newState) {
-                BottomSheetBehavior.STATE_COLLAPSED -> {
-                    addTaskBtn?.isVisible = true
-                    showCalendarBtn?.isVisible = true
-                }
-                BottomSheetBehavior.STATE_HIDDEN -> {
-                    addTaskBtn?.isVisible = true
-                    showCalendarBtn?.isVisible = true
-                }
-                else -> {
-                    addTaskBtn?.isVisible = false
-                    showCalendarBtn?.isVisible = false
-                }
-            }
-        }
-
-        override fun onSlide(bottomSheet: View, slideOffset: Float) {
-            //do nothing
         }
     }
 }
