@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import com.example.taskmanager.Notifications
 import com.example.taskmanager.fragments.task_holders.ChooseDateFragment
 import com.example.taskmanager.R
 import com.example.taskmanager.data.DatabaseController
@@ -124,6 +125,8 @@ class PlannerFragment : Fragment() {
             builder.setNeutralButton(R.string.ok_string) {_, _ ->}
 
             builder.create().show()
+
+            Notifications.createNotification(this.requireContext())
         }
     }
 }
