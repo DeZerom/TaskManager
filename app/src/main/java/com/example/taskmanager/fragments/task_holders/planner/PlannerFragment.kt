@@ -126,7 +126,7 @@ class PlannerFragment : Fragment() {
 
             builder.create().show()
 
-            Notifications.createNotification(this.requireContext())
+            Notifications.createNotificationsForTodayTasks(requireContext(), mDatabaseController)
         }
     }
 }
