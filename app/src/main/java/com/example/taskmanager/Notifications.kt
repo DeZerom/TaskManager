@@ -2,13 +2,18 @@ package com.example.taskmanager
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.os.Build
+import android.os.Bundle
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.navigation.NavDeepLinkBuilder
 import com.example.taskmanager.data.DatabaseController
 import com.example.taskmanager.data.task.Task
+import com.example.taskmanager.fragments.task_holders.day.DayFragment
 import java.time.LocalDate
 
 class Notifications {
@@ -44,12 +49,20 @@ class Notifications {
         }
 
         fun createNotificationForTask(context: Context, task: Task) {
+            val pendingIntent = NavDeepLinkBuilder(context)
+                .setComponentName(MainActivity::class.java)
+                .setGraph(R.navigation.nav_graph)
+                .setDestination(R.id.dayFragment)
+                .createPendingIntent()
+
             createNotificationChannel(context)
             val builder = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentTitle(task.name)
                 .setContentText(task.date.toString())
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
 
             with(NotificationManagerCompat.from(context)) {
                 notify(id++, builder.build())
