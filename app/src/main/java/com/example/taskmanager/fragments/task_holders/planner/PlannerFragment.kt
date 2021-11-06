@@ -126,6 +126,7 @@ class PlannerFragment : Fragment() {
 
             builder.create().show()
 
+            Notifications.createNotificationsForOverdueTasks(requireContext(), mDatabaseController)
             Notifications.createNotificationsForTodayTasks(requireContext(), mDatabaseController)
         }
     }

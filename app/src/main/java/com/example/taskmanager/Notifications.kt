@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.getSystemService
@@ -39,6 +40,22 @@ class Notifications {
             isNotificationChannelCreated = true
         }
 
+        fun createNotificationsForOverdueTasks(
+            context: Context,
+            databaseController: DatabaseController)
+        {
+            val allTasks = databaseController.taskViewModel.allTasks.value
+            allTasks?: run {
+                Log.e(this::class.java.toString(), "DbC's taskViewModel.allTasks.value is null")
+                return
+            }
+
+            val overdue = DateHandler.isTasksOverdue(allTasks)
+            overdue.forEach {
+                createNotificationForTask(context, it)
+            }
+        }
+
         fun createNotificationsForTodayTasks(
             context: Context,
             databaseController: DatabaseController)
@@ -48,18 +65,21 @@ class Notifications {
             }
         }
 
-        fun createNotificationForTask(context: Context, task: Task) {
+        fun createNotificationForTask(context: Context, task: Task, isOverdue: Boolean = false) {
             val pendingIntent = NavDeepLinkBuilder(context)
                 .setComponentName(MainActivity::class.java)
                 .setGraph(R.navigation.nav_graph)
                 .setDestination(R.id.dayFragment)
                 .createPendingIntent()
 
+            val title = if (isOverdue) context.getString(R.string.today_string)
+            else context.getString(R.string.overdue_string)
+
             createNotificationChannel(context)
             val builder = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
-                .setContentTitle(task.name)
-                .setContentText(task.date.toString())
+                .setContentTitle(title)
+                .setContentText("${task.name} - ${task.date}")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
