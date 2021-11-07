@@ -18,7 +18,7 @@ class DateHandler {
          */
         fun isTaskOverdue(task: Task): Boolean {
             return if (task.date < LocalDate.now()) {
-                Log.i(this::class.java.toString(), "Task with id = ${task.id} is overdue")
+                task.isOverdue = true
                 true
             } else {
                 false

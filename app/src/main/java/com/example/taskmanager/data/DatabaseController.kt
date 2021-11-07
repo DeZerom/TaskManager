@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.example.taskmanager.DateHandler
 import com.example.taskmanager.data.day.DayOfMonth
 import com.example.taskmanager.data.day.DaysHandler
 import com.example.taskmanager.data.project.Project
@@ -65,10 +66,12 @@ class DatabaseController(fragment: Fragment) {
         mTaskGenerator = TaskGenerator(fragment.viewLifecycleOwner, mTaskViewModel)
         mDaysHandler = DaysHandler(mDayOfMonthViewModel, fragment.viewLifecycleOwner)
 
+        //To keep projects up to date
         mProjectViewModel.allProjects.observe(fragment.viewLifecycleOwner) {
             mProjects = it
         }
 
+        //to invoke mWhenDaysLoaded
         mDayOfMonthViewModel.allDays.observe(fragment.viewLifecycleOwner) {
             mWhenDaysLoaded.invoke()
             mIsDaysLoaded = true
