@@ -1,6 +1,5 @@
-package com.example.taskmanager
+package com.example.taskmanager.notifications
 
-import android.util.Log
 import com.example.taskmanager.data.task.Task
 import java.time.LocalDate
 import java.util.*

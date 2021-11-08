@@ -2,13 +2,11 @@ package com.example.taskmanager.fragments.task_holders.planner
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import com.example.taskmanager.Notifications
+import com.example.taskmanager.notifications.Notifications
 import com.example.taskmanager.fragments.task_holders.ChooseDateFragment
 import com.example.taskmanager.R
 import com.example.taskmanager.data.DatabaseController
@@ -16,7 +14,6 @@ import com.example.taskmanager.data.day.DayOfMonth
 import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.fragments.task_holders.AddEditTaskFragment
 import com.example.taskmanager.fragments.task_holders.TaskRecyclerAdapter
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_choose_date.view.*
 import kotlinx.android.synthetic.main.fragment_day.view.*
 import kotlinx.android.synthetic.main.fragment_planner.*

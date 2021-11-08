@@ -1,20 +1,16 @@
-package com.example.taskmanager
+package com.example.taskmanager.notifications
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
-import android.os.Build
-import android.os.Bundle
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.navigation.NavDeepLinkBuilder
+import com.example.taskmanager.MainActivity
+import com.example.taskmanager.R
 import com.example.taskmanager.data.DatabaseController
 import com.example.taskmanager.data.task.Task
-import com.example.taskmanager.fragments.task_holders.day.DayFragment
 import java.time.LocalDate
 
 class Notifications {
