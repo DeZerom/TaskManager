@@ -68,8 +68,7 @@ class Notifications {
                 .setDestination(R.id.dayFragment)
                 .createPendingIntent()
 
-            val title = if (isOverdue) context.getString(R.string.today_string)
-            else context.getString(R.string.overdue_string)
+            val title = if (isOverdue) context.getString(R.string.today_string) else context.getString(R.string.overdue_string)
 
             createNotificationChannel(context)
             val builder = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
