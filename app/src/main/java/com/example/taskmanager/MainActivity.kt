@@ -24,6 +24,11 @@ import com.example.taskmanager.data.viewmodels.ProjectViewModel
 import com.example.taskmanager.notifications.NotificationsBroadcastReceiver
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
+import java.time.*
+import java.time.temporal.ChronoUnit
+import java.time.temporal.IsoFields
+import java.time.temporal.TemporalAdjusters
+import java.time.temporal.TemporalUnit
 
 class MainActivity : AppCompatActivity() {
     private lateinit var mProjectViewModel: ProjectViewModel
@@ -72,8 +77,7 @@ class MainActivity : AppCompatActivity() {
         //hide editProject btn from drawer
         navView.menu.findItem(R.id.editProjectFragment).isVisible = false
 
-        //listener for navigation
-        //from drawer
+        //listener for navigation from drawer
         navView.setNavigationItemSelectedListener(onNavigationItemSelectedListener)
 
         //alarm manager
@@ -81,7 +85,9 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, NotificationsBroadcastReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(this, ALARM_REQUEST_CODE,
             intent, PendingIntent.FLAG_IMMUTABLE)
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, 5000, pendingIntent)
+        alarmManager.cancel(pendingIntent)
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP,
+            Duration.between(LocalTime.now(), LocalTime.MAX).toMillis(), pendingIntent)
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -205,6 +211,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val ALARM_REQUEST_CODE = 1000
+        const val ALARM_REQUEST_CODE = 1001
     }
 }

@@ -12,6 +12,7 @@ import com.example.taskmanager.MainActivity
 import com.example.taskmanager.data.repositories.TaskRepository
 import com.example.taskmanager.data.task.Task
 import kotlinx.coroutines.*
+import java.time.Duration
 import java.time.LocalDate
 import kotlin.coroutines.coroutineContext
 import kotlin.coroutines.suspendCoroutine
@@ -22,7 +23,7 @@ class NotificationsBroadcastReceiver: BroadcastReceiver() {
         context?: return
         intent?: return
 
-        var tasks = emptyList<Task>()
+            var tasks = emptyList<Task>()
         GlobalScope.launch(Dispatchers.IO) {
             val repo = TaskRepository(context)
             tasks = repo.getAllAsList()
@@ -35,7 +36,8 @@ class NotificationsBroadcastReceiver: BroadcastReceiver() {
             val alarmManager = context.getSystemService(AppCompatActivity.ALARM_SERVICE) as AlarmManager
             val pendingIntent = PendingIntent.getBroadcast(context, MainActivity.ALARM_REQUEST_CODE,
                 intent, PendingIntent.FLAG_IMMUTABLE)
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, 5000, pendingIntent)
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, Duration.ofDays(1).toMillis(),
+                    pendingIntent)
         }
     }
 }
