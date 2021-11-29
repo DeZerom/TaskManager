@@ -43,4 +43,5 @@
     <string name="unableToUpdateTaskAlertDialog_title">Невозможно обновить задачу</string>
     <string name="unableToUpdateTaskAlertDialog_message">Проект этой задачи не для выходных, но вы пытаетесь переместить задачу на выходной</string>
     <string name="toastAddSomeProjects">Сначала создайте хотя бы один проект</string>
+    <string name="overdue_string">Просрочено</string>
 </resources>

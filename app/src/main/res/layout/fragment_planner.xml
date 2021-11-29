@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="?actionBarSize"
-    tools:context=".fragments.planner.PlannerFragment">
+    tools:context=".fragments.task_holders.planner.PlannerFragment">
 
     <LinearLayout
         android:id="@+id/plannerFragment_linear"

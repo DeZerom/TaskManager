@@ -1,9 +1,7 @@
 package com.example.taskmanager.data
 
-import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.example.taskmanager.data.day.DayOfMonth
 import com.example.taskmanager.data.day.DaysHandler
 import com.example.taskmanager.data.project.Project
@@ -42,6 +40,21 @@ class DatabaseController(fragment: Fragment) {
     val daysHandler: DaysHandler
         get() = mDaysHandler
 
+    private var mWhenDaysLoaded = {}
+    private var mIsDaysLoaded = false
+    val isDaysLoaded: Boolean
+        get() = mIsDaysLoaded
+    /**
+     * Called when [List] of [DayOfMonth] firstly loaded from the DB.
+     */
+    var whenDaysLoaded: () -> Unit
+        get() = mWhenDaysLoaded
+        set(value) {
+            mWhenDaysLoaded = value
+        }
+
+    private lateinit var mProjects: List<Project>
+
     init {
         val provider = ViewModelProvider(fragment)
         mTaskViewModel = provider.get(TaskViewModel::class.java)
@@ -49,6 +62,17 @@ class DatabaseController(fragment: Fragment) {
         mDayOfMonthViewModel = provider.get(DayOfMonthViewModel::class.java)
         mTaskGenerator = TaskGenerator(fragment.viewLifecycleOwner, mTaskViewModel)
         mDaysHandler = DaysHandler(mDayOfMonthViewModel, fragment.viewLifecycleOwner)
+
+        //To keep projects up to date
+        mProjectViewModel.allProjects.observe(fragment.viewLifecycleOwner) {
+            mProjects = it
+        }
+
+        //to invoke mWhenDaysLoaded
+        mDayOfMonthViewModel.allDays.observe(fragment.viewLifecycleOwner) {
+            mWhenDaysLoaded.invoke()
+            mIsDaysLoaded = true
+        }
     }
 
     fun addDay(day: DayOfMonth) {
@@ -97,7 +121,7 @@ class DatabaseController(fragment: Fragment) {
     }
 
     fun findParentProject(parentProjectId: Int): Project {
-        val p = mProjectViewModel.allProjects.value?.find { return@find it.id == parentProjectId }
+        val p = mProjects.find { return@find it.id == parentProjectId }
         p?: run {
             throw NullPointerException("${this::class} can't find project with id = $parentProjectId")
         }

@@ -119,6 +119,8 @@ class TaskRecyclerAdapter(
 
         //give callback on task editing intention
         holder.itemView.taskRow_name.setOnClickListener { notifyTaskWantToBeEdited(currentItem) }
+        //give callback on intention to change task's date
+        holder.itemView.taskRow_date.setOnClickListener { notifyTaskWantToChangeDate(currentItem) }
 
         val chk = holder.itemView.taskRow_checkBox
         //to avoid miss checked checkboxes thar appears after checking checkbox of upper task_row
@@ -181,6 +183,12 @@ class TaskRecyclerAdapter(
         }
     }
 
+    private fun notifyTaskWantToChangeDate(task: Task) {
+        mCallbacks.forEach{
+            it.taskWantToChangeItsDate(task)
+        }
+    }
+
     /**
      * Instances of this class used for getting [List] of [Task] containing only needed tasks
      * from [TaskGenerator]. Inherit from this class to make custom filter. See default filters
@@ -214,6 +222,7 @@ class TaskRecyclerAdapter(
 
     abstract class Callback {
         abstract fun taskWantToBeEdited(task: Task)
+        abstract fun taskWantToChangeItsDate(task: Task)
     }
 
     companion object {

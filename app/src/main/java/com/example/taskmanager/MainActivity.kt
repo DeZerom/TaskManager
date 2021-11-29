@@ -1,5 +1,8 @@
 package com.example.taskmanager
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.Menu.NONE
@@ -18,8 +21,14 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.fragments.task_holders.project.ProjectFragmentDirections
 import com.example.taskmanager.data.viewmodels.ProjectViewModel
+import com.example.taskmanager.notifications.NotificationsBroadcastReceiver
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
+import java.time.*
+import java.time.temporal.ChronoUnit
+import java.time.temporal.IsoFields
+import java.time.temporal.TemporalAdjusters
+import java.time.temporal.TemporalUnit
 
 class MainActivity : AppCompatActivity() {
     private lateinit var mProjectViewModel: ProjectViewModel
@@ -68,9 +77,18 @@ class MainActivity : AppCompatActivity() {
         //hide editProject btn from drawer
         navView.menu.findItem(R.id.editProjectFragment).isVisible = false
 
-        //listener for navigation
-        //from drawer
+        //listener for navigation from drawer
         navView.setNavigationItemSelectedListener(onNavigationItemSelectedListener)
+
+        //alarm manager
+        val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+        val intent = Intent(this, NotificationsBroadcastReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(this, ALARM_REQUEST_CODE,
+            intent, PendingIntent.FLAG_CANCEL_CURRENT)
+        alarmManager.cancel(pendingIntent)
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP,
+            System.currentTimeMillis() + Duration
+                .between(LocalTime.now(), LocalTime.MAX).toMillis(), pendingIntent)
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -191,5 +209,9 @@ class MainActivity : AppCompatActivity() {
                 settings.isVisible = oldSettingsVisibility
             }
         }
+    }
+
+    companion object {
+        const val ALARM_REQUEST_CODE = 1002
     }
 }

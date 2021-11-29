@@ -9,6 +9,9 @@ interface TaskDAO {
     @Query("SELECT * FROM Task")
     fun getAll(): LiveData<List<Task>>
 
+    @Query("SELECT * FROM Task")
+    suspend fun getAllAsList(): List<Task>
+
     @Query("SELECT * FROM Task WHERE id = :id")
     fun getById(id: Int): Task
 

@@ -6,16 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.taskmanager.fragments.task_holders.ChooseDateFragment
 import com.example.taskmanager.R
 import com.example.taskmanager.data.DatabaseController
 import com.example.taskmanager.data.day.DayOfMonth
 import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.fragments.task_holders.AddEditTaskFragment
 import com.example.taskmanager.fragments.task_holders.TaskRecyclerAdapter
-import com.example.taskmanager.data.viewmodels.ProjectViewModel
-import com.example.taskmanager.data.viewmodels.TaskViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_choose_date.view.*
 import kotlinx.android.synthetic.main.fragment_day.view.*
@@ -23,18 +21,39 @@ import java.time.LocalDate
 
 class DayFragment : Fragment() {
     private lateinit var mDatabaseController: DatabaseController
+
     private var mDay = LocalDate.now()
+        set(value) {
+            field = value
+            if (mDatabaseController.isDaysLoaded) mDayOfMonth = mDatabaseController.getDay(mDay)
+        }
+
+    private var mDayOfMonth = DayOfMonth(0, mDay, false)
+        set(value) {
+            field = value
+            mTaskRecyclerAdapter.filter.setCondition(field)
+        }
+
     private lateinit var mTaskRecyclerAdapter: TaskRecyclerAdapter
-    private val LOG_TAG = "1234"
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_day, container, false)
-
-        //view models
         mDatabaseController = DatabaseController(this)
+        mDatabaseController.whenDaysLoaded = {
+            mDayOfMonth = mDatabaseController.getDay(mDay)
+        }
+
+        return inflater.inflate(R.layout.fragment_day, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val recycler = view.dayFragment_recycler
+        val addTaskBtn = view.dayFragment_addTaskFloatingButton
+        val chooseDateBtn = view.dayFragment_calendarFloatingButton
 
         //recycler adapter init
         mTaskRecyclerAdapter = TaskRecyclerAdapter(requireContext(), mDatabaseController,
@@ -45,64 +64,33 @@ class DayFragment : Fragment() {
                 val fr = AddEditTaskFragment.editingMode(task)
                 fr.show(parentFragmentManager, "AddEditTaskFragment_EDIT_MODE")
             }
+            override fun taskWantToChangeItsDate(task: Task) {
+                val fr = ChooseDateFragment.changeDateInTask(task)
+                fr.show(parentFragmentManager, fr.tag)
+            }
         })
-        //set recycler adapter
-        mTaskRecyclerAdapter.filter.setCondition(DayOfMonth(0, mDay, false))
-        view.dayFragment_recycler.adapter = mTaskRecyclerAdapter
-        //set recycler layout
-        view.dayFragment_recycler.layoutManager = LinearLayoutManager(requireContext())
 
-        //addTask btn
-        //addTaskFragment asks for a Project to set default parent project for task in spinner view,
-        //so we can provide null. AddTaskFragment will handle it
-        val addTaskBtn = view.dayFragment_addTaskFloatingButton
+        //set recycler adapter
+        mTaskRecyclerAdapter.filter.setCondition(mDatabaseController.getDay(mDay))
+        recycler.adapter = mTaskRecyclerAdapter
+        //set recycler layout
+        recycler.layoutManager = LinearLayoutManager(requireContext())
+
+        //addTask btn listener
         addTaskBtn.setOnClickListener {
             val fr = AddEditTaskFragment.addingMode()
             fr.show(parentFragmentManager, "AddEditTaskFragment_ADD_MODE")
         }
 
-        //calendarButton. Shows bottom sheet
-        val calendarButton = view.dayFragment_calendarFloatingButton
-        val bottom = view.dayFragment_bottomSheet //bottom sheet view
-        val bottomBehavior = BottomSheetBehavior.from(bottom) //bottom sheet behavior
-        calendarButton.setOnClickListener {
-            bottomBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-        }
-
-        //bottom sheet listener. Hide buttons and show them
-        bottomBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                when (newState) {
-                    BottomSheetBehavior.STATE_COLLAPSED -> {
-                        addTaskBtn.isVisible = true
-                        calendarButton.isVisible = true
-                    }
-                    BottomSheetBehavior.STATE_HIDDEN -> {
-                        addTaskBtn.isVisible = true
-                        calendarButton.isVisible = true
-                    }
-                    else -> {
-                        addTaskBtn.isVisible = false
-                        calendarButton.isVisible = false
-                    }
+        //chooseDate logic
+        chooseDateBtn.setOnClickListener {
+            val f = ChooseDateFragment.chooseDate(mDay)
+            f.listener = object : ChooseDateFragment.DateChangedListener {
+                override fun onDateChangeListener(oldDate: LocalDate, newDate: LocalDate) {
+                    mDay = newDate
                 }
             }
-
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                //do nothing
-            }
-        })
-
-        //take date from bottom sheet's calendar and change data of mTaskRecyclerAdapter
-        bottom.bottomSheet_calendar.setOnDateChangeListener { _, year, month, dayOfMonth ->
-            //month numerating starts from 0
-            mDay = LocalDate.of(year, month + 1, dayOfMonth)
-
-            //change filtering condition
-            mTaskRecyclerAdapter.filter.setCondition(DayOfMonth(0, mDay, false))
+            f.show(parentFragmentManager, f.tag)
         }
-
-        return view
     }
-
 }

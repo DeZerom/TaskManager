@@ -9,6 +9,10 @@ class TaskRepository(context: Context) {
     private val tDao = db.getTaskDao()
     val allTasks = tDao.getAll()
 
+    suspend fun getAllAsList(): List<Task> {
+        return tDao.getAllAsList()
+    }
+
     suspend fun addTask(task: Task) {
         tDao.addProjectTask(task)
     }

@@ -43,8 +43,10 @@ data class Task(
     val isRepeatable: Boolean
         get() = repeat > REPEAT_NEVER
 
+    @Ignore var isOverdue = false
+
     override fun toString(): String {
-        return "$id $name $isGenerated"
+        return "$id $projectOwnerId $name $isGenerated"
     }
 
     companion object {

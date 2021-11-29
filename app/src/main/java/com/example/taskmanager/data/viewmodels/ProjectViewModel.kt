@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.data.repositories.ProjectRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 
 class ProjectViewModel(application: Application): AndroidViewModel(application) {
