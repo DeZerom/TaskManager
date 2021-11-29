@@ -14,6 +14,7 @@ import com.example.taskmanager.data.task.Task
 import kotlinx.coroutines.*
 import java.time.Duration
 import java.time.LocalDate
+import java.time.LocalTime
 import kotlin.coroutines.coroutineContext
 import kotlin.coroutines.suspendCoroutine
 
@@ -35,8 +36,10 @@ class NotificationsBroadcastReceiver: BroadcastReceiver() {
             //create new alarm
             val alarmManager = context.getSystemService(AppCompatActivity.ALARM_SERVICE) as AlarmManager
             val pendingIntent = PendingIntent.getBroadcast(context, MainActivity.ALARM_REQUEST_CODE,
-                intent, PendingIntent.FLAG_IMMUTABLE)
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, Duration.ofDays(1).toMillis(),
+                intent, PendingIntent.FLAG_CANCEL_CURRENT)
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP,
+                System.currentTimeMillis() +
+                        Duration.between(LocalTime.now(), LocalTime.MAX).toMillis(),
                     pendingIntent)
         }
     }

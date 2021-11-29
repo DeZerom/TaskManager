@@ -84,10 +84,11 @@ class MainActivity : AppCompatActivity() {
         val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
         val intent = Intent(this, NotificationsBroadcastReceiver::class.java)
         val pendingIntent = PendingIntent.getBroadcast(this, ALARM_REQUEST_CODE,
-            intent, PendingIntent.FLAG_IMMUTABLE)
+            intent, PendingIntent.FLAG_CANCEL_CURRENT)
         alarmManager.cancel(pendingIntent)
         alarmManager.setExact(AlarmManager.RTC_WAKEUP,
-            Duration.between(LocalTime.now(), LocalTime.MAX).toMillis(), pendingIntent)
+            System.currentTimeMillis() + Duration
+                .between(LocalTime.now(), LocalTime.MAX).toMillis(), pendingIntent)
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -211,6 +212,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val ALARM_REQUEST_CODE = 1001
+        const val ALARM_REQUEST_CODE = 1002
     }
 }
