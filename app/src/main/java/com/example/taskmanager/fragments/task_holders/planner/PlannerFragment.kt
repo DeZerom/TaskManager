@@ -122,9 +122,6 @@ class PlannerFragment : Fragment() {
             builder.setNeutralButton(R.string.ok_string) {_, _ ->}
 
             builder.create().show()
-
-            Notifications.createNotificationsForOverdueTasks(requireContext(), mDatabaseController)
-            Notifications.createNotificationsForTodayTasks(requireContext(), mDatabaseController)
         }
     }
 }
