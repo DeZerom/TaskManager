@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.taskmanager.data.UsableForFilteringTasks
 import com.example.taskmanager.data.day.DayOfMonth
+import com.example.taskmanager.data.day.DaysHandler
 import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.data.viewmodels.TaskViewModel
@@ -41,7 +42,8 @@ class TaskGenerator(lifecycle: LifecycleOwner, taskViewModel: TaskViewModel) {
     init {
         taskViewModel.allTasks.observe(lifecycle) {
             mTasks = it
-            lastArgument?.let { a -> lastFunc?.getFunc(this)?.invoke(a) }
+            DaysHandler.isTasksOverdue(mTasks)
+            lastArgument?.let { arg -> lastFunc?.getFunc(this)?.invoke(arg) }
         }
     }
 
@@ -123,15 +125,15 @@ class TaskGenerator(lifecycle: LifecycleOwner, taskViewModel: TaskViewModel) {
 
     private enum class LastFunc {
         FOR_DAY {
-            override fun getFunc(tg: TaskGenerator): (UsableForFilteringTasks) -> Unit {
-                return tg::staffGenerateForDay
+            override fun getFunc(taskGenerator: TaskGenerator): (UsableForFilteringTasks) -> Unit {
+                return taskGenerator::staffGenerateForDay
             }
         },
         FOR_P_EXCEPT_G {
-            override fun getFunc(tg: TaskGenerator): (UsableForFilteringTasks) -> Unit {
-                return tg::staffGenerateForProjectExceptGenerated
+            override fun getFunc(taskGenerator: TaskGenerator): (UsableForFilteringTasks) -> Unit {
+                return taskGenerator::staffGenerateForProjectExceptGenerated
             }
         };
-        abstract fun getFunc(tg: TaskGenerator): (UsableForFilteringTasks) -> Unit
+        abstract fun getFunc(taskGenerator: TaskGenerator): (UsableForFilteringTasks) -> Unit
     }
 }

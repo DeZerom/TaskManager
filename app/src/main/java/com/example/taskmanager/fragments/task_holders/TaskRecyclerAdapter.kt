@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.core.content.ContextCompat.getColor
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
@@ -17,8 +18,6 @@ import com.example.taskmanager.data.day.DayOfMonth
 import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.data.task.generator.TaskGenerator
-import com.example.taskmanager.data.viewmodels.ProjectViewModel
-import com.example.taskmanager.data.viewmodels.TaskViewModel
 import kotlinx.android.synthetic.main.task_row.view.*
 
 /**
@@ -91,7 +90,7 @@ class TaskRecyclerAdapter(
         }
     }
 
-    class RowHolder(itemView: View): RecyclerView.ViewHolder(itemView) {}
+    class RowHolder(itemView: View): RecyclerView.ViewHolder(itemView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RowHolder {
         return RowHolder(LayoutInflater.from(parent.context).inflate(R.layout.task_row, parent,
@@ -116,6 +115,13 @@ class TaskRecyclerAdapter(
             return@find it.id == currentItem.projectOwnerId
         }))
 
+
+        //check if task is overdue
+        if (currentItem.isOverdue) {
+            //if overdue then mark it
+            holder.itemView.taskRow_date.setTextColor(
+                getColor(holder.itemView.context, R.color.myRed))
+        }
 
         //give callback on task editing intention
         holder.itemView.taskRow_name.setOnClickListener { notifyTaskWantToBeEdited(currentItem) }
