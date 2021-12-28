@@ -10,6 +10,7 @@ import androidx.navigation.NavDeepLinkBuilder
 import com.example.taskmanager.MainActivity
 import com.example.taskmanager.R
 import com.example.taskmanager.data.DatabaseController
+import com.example.taskmanager.data.day.DaysHandler
 import com.example.taskmanager.data.task.Task
 import java.time.LocalDate
 
@@ -46,7 +47,7 @@ class Notifications {
                 return
             }
 
-            val overdue = DateHandler.isTasksOverdue(allTasks)
+            val overdue = DaysHandler.isTasksOverdue(allTasks)
             overdue.forEach {
                 createNotificationForTask(context, it)
             }
