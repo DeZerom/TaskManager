@@ -67,7 +67,12 @@ class TaskGenerator(lifecycle: LifecycleOwner, taskViewModel: TaskViewModel) {
     /**
      * Generates List of [Task] for specified [DayOfMonth]. Result is in [result]
      */
-    fun generateForDay(day: DayOfMonth) {
+    fun generateForDay(day: DayOfMonth?) {
+        if (day == null) {
+            mResult.value = ArrayList(mTasks)
+            return
+        }
+
         lastArgument = day
         lastFunc = LastFunc.FOR_DAY
         val res = LinkedList<Task>()

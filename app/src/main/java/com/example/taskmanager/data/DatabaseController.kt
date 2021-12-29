@@ -203,7 +203,7 @@ class DatabaseController(fragment: Fragment) {
         }
     }
 
-    fun generateForDay(day: DayOfMonth) {
+    fun generateForDay(day: DayOfMonth?) {
         mTaskGenerator.generateForDay(day)
     }
 
