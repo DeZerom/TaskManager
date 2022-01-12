@@ -22,10 +22,12 @@ class DayFragment : Fragment() {
     private var mDay = LocalDate.now()
         set(value) {
             field = value
-            if (mDatabaseController.isDaysLoaded) mDayOfMonth = mDatabaseController.getDay(mDay)
+            val day = field
+            if (mDatabaseController.isDaysLoaded)
+                mDayOfMonth = mDatabaseController.getDay(day)
         }
 
-    private var mDayOfMonth = DayOfMonth(0, mDay, false)
+    private var mDayOfMonth: DayOfMonth? = null
         set(value) {
             field = value
             mTaskRecyclerAdapter.filter.setCondition(field)
@@ -68,7 +70,6 @@ class DayFragment : Fragment() {
         })
 
         //set recycler adapter
-        mTaskRecyclerAdapter.filter.setCondition(mDatabaseController.getDay(mDay))
         recycler.adapter = mTaskRecyclerAdapter
         //set recycler layout
         recycler.layoutManager = LinearLayoutManager(requireContext())

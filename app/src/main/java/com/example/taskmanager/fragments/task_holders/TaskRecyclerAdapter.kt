@@ -204,11 +204,16 @@ class TaskRecyclerAdapter(
      * @see ByProjectFilter
      */
     abstract inner class Filter {
-        abstract fun setCondition(cond: UsableForFilteringTasks)
+        abstract fun setCondition(cond: UsableForFilteringTasks?)
     }
 
     private inner class ByDateFilter: Filter() {
-        override fun setCondition(cond: UsableForFilteringTasks) {
+        override fun setCondition(cond: UsableForFilteringTasks?) {
+            if (cond == null) {
+                mDatabaseController.generateForDay(cond)
+                return
+            }
+
             if (cond.getCondition() !is DayOfMonth)
                 throw IllegalArgumentException("cond is not instance of ${DayOfMonth::class}")
             val d = cond.getCondition() as DayOfMonth
@@ -217,9 +222,9 @@ class TaskRecyclerAdapter(
     }
 
     private inner class ByProjectFilter: Filter() {
-        override fun setCondition(cond: UsableForFilteringTasks) {
-            if (cond.getCondition() !is Project) {
-                throw IllegalArgumentException("cond is not instance of ${Project::class}")
+        override fun setCondition(cond: UsableForFilteringTasks?) {
+            if (cond == null || cond.getCondition() !is Project) {
+                throw IllegalArgumentException("cond is not instance of ${Project::class} or cond is null")
             }
             val p = cond.getCondition() as Project
             mDatabaseController.generateForProjectExceptGenerated(p)
