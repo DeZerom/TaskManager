@@ -28,10 +28,11 @@ class AddProjectFragment : Fragment() {
         //add task btn
         val btn = view.addProjectFragment_button
         val edit = view.addProjectFragment_editText
+        val chkBx = view.checkBox
         btn.setOnClickListener {
             val txt = edit.text.toString()
-            val p = Project(0, txt)
-
+            val p = Project(0, txt, chkBx.isChecked)
+            
             edit.text.clear()
 
             findNavController().popBackStack()
