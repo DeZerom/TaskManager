@@ -25,14 +25,14 @@ class PlannerFragment : Fragment() {
     private lateinit var mDatabaseController: DatabaseController
     private lateinit var mRecyclerAdapter: TaskRecyclerAdapter
 
-    private var mCurrentDate = LocalDate.now()
-        set(value) {
-            field = value
-            if (mDatabaseController.isDaysLoaded)
-                mCurrentDayOfMonth = mDatabaseController.getDay(field)
-        }
+//    private var mCurrentDate = LocalDate.now()
+//        set(value) {
+//            field = value
+//            if (mDatabaseController.isDaysLoaded)
+//                mDayOfMonth = mDatabaseController.getDay(field)
+//        }
 
-    private var mCurrentDayOfMonth = DayOfMonth(0, mCurrentDate, false)
+    private var mDayOfMonth = DayOfMonth(0, LocalDate.now(), false)
         set(value) {
             field = value
             view?.plannerFragment_switchIsWeekend?.isChecked = field.isWeekend
@@ -46,7 +46,7 @@ class PlannerFragment : Fragment() {
         mDatabaseController = DatabaseController(this)
         //initialize mCurrentDayOfMonth
         mDatabaseController.whenDaysLoaded = {
-            mCurrentDayOfMonth = mDatabaseController.getDay(mCurrentDate)
+            mDayOfMonth = mDatabaseController.getDay(LocalDate.now())
         }
 
         // Inflate the layout for this fragment
@@ -67,7 +67,7 @@ class PlannerFragment : Fragment() {
                 mDatabaseController, viewLifecycleOwner)
         //filtering strategy and init condition
         mRecyclerAdapter.filteringStrategy = TaskRecyclerAdapter.FILTER_BY_DAY
-        mRecyclerAdapter.filter.setCondition(mCurrentDayOfMonth)
+        mRecyclerAdapter.filter.setCondition(mDayOfMonth)
         mRecyclerAdapter.registerCallback(object : TaskRecyclerAdapter.Callback() {
             override fun taskWantToBeEdited(task: Task) {
                 val f = AddEditTaskFragment.editingMode(task)
@@ -90,30 +90,26 @@ class PlannerFragment : Fragment() {
         //switch listener
         switch.setOnCheckedChangeListener { _, isChecked ->
             //if nothing changed - return
-            if (isChecked == mCurrentDayOfMonth.isWeekend) return@setOnCheckedChangeListener
+            if (isChecked == mDayOfMonth.isWeekend) return@setOnCheckedChangeListener
 
-            mCurrentDayOfMonth = DayOfMonth
-                .createWithAnotherIsWeekend(mCurrentDayOfMonth, isChecked)
-            mDatabaseController.updateDay(mCurrentDayOfMonth)
+            mDayOfMonth = DayOfMonth
+                .createWithAnotherIsWeekend(mDayOfMonth, isChecked)
+            mDatabaseController.updateDay(mDayOfMonth)
         }
 
         //show calendar btn
         showCalendarBtn.setOnClickListener {
-            val f = ChooseDateFragment.chooseDate(mCurrentDate)
-            f.listener = object : ChooseDateFragment.DateChangedListener {
-                override fun onDateChangeListener(oldDate: LocalDate, newDate: LocalDate) {
-                    mCurrentDate = newDate
-                }
-            }
+            val f = ChooseDateFragment.chooseDate(mDayOfMonth.date)
+            f.listener = dataChangedListener
             f.show(parentFragmentManager, f.tag)
         }
 
         //make plan button
         makePlanBtn.setOnClickListener {
-            mDatabaseController.deleteMonthsExcept(mCurrentDate.month)
+            mDatabaseController.deleteMonthsExcept(mDayOfMonth.date.month)
             mDatabaseController.deleteDuplicatedDays()
-            if (!mDatabaseController.isMonthExists(mCurrentDate.month))
-                mDatabaseController.createMonth(mCurrentDate.month)
+            if (!mDatabaseController.isMonthExists(mDayOfMonth.date.month))
+                mDatabaseController.createMonth(mDayOfMonth.date.month)
 
             val builder = AlertDialog.Builder(requireContext())
 
@@ -125,6 +121,14 @@ class PlannerFragment : Fragment() {
 
             Notifications.createNotificationsForOverdueTasks(requireContext(), mDatabaseController)
             Notifications.createNotificationsForTodayTasks(requireContext(), mDatabaseController)
+        }
+    }
+
+    private val dataChangedListener = object : ChooseDateFragment.DateChangedListener {
+        override fun onDateChangeListener(oldDate: LocalDate, newDate: LocalDate?) {
+            newDate?.let {
+                mDayOfMonth = mDatabaseController.getDay(it)
+            }
         }
     }
 }

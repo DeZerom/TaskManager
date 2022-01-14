@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.fragment_choose_date.view.*
 import java.time.LocalDate
 import java.util.*
 
-class ChooseDateFragment(date: LocalDate) : BottomSheetDialogFragment() {
+class ChooseDateFragment private constructor (date: LocalDate) : BottomSheetDialogFragment() {
     private var mDate = date
 
     private var mListener: DateChangedListener? = null
@@ -51,13 +51,20 @@ class ChooseDateFragment(date: LocalDate) : BottomSheetDialogFragment() {
         calendarView.date = calendar.timeInMillis
 
         //change date listener
-        calendarView.setOnDateChangeListener(onDateChangeListener)
+        calendarView.setOnDateChangeListener(mOnDateChangeListener)
+
+        //set clear button listener
+        val btn = view.chooseDateFragment_button
+        btn.setOnClickListener {
+            listener?.onDateChangeListener(mDate, null)
+            dismiss() //close the dialog
+        }
     }
 
     /**
      * Called when date in calendar view changed
      */
-    private val onDateChangeListener =
+    private val mOnDateChangeListener =
         CalendarView.OnDateChangeListener { _, year, month, dayOfMonth ->
             val newDate = LocalDate.of(year, month + 1, dayOfMonth)
             mTask?.let {
@@ -78,9 +85,10 @@ class ChooseDateFragment(date: LocalDate) : BottomSheetDialogFragment() {
          * Called when selected date changed and this fragment was called to change date of views
          * (PlannerFragment for example)
          * @param oldDate [LocalDate] before change
-         * @param newDate [LocalDate] after change
+         * @param newDate [LocalDate] after change. The null value of the [newDate] means that user
+         * clicked on the "clear" button.
          */
-        fun onDateChangeListener(oldDate: LocalDate, newDate: LocalDate)
+        fun onDateChangeListener(oldDate: LocalDate, newDate: LocalDate?)
     }
 
     companion object {
