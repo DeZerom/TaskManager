@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat.getColor
+import kotlin.Pair
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +20,7 @@ import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.data.task.generator.TaskGenerator
 import kotlinx.android.synthetic.main.task_row.view.*
+import java.util.*
 
 /**
  * An [RecyclerView.Adapter] for recyclers that handle task. Works with [R.layout.task_row]
@@ -48,32 +50,23 @@ class TaskRecyclerAdapter(
     /**
      * Internal var for [filter]
      */
-    private lateinit var mFilter: Filter
+    private val mFilter = Filter()
 
     /**
      * Sets filtering strategy. One of default filters will be used depends on it.
      * @see FILTER_BY_DAY
      * @see FILTER_BY_PROJECT
+     * @see FILTER_FOR_DAY_AND_PROJECT
      */
     var filteringStrategy = -1
-        set(value) {
-            field = value
-            when (value) {
-                FILTER_BY_DAY -> { mFilter = ByDateFilter() }
-                FILTER_BY_PROJECT -> { mFilter = ByProjectFilter() }
-            }
-        }
 
     /**
      * [Filter] for getting from [TaskGenerator] [List] of [Task] containing only needed tasks.
      * It is necessary to call [Filter.setCondition] to change this list.
      * @see Filter.setCondition
      */
-    var filter: Filter
+    val filter: Filter
         get() { return mFilter }
-        set(value) {
-            mFilter = value
-        }
 
     /**
      * List of all [Callback] that was registered via [registerCallback].
@@ -197,32 +190,101 @@ class TaskRecyclerAdapter(
 
     /**
      * Instances of this class used for getting [List] of [Task] containing only needed tasks
-     * from [TaskGenerator]. Inherit from this class to make custom filter. See default filters
-     * for examples.
+     * from [TaskGenerator].
      * @see UsableForFilteringTasks
-     * @see ByDateFilter
-     * @see ByProjectFilter
      */
-    abstract inner class Filter {
-        abstract fun setCondition(cond: UsableForFilteringTasks)
-    }
+    inner class Filter {
+        private val condTransformer = ConditionsTransformer()
 
-    private inner class ByDateFilter: Filter() {
-        override fun setCondition(cond: UsableForFilteringTasks) {
-            if (cond.getCondition() !is DayOfMonth)
-                throw IllegalArgumentException("cond is not instance of ${DayOfMonth::class}")
-            val d = cond.getCondition() as DayOfMonth
-            mDatabaseController.generateForDay(d)
+        fun setCondition(vararg conditions: UsableForFilteringTasks) {
+            if (conditions.isEmpty()) {
+                tryToGenerateForEmptyCondition()
+                return
+            }
+            if (conditions.size == 1 && conditions[0] is EmptyFilteringCondition) {
+                tryToGenerateForEmptyCondition()
+                return
+            }
+
+            when (filteringStrategy) {
+                FILTER_BY_DAY -> {
+                    val day = condTransformer.getDayOfMonthFromConditions(conditions)
+                    mDatabaseController.generateForDay(day)
+                }
+                FILTER_BY_PROJECT -> {
+                    val proj = condTransformer.getProjectFromConditions(conditions)
+                    mDatabaseController.generateForProjectExceptGenerated(proj)
+                }
+                FILTER_FOR_DAY_AND_PROJECT -> {
+                    val pair = condTransformer.getProjectAndDayOfMonthFromConditions(conditions)
+                    val project = pair.first
+                    val dayOfMonth = pair.second
+                    mDatabaseController.generateForProjectAndDayOfMonth(project, dayOfMonth)
+                }
+            }
+
+        }
+
+        private fun tryToGenerateForEmptyCondition() {
+            when (filteringStrategy) {
+                FILTER_BY_DAY -> { mDatabaseController.generateForDay(null) }
+                FILTER_BY_PROJECT -> { throw NullPointerException("It's impossible to filter by " +
+                        "parent project with null ${Project::class.java} instance") }
+                FILTER_FOR_DAY_AND_PROJECT -> { throw NullPointerException("It's impossible to " +
+                        "filter by parent project with null ${Project::class.java} instance") }
+            }
         }
     }
 
-    private inner class ByProjectFilter: Filter() {
-        override fun setCondition(cond: UsableForFilteringTasks) {
-            if (cond.getCondition() !is Project) {
-                throw IllegalArgumentException("cond is not instance of ${Project::class}")
+    private class ConditionsTransformer {
+        fun getDayOfMonthFromConditions(conditions: Array<out UsableForFilteringTasks>): DayOfMonth {
+            //check size
+            if (conditions.size != 1) throw IllegalArgumentException("Wrong arguments amount. " +
+                    "Expected 1, but get ${conditions.size}")
+
+            val cond = conditions[0].getCondition()
+            return cond as DayOfMonth
+        }
+
+        fun getProjectFromConditions(conditions: Array<out UsableForFilteringTasks>): Project {
+            if (conditions.size != 1) throw IllegalArgumentException("Wrong arguments amount. " +
+                    "Expected 1, but get ${conditions.size}")
+
+            val cond = conditions[0].getCondition()
+            return cond as Project
+        }
+
+        fun getProjectAndDayOfMonthFromConditions(
+            conditions: Array<out UsableForFilteringTasks>
+        ): Pair<Project, DayOfMonth> {
+            //check size
+            if (conditions.size != 2) throw IllegalArgumentException("Wrong arguments amount. " +
+                    "Expected 2, but get ${conditions.size}")
+
+            var day: DayOfMonth? = null
+            var project: Project? = null
+            try {
+                day = getDayOfMonthFromConditions(arrayOf(conditions[0]))
+                project = getProjectFromConditions(arrayOf(conditions[1]))
+            } catch (e: ClassCastException) {
+                //try another order
+                day = getDayOfMonthFromConditions(arrayOf(conditions[1]))
+                project = getProjectFromConditions(arrayOf(conditions[0]))
+            } catch (e: ClassCastException) {
+                e.printStackTrace()
             }
-            val p = cond.getCondition() as Project
-            mDatabaseController.generateForProjectExceptGenerated(p)
+
+            if (day != null && project != null) {
+                return Pair(project, day)
+            } else {
+                throw IllegalArgumentException("Some shit have been provided in params")
+            }
+        }
+    }
+
+    class EmptyFilteringCondition: UsableForFilteringTasks {
+        override fun getCondition(): Any {
+            return this
         }
     }
 
@@ -241,5 +303,12 @@ class TaskRecyclerAdapter(
          * Use for filter tasks by parent project
          */
         const val FILTER_BY_PROJECT = 1
+
+        /**
+         * Use for filtering by parent project and date
+         */
+        const val FILTER_FOR_DAY_AND_PROJECT = 2
+
+        val EMPTY_FILTERING_CONDITION = EmptyFilteringCondition()
     }
 }

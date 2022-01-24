@@ -1,6 +1,7 @@
 package com.example.taskmanager.fragments.task_holders.day
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -19,16 +20,12 @@ import java.time.LocalDate
 class DayFragment : Fragment() {
     private lateinit var mDatabaseController: DatabaseController
 
-    private var mDay = LocalDate.now()
+    private var mDayOfMonth: DayOfMonth? = null
         set(value) {
             field = value
-            if (mDatabaseController.isDaysLoaded) mDayOfMonth = mDatabaseController.getDay(mDay)
-        }
-
-    private var mDayOfMonth = DayOfMonth(0, mDay, false)
-        set(value) {
-            field = value
-            mTaskRecyclerAdapter.filter.setCondition(field)
+            Log.i("1234", field?.date?.toString() ?: "null")
+            mTaskRecyclerAdapter.filter.setCondition(value ?: TaskRecyclerAdapter
+                .EMPTY_FILTERING_CONDITION)
         }
 
     private lateinit var mTaskRecyclerAdapter: TaskRecyclerAdapter
@@ -38,9 +35,6 @@ class DayFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         mDatabaseController = DatabaseController(this)
-        mDatabaseController.whenDaysLoaded = {
-            mDayOfMonth = mDatabaseController.getDay(mDay)
-        }
 
         return inflater.inflate(R.layout.fragment_day, container, false)
     }
@@ -66,9 +60,13 @@ class DayFragment : Fragment() {
                 fr.show(parentFragmentManager, fr.tag)
             }
         })
+        //first condition setting
+        mDatabaseController.whenTasksLoaded = {
+            mTaskRecyclerAdapter.filter.setCondition(mDayOfMonth ?: TaskRecyclerAdapter
+                .EMPTY_FILTERING_CONDITION)
+        }
 
         //set recycler adapter
-        mTaskRecyclerAdapter.filter.setCondition(mDatabaseController.getDay(mDay))
         recycler.adapter = mTaskRecyclerAdapter
         //set recycler layout
         recycler.layoutManager = LinearLayoutManager(requireContext())
@@ -81,13 +79,19 @@ class DayFragment : Fragment() {
 
         //chooseDate logic
         chooseDateBtn.setOnClickListener {
-            val f = ChooseDateFragment.chooseDate(mDay)
-            f.listener = object : ChooseDateFragment.DateChangedListener {
-                override fun onDateChangeListener(oldDate: LocalDate, newDate: LocalDate) {
-                    mDay = newDate
-                }
-            }
+            val f = ChooseDateFragment.chooseDate(mDayOfMonth?.date ?: LocalDate.now())
+            f.listener = dateChangedListener
             f.show(parentFragmentManager, f.tag)
+        }
+    }
+
+    private val dateChangedListener = object: ChooseDateFragment.DateChangedListener {
+        override fun onDateChangeListener(oldDate: LocalDate, newDate: LocalDate?) {
+            newDate?.let {
+                mDayOfMonth = mDatabaseController.getDay(it)
+            } ?: run {
+                mDayOfMonth = null
+            }
         }
     }
 }

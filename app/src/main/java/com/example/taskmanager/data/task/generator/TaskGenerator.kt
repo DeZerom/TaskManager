@@ -9,6 +9,7 @@ import com.example.taskmanager.data.day.DayOfMonth
 import com.example.taskmanager.data.day.DaysHandler
 import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.data.task.Task
+import com.example.taskmanager.data.task.generator.strategies.ByDate
 import com.example.taskmanager.data.viewmodels.TaskViewModel
 import java.time.LocalDate
 import java.util.*
@@ -32,18 +33,14 @@ class TaskGenerator(lifecycle: LifecycleOwner, taskViewModel: TaskViewModel) {
     val result: LiveData<List<Task>>
         get() = mResult
 
-    /**
-     * Last provided argument for generate functions
-     */
-    private var lastArgument: UsableForFilteringTasks? = null
-
-    private var lastFunc: LastFunc? = null
+    private var mGeneratingStrategy: GeneratingStrategy? = null
+    private var mStrategyNumber: Int = -1
 
     init {
         taskViewModel.allTasks.observe(lifecycle) {
             mTasks = it
             DaysHandler.isTasksOverdue(mTasks)
-            lastArgument?.let { arg -> lastFunc?.getFunc(this)?.invoke(arg) }
+            mGeneratingStrategy?.filter(it)
         }
     }
 
@@ -73,72 +70,56 @@ class TaskGenerator(lifecycle: LifecycleOwner, taskViewModel: TaskViewModel) {
             return
         }
 
-        lastArgument = day
-        lastFunc = LastFunc.FOR_DAY
-        val res = LinkedList<Task>()
-        mTasks.forEach {
-            if (!it.doneForDays.contains(day.date) && day.date >= it.date) {
-                if (it.date == day.date) res.add(it)
-                else if (it.repeat == Task.REPEAT_EVERY_DAY) {
-                    val t = generateTaskWithNewDate(it, day.date)
-                    res.add(t)
-                } else if (it.repeat == Task.REPEAT_EVERY_DAY_EXCEPT_HOLIDAYS && !day.isWeekend) {
-                    val t = generateTaskWithNewDate(it, day.date)
-                    res.add(t)
-                }
-            }
+        if (mGeneratingStrategy == null || mStrategyNumber != Strategy.FOR_DAY_OF_MONTH.number()) {
+            mGeneratingStrategy = GeneratingStrategy.byDayOfMonth(listOf(day))
+            mStrategyNumber = Strategy.FOR_DAY_OF_MONTH.number()
+        } else {
+            mGeneratingStrategy?.filteringConditions = listOf(day)
         }
-        mResult.value = res
-    }
 
-    /**
-     * Needed only for [LastFunc.getFunc]
-     */
-    private fun staffGenerateForDay(day: UsableForFilteringTasks) {
-        generateForDay(day.getCondition() as DayOfMonth)
+        mResult.value = mGeneratingStrategy?.filter(mTasks)
     }
 
     /**
      * Generates List of [Task] for specified [Project]. Result is in [result]
      */
     fun generateForProjectExceptGenerated(project: Project) {
-        lastArgument = project
-        lastFunc = LastFunc.FOR_P_EXCEPT_G
-        val res = LinkedList<Task>()
-        mTasks.forEach {
-            if (it.projectOwnerId == project.id) res.add(it)
+        if (mGeneratingStrategy == null || mStrategyNumber != Strategy.FOR_PROJECT.number()) {
+            mGeneratingStrategy = GeneratingStrategy.byProject(listOf(project))
+            mStrategyNumber = Strategy.FOR_PROJECT.number()
+        } else {
+            mGeneratingStrategy?.filteringConditions = listOf(project)
         }
-        mResult.value = res
+
+        mResult.value = mGeneratingStrategy?.filter(mTasks)
     }
 
     /**
-     * Needed only for [LastFunc.getFunc]
+     * Generates a List of [Task] for specified [Project] and [DayOfMonth]. Changes the [result]
+     * [LiveData]
      */
-    private fun staffGenerateForProjectExceptGenerated(project: UsableForFilteringTasks) {
-        generateForProjectExceptGenerated(project.getCondition() as Project)
+    fun generateForProjectAndDayOfMonth(project: Project, dayOfMonth: DayOfMonth) {
+        if (mGeneratingStrategy == null || mStrategyNumber != Strategy
+                .FOR_PROJECT_AND_DAY_OF_MONTH.number()) {
+            mGeneratingStrategy = GeneratingStrategy
+                .byProjectAndDayOfMonth(listOf(project, dayOfMonth))
+            mStrategyNumber = Strategy.FOR_PROJECT_AND_DAY_OF_MONTH.number()
+        } else {
+            mGeneratingStrategy?.filteringConditions = listOf(project, dayOfMonth)
+        }
+
+        mResult.value = mGeneratingStrategy?.filter(mTasks)
     }
 
-    /**
-     * Generates new [Task] with [Task.date] equal to [d] and [Task.isGenerated] equal to `true`,
-     * other fields are equal to [t] corresponding fields.
-     */
-    private fun generateTaskWithNewDate(t: Task, d: LocalDate): Task {
-        val task = Task.createTaskWithAnotherDate(t, d)
-        task.isGenerated = true
-        return task
-    }
+    private enum class Strategy {
+        FOR_DAY_OF_MONTH, FOR_PROJECT, FOR_PROJECT_AND_DAY_OF_MONTH;
 
-    private enum class LastFunc {
-        FOR_DAY {
-            override fun getFunc(taskGenerator: TaskGenerator): (UsableForFilteringTasks) -> Unit {
-                return taskGenerator::staffGenerateForDay
+        fun number(): Int {
+            return when (this) {
+                FOR_DAY_OF_MONTH -> 0
+                FOR_PROJECT -> 1
+                FOR_PROJECT_AND_DAY_OF_MONTH -> 2
             }
-        },
-        FOR_P_EXCEPT_G {
-            override fun getFunc(taskGenerator: TaskGenerator): (UsableForFilteringTasks) -> Unit {
-                return taskGenerator::staffGenerateForProjectExceptGenerated
-            }
-        };
-        abstract fun getFunc(taskGenerator: TaskGenerator): (UsableForFilteringTasks) -> Unit
+        }
     }
 }

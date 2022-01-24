@@ -16,11 +16,13 @@ import com.example.taskmanager.fragments.task_holders.AddEditTaskFragment
 import com.example.taskmanager.fragments.task_holders.TaskRecyclerAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_project.view.*
+import java.time.LocalDate
 
 class ProjectFragment : Fragment() {
     private lateinit var mProject: Project
     private lateinit var mDatabaseController: DatabaseController
     private lateinit var mRecyclerAdapter: TaskRecyclerAdapter
+    private var mDate = LocalDate.now()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,6 +59,10 @@ class ProjectFragment : Fragment() {
 
         //set layout manager
         recycler.layoutManager = LinearLayoutManager(requireContext())
+
+        //set calendar button logic
+        val calendarButton = view.projectFragment_calendarFAB
+        calendarButton.setOnClickListener(onBtnClickListener)
     }
 
     override fun onResume() {
@@ -71,15 +77,46 @@ class ProjectFragment : Fragment() {
         activity?.toolbar?.title = mProject.name
 
         //change filtering condition
-        mRecyclerAdapter.filter.setCondition(mProject)
-
-        //add task button
-        val btn = view?.projectFragment_floatingActionButton
-        btn?.setOnClickListener {
-            val f = AddEditTaskFragment.addingMode(mProject)
-            f.show(parentFragmentManager, f.tag)
+        mRecyclerAdapter.filteringStrategy = TaskRecyclerAdapter.FILTER_BY_PROJECT
+        mDatabaseController.whenTasksLoaded = {
+            mRecyclerAdapter.filter.setCondition(mProject)
         }
 
+        //add task button
+        val btn = view?.projectFragment_addTaskFAB
+        btn?.setOnClickListener(onBtnClickListener)
+
         super.onResume()
+    }
+
+    private val onBtnClickListener = View.OnClickListener {
+        when (it.id) {
+            R.id.projectFragment_addTaskFAB -> {
+                val f = AddEditTaskFragment.addingMode(mProject)
+                f.show(parentFragmentManager, f.tag)
+            }
+            R.id.projectFragment_calendarFAB -> {
+                val f = ChooseDateFragment.chooseDate(mDate)
+                f.listener = calendarListener
+                f.show(parentFragmentManager, f.tag)
+            }
+        }
+    }
+
+    private val calendarListener = object : ChooseDateFragment.DateChangedListener {
+        override fun onDateChangeListener(oldDate: LocalDate, newDate: LocalDate?) {
+            newDate?.let {
+                if (it != mDate) {
+                    mDate = it
+                    mRecyclerAdapter.filteringStrategy = TaskRecyclerAdapter
+                        .FILTER_FOR_DAY_AND_PROJECT
+                    mRecyclerAdapter.filter.setCondition(mProject,
+                        mDatabaseController.getDay(newDate))
+                }
+            } ?: run {
+                mRecyclerAdapter.filteringStrategy = TaskRecyclerAdapter.FILTER_BY_PROJECT
+                mRecyclerAdapter.filter.setCondition(mProject)
+            }
+        }
     }
 }

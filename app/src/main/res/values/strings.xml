@@ -57,4 +57,5 @@
     <string name="unableToUpdateTaskAlertDialog_message">Parent project of this task is not for weekends, but you are trying to move this task on a weekend</string>
     <string name="toastAddSomeProjects">Create at least one project first</string>
     <string name="overdue_string">Overdue</string>
+    <string name="chooseDateFragment_clearFilter_btnText">Clear</string>
 </resources>
