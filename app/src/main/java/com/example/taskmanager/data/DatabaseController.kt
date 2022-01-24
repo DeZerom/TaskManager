@@ -231,4 +231,8 @@ class DatabaseController(fragment: Fragment) {
     fun generateForProjectExceptGenerated(project: Project) {
         mTaskGenerator.generateForProjectExceptGenerated(project)
     }
+
+    fun generateForProjectAndDayOfMonth(project: Project, day: DayOfMonth) {
+        mTaskGenerator.generateForProjectAndDayOfMonth(project, day)
+    }
 }

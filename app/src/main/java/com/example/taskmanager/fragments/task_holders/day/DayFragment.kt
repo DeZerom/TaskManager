@@ -32,7 +32,7 @@ class DayFragment : Fragment() {
         set(value) {
             field = value
             Log.i("1234", field?.date?.toString() ?: "null")
-            mTaskRecyclerAdapter.filter.setCondition(field)
+            mTaskRecyclerAdapter.filter.setCondition(TaskRecyclerAdapter.EMPTY_FILTERING_CONDITION)
         }
 
     private lateinit var mTaskRecyclerAdapter: TaskRecyclerAdapter
@@ -67,10 +67,10 @@ class DayFragment : Fragment() {
                 fr.show(parentFragmentManager, fr.tag)
             }
         })
-        //first condition setting
-        mDatabaseController.whenTasksLoaded = {
-            mTaskRecyclerAdapter.filter.setCondition(mDayOfMonth)
-        }
+//        //first condition setting
+//        mDatabaseController.whenTasksLoaded = {
+//            mTaskRecyclerAdapter.filter.setCondition(mDayOfMonth)
+//        }
 
         //set recycler adapter
         recycler.adapter = mTaskRecyclerAdapter
