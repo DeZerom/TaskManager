@@ -78,7 +78,9 @@ class ProjectFragment : Fragment() {
 
         //change filtering condition
         mRecyclerAdapter.filteringStrategy = TaskRecyclerAdapter.FILTER_BY_PROJECT
-        mRecyclerAdapter.filter.setCondition(mProject)
+        mDatabaseController.whenTasksLoaded = {
+            mRecyclerAdapter.filter.setCondition(mProject)
+        }
 
         //add task button
         val btn = view?.projectFragment_addTaskFAB

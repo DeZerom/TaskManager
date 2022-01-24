@@ -197,7 +197,14 @@ class TaskRecyclerAdapter(
         private val condTransformer = ConditionsTransformer()
 
         fun setCondition(vararg conditions: UsableForFilteringTasks) {
-            if (conditions.isEmpty()) tryToGenerateForEmptyCondition()
+            if (conditions.isEmpty()) {
+                tryToGenerateForEmptyCondition()
+                return
+            }
+            if (conditions.size == 1 && conditions[0] is EmptyFilteringCondition) {
+                tryToGenerateForEmptyCondition()
+                return
+            }
 
             when (filteringStrategy) {
                 FILTER_BY_DAY -> {

@@ -67,7 +67,6 @@ class PlannerFragment : Fragment() {
                 mDatabaseController, viewLifecycleOwner)
         //filtering strategy and init condition
         mRecyclerAdapter.filteringStrategy = TaskRecyclerAdapter.FILTER_BY_DAY
-        mRecyclerAdapter.filter.setCondition(mDayOfMonth)
         mRecyclerAdapter.registerCallback(object : TaskRecyclerAdapter.Callback() {
             override fun taskWantToBeEdited(task: Task) {
                 val f = AddEditTaskFragment.editingMode(task)
@@ -80,6 +79,11 @@ class PlannerFragment : Fragment() {
         })
         //set adapter
         recycler.adapter = mRecyclerAdapter
+
+        //first filtering condition set
+        mDatabaseController.whenTasksLoaded = {
+            mRecyclerAdapter.filter.setCondition(mDayOfMonth)
+        }
 
         //add task btn
         addTaskBtn.setOnClickListener {

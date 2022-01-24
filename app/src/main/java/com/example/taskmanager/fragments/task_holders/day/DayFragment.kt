@@ -20,19 +20,12 @@ import java.time.LocalDate
 class DayFragment : Fragment() {
     private lateinit var mDatabaseController: DatabaseController
 
-//    private var mDay = LocalDate.now()
-//        set(value) {
-//            field = value
-//            val day = field
-//            if (mDatabaseController.isDaysLoaded)
-//                mDayOfMonth = mDatabaseController.getDay(day)
-//        }
-
     private var mDayOfMonth: DayOfMonth? = null
         set(value) {
             field = value
             Log.i("1234", field?.date?.toString() ?: "null")
-            mTaskRecyclerAdapter.filter.setCondition(TaskRecyclerAdapter.EMPTY_FILTERING_CONDITION)
+            mTaskRecyclerAdapter.filter.setCondition(value ?: TaskRecyclerAdapter
+                .EMPTY_FILTERING_CONDITION)
         }
 
     private lateinit var mTaskRecyclerAdapter: TaskRecyclerAdapter
@@ -67,10 +60,11 @@ class DayFragment : Fragment() {
                 fr.show(parentFragmentManager, fr.tag)
             }
         })
-//        //first condition setting
-//        mDatabaseController.whenTasksLoaded = {
-//            mTaskRecyclerAdapter.filter.setCondition(mDayOfMonth)
-//        }
+        //first condition setting
+        mDatabaseController.whenTasksLoaded = {
+            mTaskRecyclerAdapter.filter.setCondition(mDayOfMonth ?: TaskRecyclerAdapter
+                .EMPTY_FILTERING_CONDITION)
+        }
 
         //set recycler adapter
         recycler.adapter = mTaskRecyclerAdapter
