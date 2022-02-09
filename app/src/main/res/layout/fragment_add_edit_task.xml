@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/addEditTaskFragment_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -94,5 +95,23 @@
             android:layout_height="wrap_content"
             android:text="@string/repeatEveryDay_exceptHolidays" />
     </RadioGroup>
+
+    <CheckBox
+        android:id="@+id/addEditTaskFragment_chkBoxLimitedTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/addEditTaskFragment_limitedTimeChkBox" />
+
+    <EditText
+        android:id="@+id/addEditTaskFragment_endDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="@string/AddEditTaskFragment_endDate_hint"
+        android:importantForAutofill="no"
+        android:inputType="date"
+        tools:ignore="LabelFor" />
+
 
 </LinearLayout>
