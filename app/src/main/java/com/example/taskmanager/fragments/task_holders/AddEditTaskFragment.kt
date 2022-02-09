@@ -88,8 +88,8 @@ class AddEditTaskFragment(
                 if (mTask != null) setDefaultSelection(view.addEditTaskFragment_spinner,
                     mTask.projectOwnerId) //task given => editing mode, so we provide its parentProjectId
                 else if (mParentProject != null) setDefaultSelection(view.addEditTaskFragment_spinner,
-                    mParentProject.id) //parentProject given => adding mode, so we provide its id
-                //Neither task nor parentProject may be given, but in this case we shouldn't set
+                    mParentProject.id) //parentProject given => adding mode, so we provide its id.
+                //Neither task nor parentProject should be given, but in this case we shouldn't set
                 // default selection
                 mProjectsHaventSet = false
             }
@@ -232,7 +232,8 @@ class AddEditTaskFragment(
         parentProjectId: Int,
         date: String,
         isQuantitative: Boolean,
-        amount: String
+        amount: String,
+        endDate: String
     ): Task? {
         //name
         if (!checkName(name)) return null
@@ -253,8 +254,12 @@ class AddEditTaskFragment(
             mTaskRepeatingMode = Task.REPEAT_EVERY_DAY_EXCEPT_HOLIDAYS
         val repeat = mTaskRepeatingMode
 
+        //endDate
+        val ed = checkEndDate(d, endDate)
+        ed?: return null
+
         //if everything is ok, return task
-        return Task(id, name, parentProjectId, d, a, repeat)
+        return Task(id, name, parentProjectId, d, a, repeat, endDate = ed)
     }
 
     /**
@@ -316,6 +321,37 @@ class AddEditTaskFragment(
         return intAmount
     }
 
+    /**
+     * Checks end date of the task. Returns instance of [LocalDate] represented by [endDate]. If
+     * [endDate] is blank, has bad format or is less than [startDate] returns null.
+     * @param startDate The of executing of the task should be started.
+     * @param endDate The of executing of the task should be done.
+     */
+    private fun checkEndDate(startDate: LocalDate, endDate: String): LocalDate? {
+        val toast = Toast.makeText(requireContext(),
+            R.string.taskDateInput_incorrectDate, Toast.LENGTH_SHORT)
+
+        if (endDate.isBlank()) {
+            toast.show()
+            return null
+        }
+
+        val ed = try {
+            LocalDate.parse(endDate)
+        } catch (e: DateTimeParseException) {
+            toast.show()
+            return null
+        }
+
+        if (ed < startDate) {
+            toast.setText(R.string.Toast_BadEndDate)
+            toast.show()
+            return null
+        }
+
+        return ed
+    }
+
     private fun setDefaultSelection(spinner: Spinner, idToFind: Int) {
         spinner.setSelection(mSpinnerAdapter.getPosition(mProjects.find {
             return@find it.id == idToFind
@@ -331,6 +367,7 @@ class AddEditTaskFragment(
             val editDate = view?.addEditTaskFragment_editDate
             val isQTaskChkBox = view?.addEditTaskFragment_isQTask
             val editAmount = view?.addEditTaskFragment_editAmount
+            val editEndDate = view?.addEditTaskFragment_endDate
             when (v.id) {
                 R.id.addTaskButtons_button, R.id.editTaskButtons_apply -> {
                     //get parent project id. There are only Project instances in mSpinnerAdapter, so it will
@@ -347,7 +384,7 @@ class AddEditTaskFragment(
                     var task = createTask(
                         editName?.text.toString(), parentProjectId,
                         editDate?.text.toString(), isQTaskChkBox?.isChecked ?: false,
-                        editAmount?.text.toString()
+                        editAmount?.text.toString(), editEndDate?.text.toString()
                     )
                     //add or edit task if it exists
                     task?.let {
