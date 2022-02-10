@@ -95,10 +95,11 @@ class AddEditTaskFragment(
             }
         }
 
+        //adding buttons for different types of invocation of this fragment
         mTask?.let {
-            mAttachedButtons = inflater.inflate(R.layout.edit_task_buttons, null)
+            mAttachedButtons = inflater.inflate(R.layout.edit_task_buttons, container)
         } ?: run {
-            mAttachedButtons = inflater.inflate(R.layout.add_task_buttons, null)
+            mAttachedButtons = inflater.inflate(R.layout.add_task_buttons, container)
         }
         view.addEditTaskFragment_layout.addView(mAttachedButtons)
 

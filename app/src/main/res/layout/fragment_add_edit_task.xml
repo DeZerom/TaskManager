@@ -1,117 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/addEditTaskFragment_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
     app:behavior_hideable="true"
     app:behavior_peekHeight="40dp">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@color/cardview_dark_background" />
-
-    <EditText
-        android:id="@+id/addEditTaskFragment_editName"
+    <LinearLayout
+        android:id="@+id/addEditTaskFragment_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:autofillHints="name"
-        android:hint="@string/adding_new_task_its_name"
-        android:inputType="textPersonName"
-        android:minHeight="48dp"
-        android:textAlignment="center" />
+        android:orientation="vertical">
 
-    <Spinner
-        android:id="@+id/addEditTaskFragment_spinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:minWidth="60dp"
-        android:minHeight="48dp"
-        android:textAlignment="center" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@color/cardview_dark_background" />
 
-    <CheckBox
-        android:id="@+id/addEditTaskFragment_chkBoxToday"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp"
-        android:text="@string/today_string" />
-
-    <EditText
-        android:id="@+id/addEditTaskFragment_editDate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:hint="@string/localDate_pattern"
-        android:inputType="date"
-        android:textAlignment="center" />
-
-    <CheckBox
-        android:id="@+id/addEditTaskFragment_isQTask"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp"
-        android:text="@string/quantitative_string" />
-
-    <EditText
-        android:id="@+id/addEditTaskFragment_editAmount"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:enabled="false"
-        android:hint="@string/amount_string"
-        android:inputType="number"
-        android:textAlignment="center" />
-
-    <RadioGroup
-        android:id="@+id/addEditTaskFragment_radioButtonGroup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp">
-
-        <RadioButton
-            android:id="@+id/addEditTaskFragment_repeatNever"
+        <EditText
+            android:id="@+id/addEditTaskFragment_editName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/repeatNever"
-            android:checked="true"/>
+            android:layout_marginTop="16dp"
+            android:autofillHints="name"
+            android:hint="@string/adding_new_task_its_name"
+            android:inputType="textPersonName"
+            android:minHeight="48dp"
+            android:textAlignment="center" />
 
-        <RadioButton
-            android:id="@+id/addEditTaskFragment_repeatEveryDay"
+        <Spinner
+            android:id="@+id/addEditTaskFragment_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/repeatEveryDay" />
+            android:layout_marginTop="16dp"
+            android:minWidth="60dp"
+            android:minHeight="48dp"
+            android:textAlignment="center" />
 
-        <RadioButton
-            android:id="@+id/addEditTaskFragment_repeatExceptHolidays"
+        <CheckBox
+            android:id="@+id/addEditTaskFragment_chkBoxToday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:text="@string/today_string" />
+
+        <EditText
+            android:id="@+id/addEditTaskFragment_editDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/repeatEveryDay_exceptHolidays" />
-    </RadioGroup>
+            android:layout_marginTop="16dp"
+            android:hint="@string/localDate_pattern"
+            android:inputType="date"
+            android:textAlignment="center" />
 
-    <CheckBox
-        android:id="@+id/addEditTaskFragment_chkBoxLimitedTime"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/addEditTaskFragment_limitedTimeChkBox" />
+        <CheckBox
+            android:id="@+id/addEditTaskFragment_isQTask"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:text="@string/quantitative_string" />
 
-    <EditText
-        android:id="@+id/addEditTaskFragment_endDate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:hint="@string/AddEditTaskFragment_endDate_hint"
-        android:importantForAutofill="no"
-        android:inputType="date"
-        tools:ignore="LabelFor" />
+        <EditText
+            android:id="@+id/addEditTaskFragment_editAmount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:enabled="false"
+            android:hint="@string/amount_string"
+            android:inputType="number"
+            android:textAlignment="center" />
 
+        <RadioGroup
+            android:id="@+id/addEditTaskFragment_radioButtonGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
 
-</LinearLayout>
+            <RadioButton
+                android:id="@+id/addEditTaskFragment_repeatNever"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/repeatNever" />
+
+            <RadioButton
+                android:id="@+id/addEditTaskFragment_repeatEveryDay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/repeatEveryDay" />
+
+            <RadioButton
+                android:id="@+id/addEditTaskFragment_repeatExceptHolidays"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/repeatEveryDay_exceptHolidays" />
+        </RadioGroup>
+
+        <CheckBox
+            android:id="@+id/addEditTaskFragment_chkBoxLimitedTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/addEditTaskFragment_limitedTimeChkBox" />
+
+        <EditText
+            android:id="@+id/addEditTaskFragment_endDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:hint="@string/AddEditTaskFragment_endDate_hint"
+            android:importantForAutofill="no"
+            android:inputType="date"
+            tools:ignore="LabelFor" />
+
+    </LinearLayout>
+</ScrollView>
