@@ -45,7 +45,4 @@
     <string name="toastAddSomeProjects">Сначала создайте хотя бы один проект</string>
     <string name="overdue_string">Просрочено</string>
     <string name="chooseDateFragment_clearFilter_btnText">Очистить</string>
-    <string name="AddEditTaskFragment_endDate_hint">Конечная дата</string>
-    <string name="addEditTaskFragment_limitedTimeChkBox">Время ограничено</string>
-    <string name="Toast_BadEndDate">Дата окончания меньше даты начала</string>
 </resources>

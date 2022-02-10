@@ -34,8 +34,6 @@ data class Task(
     @ColumnInfo(defaultValue = "1") val repeat: Int = 1,
 
     @ColumnInfo(defaultValue = "") val doneForDays: MutableList<LocalDate> = mutableListOf(),
-
-    @ColumnInfo(defaultValue = "1970-01-01") val endDate: LocalDate = NO_END_DATE
 ): Parcelable
 {
     @Ignore var isGenerated = false
@@ -55,8 +53,6 @@ data class Task(
         const val REPEAT_NEVER = 1
         const val REPEAT_EVERY_DAY = 2
         const val REPEAT_EVERY_DAY_EXCEPT_HOLIDAYS = 3
-
-        val NO_END_DATE: LocalDate = LocalDate.ofEpochDay(0)
 
         fun createTaskWithAnotherId(task: Task, newId: Int): Task {
             return Task(newId, task.name, task.projectOwnerId, task.date, task.amount,

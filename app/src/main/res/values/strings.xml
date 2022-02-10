@@ -58,7 +58,4 @@
     <string name="toastAddSomeProjects">Create at least one project first</string>
     <string name="overdue_string">Overdue</string>
     <string name="chooseDateFragment_clearFilter_btnText">Clear</string>
-    <string name="AddEditTaskFragment_endDate_hint">Date of the end</string>
-    <string name="addEditTaskFragment_limitedTimeChkBox">Time is limited</string>
-    <string name="Toast_BadEndDate">Date of the end is less than date of the start</string>
 </resources>
