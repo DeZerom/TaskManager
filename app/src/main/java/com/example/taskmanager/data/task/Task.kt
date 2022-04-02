@@ -7,6 +7,7 @@ import androidx.room.ForeignKey.CASCADE
 import com.example.taskmanager.data.converters.ListLocalDateConverter
 import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.data.converters.LocalDateConverter
+import com.example.taskmanager.data.task.quantitative.Counter
 import kotlinx.android.parcel.Parcelize
 import java.time.LocalDate
 
@@ -45,9 +46,7 @@ data class Task(
 
     @Ignore var isOverdue = false
 
-    override fun toString(): String {
-        return "$id $projectOwnerId $name $isGenerated"
-    }
+    @Ignore var perDayAmount = Counter.countPerDayAmountOfIterations(this)
 
     companion object {
         const val REPEAT_NEVER = 1
