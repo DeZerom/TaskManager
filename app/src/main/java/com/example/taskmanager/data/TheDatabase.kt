@@ -12,7 +12,8 @@ import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.data.task.TaskDAO
 import java.time.MonthDay
 
-@Database(entities = [Project::class, Task::class, DayOfMonth::class], version = 10)
+@Database(entities = [Project::class, Task::class, DayOfMonth::class], version = 10,
+    exportSchema = false)
 abstract class TheDatabase: RoomDatabase() {
 
     abstract fun getProjectDao(): ProjectDAO
