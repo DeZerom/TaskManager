@@ -7,10 +7,10 @@ import androidx.room.*
 interface ProjectDAO {
 
     @Query("SELECT * FROM Project")
-    fun getAll(): LiveData<List<Project>>
+    suspend fun getAll(): LiveData<List<Project>>
 
     @Query("SELECT * FROM Project WHERE id = :id")
-    fun getById(id: Int): Project
+    suspend fun getById(id: Int): Project
 
     @Insert
     suspend fun addProject(p: Project)
