@@ -10,7 +10,7 @@ interface ProjectDAO {
     fun getAll(): LiveData<List<Project>>
 
     @Query("SELECT * FROM Project WHERE id = :id")
-    fun getById(id: Int): Project
+    suspend fun getById(id: Int): Project
 
     @Insert
     suspend fun addProject(p: Project)
