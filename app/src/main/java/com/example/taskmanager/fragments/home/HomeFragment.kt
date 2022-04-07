@@ -27,7 +27,7 @@ class HomeFragment : Fragment() {
 
         //add project button
         val addBtn = view.homeFragment_floatingActionButton
-        addBtn.setOnClickListener { viewModel.btnListener }
+        addBtn.setOnClickListener(viewModel.btnListener)
 
         viewModel.navigateToProjectFragment.observe(viewLifecycleOwner) {
             if (it == true) {

@@ -29,10 +29,8 @@ class HomeFragmentViewModel(application: Application): AndroidViewModel(applicat
      * Listener for [R.id.homeFragment_floatingActionButton]
      */
     val btnListener = View.OnClickListener {
-        Log.i("HomeFragmentViewModel", "listener invoked")
         when(it.id) {
             R.id.homeFragment_floatingActionButton -> {
-                Log.i("HomeFragmentViewModel", "floating button id here")
                 _navigateToAddProjectFragment.value = true }
         }
     }
