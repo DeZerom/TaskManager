@@ -85,14 +85,18 @@ class DatabaseController(fragment: Fragment) {
 
         //to invoke mWhenDaysLoaded
         mDayOfMonthViewModel.allDays.observe(fragment.viewLifecycleOwner) {
-            mWhenDaysLoaded.invoke()
-            mIsDaysLoaded = true
+            if (mIsDaysLoaded) {
+                mWhenDaysLoaded.invoke()
+                mIsDaysLoaded = true
+            }
         }
 
         //to invoke mWhenTasksLoaded
         mTaskViewModel.allTasks.observe(fragment.viewLifecycleOwner) {
-            mWhenTasksLoaded.invoke()
-            mIsDaysLoaded = true
+            if (mIsTasksLoaded) {
+                mWhenTasksLoaded.invoke()
+                mIsTasksLoaded = true
+            }
         }
     }
 

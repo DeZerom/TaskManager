@@ -109,7 +109,7 @@ class ProjectFragment : Fragment() {
                 if (it != mDate) {
                     mDate = it
                     mRecyclerAdapter.filteringStrategy = TaskRecyclerAdapter
-                        .FILTER_FOR_DAY_AND_PROJECT
+                        .FILTER_BY_DAY_AND_PROJECT
                     mRecyclerAdapter.filter.setCondition(mProject,
                         mDatabaseController.getDay(newDate))
                 }

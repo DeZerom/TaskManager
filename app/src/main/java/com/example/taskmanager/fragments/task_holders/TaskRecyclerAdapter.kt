@@ -20,7 +20,6 @@ import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.data.task.generator.TaskGenerator
 import kotlinx.android.synthetic.main.task_row.view.*
-import java.util.*
 
 /**
  * An [RecyclerView.Adapter] for recyclers that handle task. Works with [R.layout.task_row]
@@ -56,7 +55,7 @@ class TaskRecyclerAdapter(
      * Sets filtering strategy. One of default filters will be used depends on it.
      * @see FILTER_BY_DAY
      * @see FILTER_BY_PROJECT
-     * @see FILTER_FOR_DAY_AND_PROJECT
+     * @see FILTER_BY_DAY_AND_PROJECT
      */
     var filteringStrategy = -1
 
@@ -112,8 +111,11 @@ class TaskRecyclerAdapter(
         //check if task is overdue
         if (currentItem.isOverdue) {
             //if overdue then mark it
-            holder.itemView.taskRow_date.setTextColor(
-                getColor(holder.itemView.context, R.color.myRed))
+            holder.itemView.taskRow_date
+                .setTextColor(getColor(holder.itemView.context, R.color.myRed))
+        } else {
+            holder.itemView.taskRow_date
+                .setTextColor(getColor(holder.itemView.context, R.color.myBlack))
         }
 
         //give callback on task editing intention
@@ -215,7 +217,7 @@ class TaskRecyclerAdapter(
                     val proj = condTransformer.getProjectFromConditions(conditions)
                     mDatabaseController.generateForProjectExceptGenerated(proj)
                 }
-                FILTER_FOR_DAY_AND_PROJECT -> {
+                FILTER_BY_DAY_AND_PROJECT -> {
                     val pair = condTransformer.getProjectAndDayOfMonthFromConditions(conditions)
                     val project = pair.first
                     val dayOfMonth = pair.second
@@ -230,7 +232,7 @@ class TaskRecyclerAdapter(
                 FILTER_BY_DAY -> { mDatabaseController.generateForDay(null) }
                 FILTER_BY_PROJECT -> { throw NullPointerException("It's impossible to filter by " +
                         "parent project with null ${Project::class.java} instance") }
-                FILTER_FOR_DAY_AND_PROJECT -> { throw NullPointerException("It's impossible to " +
+                FILTER_BY_DAY_AND_PROJECT -> { throw NullPointerException("It's impossible to " +
                         "filter by parent project with null ${Project::class.java} instance") }
             }
         }
@@ -307,7 +309,7 @@ class TaskRecyclerAdapter(
         /**
          * Use for filtering by parent project and date
          */
-        const val FILTER_FOR_DAY_AND_PROJECT = 2
+        const val FILTER_BY_DAY_AND_PROJECT = 2
 
         val EMPTY_FILTERING_CONDITION = EmptyFilteringCondition()
     }
