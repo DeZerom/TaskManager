@@ -10,11 +10,14 @@ import com.example.taskmanager.data.DatabaseController
 import com.example.taskmanager.data.day.DayOfMonth
 import com.example.taskmanager.fragments.task_holders.ChooseDateFragment
 import com.example.taskmanager.fragments.task_holders.TaskRecyclerAdapter
+import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
+import javax.inject.Inject
 
-class DayFragmentViewModel(
+class DayFragmentViewModel (
     application: Application,
-    val databaseController: DatabaseController): AndroidViewModel(application) {
+    val databaseController: DatabaseController,
+): AndroidViewModel(application) {
 
     private val _dayOfMonth = MutableLiveData<DayOfMonth>()
     /**

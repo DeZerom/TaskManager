@@ -10,6 +10,7 @@ import com.example.taskmanager.data.viewmodels.*
 import com.example.taskmanager.data.task.generator.TaskGenerator
 import java.time.LocalDate
 import java.time.Month
+import javax.inject.Inject
 
 /**
  * Implementation of facade pattern. Do anything whatever needed to do with database and its
@@ -19,7 +20,7 @@ import java.time.Month
  * @see DayOfMonthViewModel
  * @see TaskGenerator
  */
-class DatabaseController(fragment: Fragment) {
+class DatabaseController (fragment: Fragment) {
     private val mTaskViewModel: TaskViewModel
     val taskViewModel: TaskViewModel
         get() = mTaskViewModel
