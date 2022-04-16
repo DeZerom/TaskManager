@@ -23,6 +23,7 @@ import com.example.taskmanager.fragments.task_holders.project.ProjectFragmentDir
 import com.example.taskmanager.data.viewmodels.ProjectViewModel
 import com.example.taskmanager.notifications.NotificationsBroadcastReceiver
 import com.google.android.material.navigation.NavigationView
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 import java.time.*
 import java.time.temporal.ChronoUnit
@@ -30,6 +31,7 @@ import java.time.temporal.IsoFields
 import java.time.temporal.TemporalAdjusters
 import java.time.temporal.TemporalUnit
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var mProjectViewModel: ProjectViewModel
     private lateinit var appBarConfiguration: AppBarConfiguration

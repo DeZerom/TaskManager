@@ -8,10 +8,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.taskmanager.R
 import com.example.taskmanager.data.repositories.ProjectRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
-class HomeFragmentViewModel(application: Application): AndroidViewModel(application) {
-
-    private val projectRepository: ProjectRepository = ProjectRepository(application)
+@HiltViewModel
+class HomeFragmentViewModel @Inject constructor(
+    application: Application,
+    private val projectRepository: ProjectRepository
+) : AndroidViewModel(application) {
     private val _navigateToAddProjectFragment = MutableLiveData(false)
 
     /**
