@@ -19,13 +19,17 @@ import com.example.taskmanager.data.day.DayOfMonth
 import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.data.task.generator.TaskGenerator
+import dagger.hilt.android.qualifiers.ActivityContext
+import dagger.hilt.android.scopes.FragmentScoped
 import kotlinx.android.synthetic.main.task_row.view.*
+import javax.inject.Inject
 
 /**
  * An [RecyclerView.Adapter] for recyclers that handle task. Works with [R.layout.task_row]
  */
-class TaskRecyclerAdapter(
-    context: Context,
+@FragmentScoped
+class TaskRecyclerAdapter @Inject constructor(
+    @ActivityContext context: Context,
     private val mDatabaseController: DatabaseController,
     lifecycle: LifecycleOwner
     ) : RecyclerView.Adapter<TaskRecyclerAdapter.RowHolder>() {

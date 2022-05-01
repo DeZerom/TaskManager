@@ -1,6 +1,10 @@
 package com.example.taskmanager.data
 
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ViewModelProvider
 import com.example.taskmanager.data.day.DayOfMonth
 import com.example.taskmanager.data.day.DaysHandler
@@ -8,6 +12,7 @@ import com.example.taskmanager.data.project.Project
 import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.data.viewmodels.*
 import com.example.taskmanager.data.task.generator.TaskGenerator
+import dagger.hilt.android.scopes.FragmentScoped
 import java.time.LocalDate
 import java.time.Month
 import javax.inject.Inject
@@ -21,15 +26,15 @@ import javax.inject.Inject
  * @see TaskGenerator
  */
 class DatabaseController (fragment: Fragment) {
-    private val mTaskViewModel: TaskViewModel
+    private val mTaskViewModel: TaskViewModel by fragment.viewModels()
     val taskViewModel: TaskViewModel
         get() = mTaskViewModel
 
-    private val mProjectViewModel: ProjectViewModel
+    private val mProjectViewModel: ProjectViewModel by fragment.viewModels()
     val projectViewModel: ProjectViewModel
         get() = mProjectViewModel
 
-    private val mDayOfMonthViewModel: DayOfMonthViewModel
+    private val mDayOfMonthViewModel: DayOfMonthViewModel by fragment.viewModels()
     val daysViewModel: DayOfMonthViewModel
         get() = mDayOfMonthViewModel
 
@@ -72,10 +77,6 @@ class DatabaseController (fragment: Fragment) {
     private lateinit var mProjects: List<Project>
 
     init {
-        val provider = ViewModelProvider(fragment)
-        mTaskViewModel = provider.get(TaskViewModel::class.java)
-        mProjectViewModel = provider.get(ProjectViewModel::class.java)
-        mDayOfMonthViewModel = provider.get(DayOfMonthViewModel::class.java)
         mTaskGenerator = TaskGenerator(fragment.viewLifecycleOwner, mTaskViewModel)
         mDaysHandler = DaysHandler(mDayOfMonthViewModel, fragment.viewLifecycleOwner)
 

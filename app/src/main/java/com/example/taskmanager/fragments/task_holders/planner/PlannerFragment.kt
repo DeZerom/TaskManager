@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import com.example.taskmanager.notifications.Notifications
 import com.example.taskmanager.fragments.task_holders.ChooseDateFragment
 import com.example.taskmanager.R
@@ -14,41 +16,25 @@ import com.example.taskmanager.data.day.DayOfMonth
 import com.example.taskmanager.data.task.Task
 import com.example.taskmanager.fragments.task_holders.AddEditTaskFragment
 import com.example.taskmanager.fragments.task_holders.TaskRecyclerAdapter
-import kotlinx.android.synthetic.main.bottom_choose_date.view.*
-import kotlinx.android.synthetic.main.fragment_day.view.*
-import kotlinx.android.synthetic.main.fragment_planner.*
+import com.example.taskmanager.fragments.task_holders.TaskRecyclerAdapter.Companion.EMPTY_FILTERING_CONDITION
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_planner.view.*
 import java.time.LocalDate
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class PlannerFragment : Fragment() {
     private val LOG_TAG = "1234"
-    private lateinit var mDatabaseController: DatabaseController
-    private lateinit var mRecyclerAdapter: TaskRecyclerAdapter
-
-//    private var mCurrentDate = LocalDate.now()
-//        set(value) {
-//            field = value
-//            if (mDatabaseController.isDaysLoaded)
-//                mDayOfMonth = mDatabaseController.getDay(field)
-//        }
-
-    private var mDayOfMonth = DayOfMonth(0, LocalDate.now(), false)
-        set(value) {
-            field = value
-            view?.plannerFragment_switchIsWeekend?.isChecked = field.isWeekend
-            view?.plannerFragment_textView?.text = field.toString()
-        }
+    private val viewModel: PlannerFragmentViewModel by viewModels {
+        PlannerFragmentViewModelFactory(requireActivity().application,
+            DatabaseController(this))
+    }
+    private lateinit var taskRecyclerAdapter: TaskRecyclerAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        mDatabaseController = DatabaseController(this)
-        //initialize mCurrentDayOfMonth
-        mDatabaseController.whenDaysLoaded = {
-            mDayOfMonth = mDatabaseController.getDay(LocalDate.now())
-        }
-
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_planner, container, false)
     }
@@ -61,13 +47,14 @@ class PlannerFragment : Fragment() {
         val switch = view.plannerFragment_switchIsWeekend
         val makePlanBtn = view.plannerFragment_makePlanBtn
         val showCalendarBtn = view.plannerFragment_showCalendarFab
+        val textView = view.plannerFragment_textView
 
         //recycler
-        mRecyclerAdapter = TaskRecyclerAdapter(requireContext(),
-                mDatabaseController, viewLifecycleOwner)
+        taskRecyclerAdapter = TaskRecyclerAdapter(requireContext(),
+                viewModel.databaseController, viewLifecycleOwner)
         //filtering strategy and init condition
-        mRecyclerAdapter.filteringStrategy = TaskRecyclerAdapter.FILTER_BY_DAY
-        mRecyclerAdapter.registerCallback(object : TaskRecyclerAdapter.Callback() {
+        taskRecyclerAdapter.filteringStrategy = TaskRecyclerAdapter.FILTER_BY_DAY
+        taskRecyclerAdapter.registerCallback(object : TaskRecyclerAdapter.Callback() {
             override fun taskWantToBeEdited(task: Task) {
                 val f = AddEditTaskFragment.editingMode(task)
                 f.show(parentFragmentManager, f.tag)
@@ -78,42 +65,49 @@ class PlannerFragment : Fragment() {
             }
         })
         //set adapter
-        recycler.adapter = mRecyclerAdapter
-
-        //first filtering condition set
-        mDatabaseController.whenTasksLoaded = {
-            mRecyclerAdapter.filter.setCondition(mDayOfMonth)
-        }
+        recycler.adapter = taskRecyclerAdapter
 
         //add task btn
-        addTaskBtn.setOnClickListener {
-            val f = AddEditTaskFragment.addingMode()
-            f.show(parentFragmentManager, f.tag)
+        addTaskBtn.setOnClickListener(viewModel.btnListener)
+        viewModel.navigateToAddTaskFragment.observe(viewLifecycleOwner) {
+            if (it) {
+                val fragment = AddEditTaskFragment.addingMode()
+                fragment.show(parentFragmentManager, fragment.tag)
+                viewModel.navigationToAddTaskFragmentHandled()
+            }
         }
 
         //switch listener
-        switch.setOnCheckedChangeListener { _, isChecked ->
-            //if nothing changed - return
-            if (isChecked == mDayOfMonth.isWeekend) return@setOnCheckedChangeListener
-
-            mDayOfMonth = DayOfMonth
-                .createWithAnotherIsWeekend(mDayOfMonth, isChecked)
-            mDatabaseController.updateDay(mDayOfMonth)
-        }
+        switch.setOnClickListener(viewModel.btnListener)
 
         //show calendar btn
-        showCalendarBtn.setOnClickListener {
-            val f = ChooseDateFragment.chooseDate(mDayOfMonth.date)
-            f.listener = dataChangedListener
-            f.show(parentFragmentManager, f.tag)
+        showCalendarBtn.setOnClickListener(viewModel.btnListener)
+        viewModel.navigateToChooseDateFragment.observe(viewLifecycleOwner) {
+            if (it) {
+                val dayOfMonth = viewModel.dayOfMonth.value
+                    ?: DayOfMonth(0, LocalDate.MIN, false)
+                val f = ChooseDateFragment.chooseDate(dayOfMonth.date)
+                f.callback = viewModel.dateChangedCallback
+                f.show(parentFragmentManager, f.tag)
+                viewModel.navigationToChooseDateFragmentHandled()
+            }
+        }
+
+        //observe dayOfMonth LiveData
+        viewModel.dayOfMonth.observe(viewLifecycleOwner) {day ->
+            switch.isChecked = day.isWeekend
+            textView.text = day.toString()
+            taskRecyclerAdapter.filter.setCondition(day?: EMPTY_FILTERING_CONDITION)
         }
 
         //make plan button
+        //TODO will be removed so I leave it here instead of moving it to the viewModel
         makePlanBtn.setOnClickListener {
-            mDatabaseController.deleteMonthsExcept(mDayOfMonth.date.month)
-            mDatabaseController.deleteDuplicatedDays()
-            if (!mDatabaseController.isMonthExists(mDayOfMonth.date.month))
-                mDatabaseController.createMonth(mDayOfMonth.date.month)
+            val dayOfMonth = viewModel.dayOfMonth.value ?: DayOfMonth(0, LocalDate.MIN, false)
+            viewModel.databaseController.deleteMonthsExcept(dayOfMonth.date.month)
+            viewModel.databaseController.deleteDuplicatedDays()
+            if (!viewModel.databaseController.isMonthExists(dayOfMonth.date.month))
+                viewModel.databaseController.createMonth(dayOfMonth.date.month)
 
             val builder = AlertDialog.Builder(requireContext())
 
@@ -123,16 +117,8 @@ class PlannerFragment : Fragment() {
 
             builder.create().show()
 
-            Notifications.createNotificationsForOverdueTasks(requireContext(), mDatabaseController)
-            Notifications.createNotificationsForTodayTasks(requireContext(), mDatabaseController)
-        }
-    }
-
-    private val dataChangedListener = object : ChooseDateFragment.DateChangedListener {
-        override fun onDateChangeListener(oldDate: LocalDate, newDate: LocalDate?) {
-            newDate?.let {
-                mDayOfMonth = mDatabaseController.getDay(it)
-            }
+            Notifications.createNotificationsForOverdueTasks(requireContext(), viewModel.databaseController)
+            Notifications.createNotificationsForTodayTasks(requireContext(), viewModel.databaseController)
         }
     }
 }

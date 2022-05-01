@@ -5,6 +5,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.taskmanager.data.DatabaseController
+import com.example.taskmanager.fragments.task_holders.TaskRecyclerAdapter
+import javax.inject.Inject
 
 class DayFragmentViewModelFactory(
     val databaseController: DatabaseController,

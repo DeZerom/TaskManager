@@ -97,13 +97,13 @@ class ProjectFragment : Fragment() {
             }
             R.id.projectFragment_calendarFAB -> {
                 val f = ChooseDateFragment.chooseDate(mDate)
-                f.listener = calendarListener
+                f.callback = calendarListener
                 f.show(parentFragmentManager, f.tag)
             }
         }
     }
 
-    private val calendarListener = object : ChooseDateFragment.DateChangedListener {
+    private val calendarListener = object : ChooseDateFragment.DateChangedCallback {
         override fun onDateChangeListener(oldDate: LocalDate, newDate: LocalDate?) {
             newDate?.let {
                 if (it != mDate) {

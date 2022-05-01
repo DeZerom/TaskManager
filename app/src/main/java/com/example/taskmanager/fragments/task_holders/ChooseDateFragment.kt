@@ -16,11 +16,11 @@ import java.util.*
 class ChooseDateFragment private constructor (date: LocalDate) : BottomSheetDialogFragment() {
     private var mDate = date
 
-    private var mListener: DateChangedListener? = null
-    var listener: DateChangedListener?
-        get() = mListener
+    private var mCallback: DateChangedCallback? = null
+    var callback: DateChangedCallback?
+        get() = mCallback
         set(value) {
-            mListener = value
+            mCallback = value
         }
 
     private var mTask: Task? = null
@@ -56,7 +56,7 @@ class ChooseDateFragment private constructor (date: LocalDate) : BottomSheetDial
         //set clear button listener
         val btn = view.chooseDateFragment_button
         btn.setOnClickListener {
-            listener?.onDateChangeListener(mDate, null)
+            callback?.onDateChangeListener(mDate, null)
             dismiss() //close the dialog
         }
     }
@@ -72,7 +72,7 @@ class ChooseDateFragment private constructor (date: LocalDate) : BottomSheetDial
                 mDatabaseController.updateTask(task)
                 dismiss() // close this dialog
             } ?: run {
-                listener?.onDateChangeListener(mDate, newDate)
+                callback?.onDateChangeListener(mDate, newDate)
                 mDate = newDate
             }
         }
@@ -80,7 +80,7 @@ class ChooseDateFragment private constructor (date: LocalDate) : BottomSheetDial
     /**
      * Callback used for indicate the user changes the date.
      */
-    interface DateChangedListener {
+    interface DateChangedCallback {
         /**
          * Called when selected date changed and this fragment was called to change date of views
          * (PlannerFragment for example)

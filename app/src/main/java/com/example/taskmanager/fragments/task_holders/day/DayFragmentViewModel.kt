@@ -10,9 +10,9 @@ import com.example.taskmanager.data.DatabaseController
 import com.example.taskmanager.data.day.DayOfMonth
 import com.example.taskmanager.fragments.task_holders.ChooseDateFragment
 import com.example.taskmanager.fragments.task_holders.TaskRecyclerAdapter
-import dagger.hilt.android.lifecycle.HiltViewModel
+import com.example.taskmanager.fragments.task_holders.TaskRecyclerAdapter.Companion.EMPTY_FILTERING_CONDITION
+import com.example.taskmanager.fragments.task_holders.TaskRecyclerAdapter.Companion.FILTER_BY_DAY
 import java.time.LocalDate
-import javax.inject.Inject
 
 class DayFragmentViewModel (
     application: Application,
@@ -57,10 +57,11 @@ class DayFragmentViewModel (
     /**
      * Listener for [ChooseDateFragment]
      */
-    val dateChangedListener = object: ChooseDateFragment.DateChangedListener {
+    val dateChangedListener = object: ChooseDateFragment.DateChangedCallback {
         override fun onDateChangeListener(oldDate: LocalDate, newDate: LocalDate?) {
             newDate?.let {
-                _dayOfMonth.value = databaseController.getDay(it)
+                val day = databaseController.getDay(it)
+                _dayOfMonth.value = day
             } ?: run {
                 _dayOfMonth.value = null
             }
